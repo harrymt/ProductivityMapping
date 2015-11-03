@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,9 +15,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -36,6 +40,11 @@ public class MainActivity extends AppCompatActivity {
     private StudyState studyState = StudyState.NOT_STUDYING;
     public Calendar studyStartTime = null;
 
+    DatabaseAdapter dbAdapter;
+    SimpleCursorAdapter dataAdapter;
+
+    public final String dbDateFormat = "MM/dd/yyyy HH:mm:ss";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +53,44 @@ public class MainActivity extends AppCompatActivity {
         // Start the permissions activity / ask the user for permissions
         Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
         startActivity(intent);
+
+        dbAdapter = new DatabaseAdapter(this);
+        dbAdapter.open();
+    }
+
+
+    public Calendar queryReadStartTime()
+    {
+        Cursor cursor = dbAdapter.getStartTime();
+
+        if (cursor.moveToLast()) {
+            String dtStart = cursor.getString(0); // "11/08/2013 08:48:10";
+            SimpleDateFormat format = new SimpleDateFormat(dbDateFormat);
+            try {
+                Date date = format.parse(dtStart);
+
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(date);
+
+                return calendar;
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            return null; // Error, there should be a start time!
+        }
+
+        return null;
+    }
+
+
+    public void queryWriteStartTime(Calendar startTime)
+    {
+        SimpleDateFormat format = new SimpleDateFormat(dbDateFormat);
+        String formatted = format.format(startTime.getTime());
+        dbAdapter.addStartTime(formatted);
     }
 
     /**
@@ -56,31 +103,31 @@ public class MainActivity extends AppCompatActivity {
         final TextView txtStudyTime = (TextView) findViewById(R.id.txtStudyTime);
         final Button btnStudy = (Button) findViewById(R.id.btnStudy);
 
-        // String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(btnClickTime);
-
         switch (studyState)
         {
             case STUDYING:
 
                 Log.d("g53ids", "Stop study session at " + btnClickTime.toString());
 
+                // Read start time from database
+                studyStartTime = queryReadStartTime();
+
                 long timeSpentInStudySession = btnClickTime.getTime().getTime() - studyStartTime.getTime().getTime();
 
                 // Tell user what time they started the study session
                 txtStudyTime.setText("Total study time: " + timeSpentInStudySession / 1000 + " seconds");
+//
+//                Calendar beginCal = Calendar.getInstance();
+//                beginCal.set(Calendar.DATE, 1);
+//                beginCal.set(Calendar.MONTH, 0);
+//                beginCal.set(Calendar.YEAR, 2012);
+//
+//                Calendar endCal = Calendar.getInstance();
+//                endCal.set(Calendar.DATE, 1);
+//                endCal.set(Calendar.MONTH, 0);
+//                endCal.set(Calendar.YEAR, 2016);
 
-                Calendar beginCal = Calendar.getInstance();
-                beginCal.set(Calendar.DATE, 1);
-                beginCal.set(Calendar.MONTH, 0);
-                beginCal.set(Calendar.YEAR, 2012);
-
-                Calendar endCal = Calendar.getInstance();
-                endCal.set(Calendar.DATE, 1);
-                endCal.set(Calendar.MONTH, 0);
-                endCal.set(Calendar.YEAR, 2016);
-
-
-                List<AppStats> appUsage = getAppUsage(beginCal, endCal); // getAppUsage(studyStartTime, btnClickTime);
+                List<AppStats> appUsage = getAppUsage(studyStartTime, btnClickTime); // getAppUsage(beginCal, endCal); //
 
                 if(appUsage != null) {
                     displayAppUsage(appUsage);
@@ -106,6 +153,9 @@ public class MainActivity extends AppCompatActivity {
 
                 // Tell user what time they started the study session
                 txtStudyTime.setText("Started " + btnClickTime.getTime().toString());
+
+                // Track start time in database
+                queryWriteStartTime(studyStartTime);
 
                 btnStudy.setText("End study");
 
