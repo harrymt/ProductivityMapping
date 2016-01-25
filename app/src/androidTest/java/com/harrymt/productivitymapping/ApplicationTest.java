@@ -1,4 +1,4 @@
-package com.harrymt.myapplication;
+package com.harrymt.productivitymapping;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

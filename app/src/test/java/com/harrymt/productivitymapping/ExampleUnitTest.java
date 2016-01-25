@@ -1,4 +1,4 @@
-package com.harrymt.myapplication;
+package com.harrymt.productivitymapping;
 
 import org.junit.Test;
 
