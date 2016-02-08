@@ -205,8 +205,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 .setWhen(sbnNotification.when)
                 .setContentIntent(sbnNotification.contentIntent)
                 .setSubText(sbnNotification.extras.getCharSequence(Notification.EXTRA_SUB_TEXT))
-                .setColor(sbnNotification.color)
-                .setCategory(sbnNotification.category)
                 .setContent(sbnNotification.contentView)
                 .setContentInfo(sbnNotification.extras.getCharSequence(Notification.EXTRA_INFO_TEXT))
                 .setContentTitle(sbn.getNotification().extras.getCharSequence(Notification.EXTRA_TITLE))
