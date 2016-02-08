@@ -318,6 +318,17 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         Log.d(TAG, "Showing app usage for " + apps.size());
     }
 
+    /**
+     * On 'New Zone' click.
+     * @param view
+     */
+    public void createNewZone(View view) {
+        // start set zone activity.
+        Intent setZoneActivityIntent = new Intent(this, ZoneEditActivity.class);
+        int REQUEST_CODE_SET_ZONE = 4;
+        startActivityForResult(setZoneActivityIntent, REQUEST_CODE_SET_ZONE);
+    }
+
     // Sort Hashmaps
     public static class MapUtil
     {
