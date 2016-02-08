@@ -8,6 +8,14 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="New Zone"
+        android:id="@+id/btnCreateNewZone"
+        android:onClick="createNewZone"/>
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="Create Notification"
         android:id="@+id/btnCreateNotify"
         android:onClick="sendNotification"/>
