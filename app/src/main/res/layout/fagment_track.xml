@@ -1,93 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout android:orientation="vertical"
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center">
+        android:text="Create Notification"
+        android:id="@+id/btnCreateNotify"
+        android:onClick="sendNotification"/>
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="List blocked Notifications"
+        android:id="@+id/btnListBlockedNotifications"
+        android:onClick="listBlockedNotifications"/>
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Create Notification"
-            android:id="@+id/btnCreateNotify"
-            android:onClick="sendNotification"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentStart="true" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Send blocked notifications"
+        android:id="@+id/btnSendNotifications"
+        android:onClick="sendBlockedNotifications" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="List blocked Notifications"
-            android:id="@+id/btnListBlockedNotifications"
-            android:onClick="listBlockedNotifications"
-            android:layout_below="@+id/btnSendNotifications"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true" />
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/etPackage"
+        android:text="com.harrymt.sendnotification,com.google.android.gm" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Send blocked notifications"
-            android:id="@+id/btnSendNotifications"
-            android:onClick="sendBlockedNotifications"
-            android:layout_below="@+id/btnCreateNotify"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true" />
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/etKeywords"
+        android:text="IMPORTANT"/>
 
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/etPackage"
-            android:layout_below="@+id/btnListBlockedNotifications"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:text="com.harrymt.sendnotification,com.google.android.gm" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start Study"
+        android:id="@+id/btnStartStudy"
+        android:onClick="startStudy" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Show App Usage"
+        android:id="@+id/btnShowAppUsage"
+        android:onClick="showAppUsage" />
 
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/etKeywords"
-            android:text="IMPORTANT"
-            android:layout_below="@+id/etPackage"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true" />
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:id="@+id/listView"/>
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Start Study"
-            android:id="@+id/btnStartStudy"
-            android:onClick="startStudy"
-            android:layout_below="@+id/etKeywords"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true" />
-
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Show App Usage"
-            android:id="@+id/btnShowAppUsage"
-            android:onClick="showAppUsage"
-            android:layout_below="@+id/btnStartStudy"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true" />
-
-
-        <ListView
-            android:layout_width="wrap_content"
-            android:layout_height="100dp"
-            android:id="@+id/listView"
-            android:layout_below="@+id/btnShowAppUsage"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true" />
-
-    </LinearLayout>
-
-</FrameLayout>
+</LinearLayout>

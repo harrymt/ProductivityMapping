@@ -1,6 +1,5 @@
 package com.harrymt.productivitymapping;
 
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.ComponentName;

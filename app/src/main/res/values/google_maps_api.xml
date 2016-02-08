@@ -1,0 +1,6 @@
+<resources>
+    <!--
+        Google Maps API key for project G53IDS
+    -->
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyDWDbas0KpqnnrJdN9C2AYC5_ukGBMOVwA</string>
+</resources>
