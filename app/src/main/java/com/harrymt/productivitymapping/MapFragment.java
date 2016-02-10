@@ -48,10 +48,12 @@ public class MapFragment extends Fragment {
     @Override
     public void onDestroy() {
         Log.d("g53ids", "MapFragment.onDestroy()");
+        super.onDestroy();
     }
 
     @Override
     public void onPause() {
         Log.d("g53ids", "MapFragment.onPause()");
+        super.onPause();
     }
 }
