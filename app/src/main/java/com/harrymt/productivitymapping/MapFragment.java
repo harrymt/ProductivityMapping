@@ -26,7 +26,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         Log.d("g53ids", "MapFragment.onCreateView()");
 
         View v = inflater.inflate(R.layout.fragment_map, container, false);
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map_map);
         mapFragment.getMapAsync(this);
         return v;
     }
@@ -44,13 +44,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         // Add a marker and move the camera.
         LatLng location = new LatLng(52.9487713,-1.17);
 
-
         mMap.addMarker(new MarkerOptions().position(new LatLng(52.9505425,-1.1706994)).title("Marker at home"));
         mMap.addMarker(new MarkerOptions().position(new LatLng(52.9205425,-1.1706994)).title("Marker at home"));
         mMap.addMarker(new MarkerOptions().position(new LatLng(-52.9105425,-1.1706994)).title("Marker at home"));
-
-
-
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
     }
