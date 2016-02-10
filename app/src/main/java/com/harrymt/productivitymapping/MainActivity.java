@@ -164,24 +164,24 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
     private ListView lv;
 
-    public void listBlockedNotifications(View v)
-    {
-        ArrayList<StatusBarNotification> notifications = binder.getBlockedNotifications();
-
-        // Should use a custom adapter, but we are just gonna make another array for now
-        ArrayList<String> notificationDescriptions = new ArrayList<>();
-        for (StatusBarNotification n : notifications) {
-            notificationDescriptions.add(n.getNotification().extras.getString("android.title") + " - " + n.getPackageName());
-        }
-
-        lv = (ListView) findViewById(R.id.listView);
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_list_item_1,
-                notificationDescriptions );
-
-        lv.setAdapter(arrayAdapter);
-    }
+//    public void listBlockedNotifications(View v)
+//    {
+//        ArrayList<StatusBarNotification> notifications = binder.getBlockedNotifications();
+//
+//        // Should use a custom adapter, but we are just gonna make another array for now
+//        ArrayList<String> notificationDescriptions = new ArrayList<>();
+//        for (StatusBarNotification n : notifications) {
+//            notificationDescriptions.add(n.getNotification().extras.getString("android.title") + " - " + n.getPackageName());
+//        }
+//
+//        lv = (ListView) findViewById(R.id.listView);
+//        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
+//                this,
+//                android.R.layout.simple_list_item_1,
+//                notificationDescriptions );
+//
+//        lv.setAdapter(arrayAdapter);
+//    }
 
     public void sendBlockedNotifications(View v)
     {
@@ -247,76 +247,76 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         }
     };
 
-    public void startStudy(View view)
-    {
-        EditText keywords = (EditText) findViewById(R.id.etKeywords);
-        EditText packages = (EditText) findViewById(R.id.etPackage);
-
-        if(ProjectSettings.STUDYING) {
-            // Stop study
-            Button btnStudy = (Button) view;
-            btnStudy.setText("Start study");
-
-            // Re-Enable Text views and buttons
-            findViewById(R.id.btnSendNotifications).setEnabled(true);
-            findViewById(R.id.btnListBlockedNotifications).setEnabled(true);
-            findViewById(R.id.etPackage).setEnabled(true);
-            findViewById(R.id.etKeywords).setEnabled(true);
-
-
-
-
-            ProjectSettings.STUDYING = false;
-        }
-        else
-        {
-            // Reset service stored data e.g. app usage
-            binder.resetAppUsage();
-            binder.resetBlockedNotifications();
-
-            // Start study!
-            Button btnStudy = (Button) view;
-            btnStudy.setText("Stop study");
-
-            // Assign text view values to project settings
-            String words = keywords.getText().toString();
-            ProjectSettings.KEYWORDS_TO_LET_THROUGH = words.split(",");
-
-            String pack = packages.getText().toString();
-            ProjectSettings.PACKAGES_TO_BLOCK = pack.split(",");
-
-            // Disable Text views and buttons
-            findViewById(R.id.btnSendNotifications).setEnabled(false);
-            findViewById(R.id.btnListBlockedNotifications).setEnabled(false);
-            findViewById(R.id.etPackage).setEnabled(false);
-            findViewById(R.id.etKeywords).setEnabled(false);
-
-
-            ProjectSettings.STUDYING = true;
-        }
-
-    }
-
-    public void showAppUsage(View view)
-    {
-
-        ArrayList<String> appDescriptions = new ArrayList<>();
-        Map<String, Long> apps = binder.getAllAppUsage();
-        apps = MapUtil.sortByValue(apps);
-        for (Map.Entry<String, Long> entry : apps.entrySet()) {
-            appDescriptions.add(entry.getKey() + " - " + entry.getValue() + "s");
-        }
-
-        lv = (ListView) findViewById(R.id.listView);
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_list_item_1,
-                appDescriptions );
-
-        lv.setAdapter(arrayAdapter);
-
-        Log.d(TAG, "Showing app usage for " + apps.size());
-    }
+//    public void startStudy(View view)
+//    {
+//        EditText keywords = (EditText) findViewById(R.id.etKeywords);
+//        EditText packages = (EditText) findViewById(R.id.etPackage);
+//
+//        if(ProjectSettings.STUDYING) {
+//            // Stop study
+//            Button btnStudy = (Button) view;
+//            btnStudy.setText("Start study");
+//
+//            // Re-Enable Text views and buttons
+//            findViewById(R.id.btnSendNotifications).setEnabled(true);
+//            findViewById(R.id.btnListBlockedNotifications).setEnabled(true);
+//            findViewById(R.id.etPackage).setEnabled(true);
+//            findViewById(R.id.etKeywords).setEnabled(true);
+//
+//
+//
+//
+//            ProjectSettings.STUDYING = false;
+//        }
+//        else
+//        {
+//            // Reset service stored data e.g. app usage
+//            binder.resetAppUsage();
+//            binder.resetBlockedNotifications();
+//
+//            // Start study!
+//            Button btnStudy = (Button) view;
+//            btnStudy.setText("Stop study");
+//
+//            // Assign text view values to project settings
+//            String words = keywords.getText().toString();
+//            ProjectSettings.KEYWORDS_TO_LET_THROUGH = words.split(",");
+//
+//            String pack = packages.getText().toString();
+//            ProjectSettings.PACKAGES_TO_BLOCK = pack.split(",");
+//
+//            // Disable Text views and buttons
+//            findViewById(R.id.btnSendNotifications).setEnabled(false);
+//            findViewById(R.id.btnListBlockedNotifications).setEnabled(false);
+//            findViewById(R.id.etPackage).setEnabled(false);
+//            findViewById(R.id.etKeywords).setEnabled(false);
+//
+//
+//            ProjectSettings.STUDYING = true;
+//        }
+//
+//    }
+//
+//    public void showAppUsage(View view)
+//    {
+//
+//        ArrayList<String> appDescriptions = new ArrayList<>();
+//        Map<String, Long> apps = binder.getAllAppUsage();
+//        apps = MapUtil.sortByValue(apps);
+//        for (Map.Entry<String, Long> entry : apps.entrySet()) {
+//            appDescriptions.add(entry.getKey() + " - " + entry.getValue() + "s");
+//        }
+//
+//        lv = (ListView) findViewById(R.id.listView);
+//        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
+//                this,
+//                android.R.layout.simple_list_item_1,
+//                appDescriptions );
+//
+//        lv.setAdapter(arrayAdapter);
+//
+//        Log.d(TAG, "Showing app usage for " + apps.size());
+//    }
 
     /**
      * On 'New Zone' click.
@@ -327,6 +327,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         Intent setZoneActivityIntent = new Intent(this, ZoneEditActivity.class);
         int REQUEST_CODE_SET_ZONE = 4;
         startActivityForResult(setZoneActivityIntent, REQUEST_CODE_SET_ZONE);
+    }
+
+    public void editZone(View view) {
     }
 
     // Sort Hashmaps
