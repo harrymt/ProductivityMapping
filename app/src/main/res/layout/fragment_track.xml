@@ -38,7 +38,8 @@
 
     <fragment
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/map"
+        class="com.google.android.gms.maps.SupportMapFragment"
+        android:id="@+id/map_track"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
