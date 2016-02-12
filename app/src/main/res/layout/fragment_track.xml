@@ -5,12 +5,12 @@
     android:layout_height="fill_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:layout_width="match_parent"
+    <DigitalClock
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="18:22"
-        android:gravity="center_horizontal" />
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:textSize="20sp"/>
 
     <TextView
         android:layout_width="match_parent"

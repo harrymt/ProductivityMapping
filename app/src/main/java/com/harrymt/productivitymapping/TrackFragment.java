@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.text.format.Time;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
 
 /**
  * Created by harrymt on 06/02/16.
@@ -30,7 +32,13 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback {
         View v = inflater.inflate(R.layout.fragment_track, container, false);
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map_track);
         mapFragment.getMapAsync(this);
+
         return v;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
@@ -38,7 +46,6 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback {
         mMap = googleMap;
 
         setZoneLatLngs();
-
         enableCurrentLocation();
     }
 
@@ -61,4 +68,7 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback {
             // Show rationale and request permission.
         }
     }
+
+
+
 }
