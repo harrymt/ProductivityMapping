@@ -18,6 +18,7 @@
         android:layout_marginTop="10dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Start study with..."
+        android:id="@+id/tvStudyStateText"
         android:gravity="center_horizontal" />
 
     <Button
@@ -32,9 +33,24 @@
         android:layout_height="wrap_content"
         android:text="Current Zone"
         android:id="@+id/btnCurrentZone"
-        android:onClick="startCurrentZone"
-        android:layout_marginBottom="10dp"/>
+        android:onClick="startCurrentZone"/>
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Force stop study"
+        android:id="@+id/btnForceStopStudy"
+        android:onClick="forceStopStudy"
+        android:enabled="false"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Zone Preferences"
+        android:id="@+id/btnEditZonePreferences"
+        android:onClick="editZonePreferences"
+        android:layout_marginBottom="10dp"
+        android:enabled="false"/>
 
     <fragment
         xmlns:android="http://schemas.android.com/apk/res/android"

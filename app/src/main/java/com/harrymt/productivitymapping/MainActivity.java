@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import android.app.ActionBar;
@@ -246,55 +247,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         }
     };
 
-//    public void startStudy(View view)
-//    {
-//        EditText keywords = (EditText) findViewById(R.id.etKeywords);
-//        EditText packages = (EditText) findViewById(R.id.etPackage);
-//
-//        if(ProjectSettings.STUDYING) {
-//            // Stop study
-//            Button btnStudy = (Button) view;
-//            btnStudy.setText("Start study");
-//
-//            // Re-Enable Text views and buttons
-//            findViewById(R.id.btnSendNotifications).setEnabled(true);
-//            findViewById(R.id.btnListBlockedNotifications).setEnabled(true);
-//            findViewById(R.id.etPackage).setEnabled(true);
-//            findViewById(R.id.etKeywords).setEnabled(true);
-//
-//
-//
-//
-//            ProjectSettings.STUDYING = false;
-//        }
-//        else
-//        {
-//            // Reset service stored data e.g. app usage
-//            binder.resetAppUsage();
-//            binder.resetBlockedNotifications();
-//
-//            // Start study!
-//            Button btnStudy = (Button) view;
-//            btnStudy.setText("Stop study");
-//
-//            // Assign text view values to project settings
-//            String words = keywords.getText().toString();
-//            ProjectSettings.KEYWORDS_TO_LET_THROUGH = words.split(",");
-//
-//            String pack = packages.getText().toString();
-//            ProjectSettings.PACKAGES_TO_BLOCK = pack.split(",");
-//
-//            // Disable Text views and buttons
-//            findViewById(R.id.btnSendNotifications).setEnabled(false);
-//            findViewById(R.id.btnListBlockedNotifications).setEnabled(false);
-//            findViewById(R.id.etPackage).setEnabled(false);
-//            findViewById(R.id.etKeywords).setEnabled(false);
-//
-//
-//            ProjectSettings.STUDYING = true;
-//        }
-//
-//    }
 //
 //    public void showAppUsage(View view)
 //    {
@@ -329,6 +281,68 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     }
 
     public void editZone(View view) {
+    }
+
+
+    private String[] getPackages() {
+        return new String[]{"com.harrymt.sendnotification", "com.google.android.gm"};
+    }
+
+    private String[] getKeywords() {
+        return new String[]{"IMPORTANT", "FAMILY"};
+    }
+
+    public void startCurrentZone(View view) {
+
+        // Enable study state
+        ProjectSettings.STUDYING = true;
+
+        // Reset service stored data e.g. app usage
+        binder.resetAppUsage();
+        binder.resetBlockedNotifications();
+
+        // Assign text view values to project settings
+        ProjectSettings.KEYWORDS_TO_LET_THROUGH = getKeywords();
+        ProjectSettings.PACKAGES_TO_BLOCK = getPackages();
+
+        TextView study = (TextView) findViewById(R.id.tvStudyStateText);
+        study.setText("Studying...");
+
+        Button createNewZone = (Button) findViewById(R.id.btnCreateNewZone);
+        createNewZone.setEnabled(false);
+        Button currentZone = (Button) findViewById(R.id.btnCurrentZone);
+        currentZone.setEnabled(false);
+
+        Button editZone = (Button) findViewById(R.id.btnEditZonePreferences);
+        editZone.setEnabled(true);
+        Button forceStopStudy = (Button) findViewById(R.id.btnForceStopStudy);
+        forceStopStudy.setEnabled(true);
+    }
+
+    public void forceStopStudy(View view) {
+        // Disable study state
+        ProjectSettings.STUDYING = false;
+
+        // Reset settings
+        ProjectSettings.KEYWORDS_TO_LET_THROUGH = null;
+        ProjectSettings.PACKAGES_TO_BLOCK = null;
+
+        // Store these!! TODO store me
+        binder.getAllAppUsage();
+        binder.getBlockedNotifications();
+
+        TextView study = (TextView) findViewById(R.id.tvStudyStateText);
+        study.setText("Start study with...");
+
+        Button createNewZone = (Button) findViewById(R.id.btnCreateNewZone);
+        createNewZone.setEnabled(true);
+        Button currentZone = (Button) findViewById(R.id.btnCurrentZone);
+        currentZone.setEnabled(true);
+
+        Button editZone = (Button) findViewById(R.id.btnEditZonePreferences);
+        editZone.setEnabled(false);
+        Button forceStopStudy = (Button) findViewById(R.id.btnForceStopStudy);
+        forceStopStudy.setEnabled(false);
     }
 
     // Sort Hashmaps
