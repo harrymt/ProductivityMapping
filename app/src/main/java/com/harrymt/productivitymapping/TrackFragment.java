@@ -52,43 +52,55 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback {
         enableCurrentLocation();
     }
 
-    private void setZoneLatLngs() {
-        // Add a marker and move the camera.
-        LatLng location = new LatLng(52.9487713,-1.17);
+    public Zone[] getZones() {
+        return new Zone[] {
+                new Zone(new LatLng(52.9487713,-1.17), 100.0),
+                new Zone(new LatLng(52.9205425,-1.17), 100.0),
+                new Zone(new LatLng(52.9417713,-1.17), 100.0),
+                new Zone(new LatLng(52.9387713,-1.17), 100.0)
+        };
+    }
 
-        mMap.addMarker(new MarkerOptions().position(new LatLng(52.9505425,-1.1706994)).title("Marker at home"));
-        mMap.addMarker(new MarkerOptions().position(new LatLng(52.9205425,-1.1706994)).title("Marker at home"));
-        mMap.addMarker(new MarkerOptions().position(new LatLng(-52.9105425, -1.1706994)).title("Marker at home"));
-        drawCircle(location);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+    private void setZoneLatLngs() {
+        Zone[] zones = getZones();
+        for(Zone zone : zones) {
+            drawCircle(zone);
+        }
+    }
+
+    class Zone {
+        LatLng coords;
+        double radiusInMeters;
+
+        public Zone(LatLng c, double r) {
+            coords = c;
+            radiusInMeters = r;
+        }
     }
 
     private void enableCurrentLocation() {
         if (ContextCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
+            // Move to curr location // mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
         } else {
             // Show rationale and request permission.
         }
     }
 
 
-
-
-    private void drawCircle(LatLng position) {
-        double radiusInMeters = 100.0;
+    private void drawCircle(Zone zone) {
         int strokeColor = 0xffff0000; //red outline
         int shadeColor = 0x44ff0000; //opaque red fill
         Circle mCircle;
 
         CircleOptions circleOptions = new CircleOptions()
-                .center(position)
-                .radius(radiusInMeters)
+                .center(zone.coords)
+                .radius(zone.radiusInMeters)
                 .fillColor(shadeColor)
                 .strokeColor(strokeColor)
                 .strokeWidth(8);
         mCircle = mMap.addCircle(circleOptions);
-
     }
 
     private void drawMarkerWithCircle(LatLng position) {
