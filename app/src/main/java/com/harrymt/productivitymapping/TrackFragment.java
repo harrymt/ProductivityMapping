@@ -14,7 +14,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 
@@ -55,8 +58,8 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback {
 
         mMap.addMarker(new MarkerOptions().position(new LatLng(52.9505425,-1.1706994)).title("Marker at home"));
         mMap.addMarker(new MarkerOptions().position(new LatLng(52.9205425,-1.1706994)).title("Marker at home"));
-        mMap.addMarker(new MarkerOptions().position(new LatLng(-52.9105425,-1.1706994)).title("Marker at home"));
-
+        mMap.addMarker(new MarkerOptions().position(new LatLng(-52.9105425, -1.1706994)).title("Marker at home"));
+        drawCircle(location);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
     }
 
@@ -69,6 +72,44 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
+
+
+
+    private void drawCircle(LatLng position) {
+        double radiusInMeters = 100.0;
+        int strokeColor = 0xffff0000; //red outline
+        int shadeColor = 0x44ff0000; //opaque red fill
+        Circle mCircle;
+
+        CircleOptions circleOptions = new CircleOptions()
+                .center(position)
+                .radius(radiusInMeters)
+                .fillColor(shadeColor)
+                .strokeColor(strokeColor)
+                .strokeWidth(8);
+        mCircle = mMap.addCircle(circleOptions);
+
+    }
+
+    private void drawMarkerWithCircle(LatLng position) {
+        Circle mCircle;
+        Marker mMarker;
+
+        double radiusInMeters = 100.0;
+        int strokeColor = 0xffff0000; //red outline
+        int shadeColor = 0x44ff0000; //opaque red fill
+
+        CircleOptions circleOptions = new CircleOptions()
+                .center(position)
+                .radius(radiusInMeters)
+                .fillColor(shadeColor)
+                .strokeColor(strokeColor)
+                .strokeWidth(8);
+        mCircle = mMap.addCircle(circleOptions);
+
+        MarkerOptions markerOptions = new MarkerOptions().position(position);
+        mMarker = mMap.addMarker(markerOptions);
+    }
 
 
 }
