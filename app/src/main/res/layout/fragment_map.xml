@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Zone: Hallward Library"
+        android:text="Zone: My house"
         android:gravity="center_horizontal" />
 
     <TextView
@@ -32,6 +32,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Zone specifc stats. # apps blocked, # notifications blocked, Notification preferences: xyz. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enimlaborum."/>
+        android:text="Zone specifc stats. # apps blocked, # notifications blocked, Notification preferences: xyz. "/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Zone preferences: Keywords(IMPORTANT), APPS(facebook, google.calendar)"/>
 
 </LinearLayout>
