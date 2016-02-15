@@ -269,6 +269,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 //        Log.d(TAG, "Showing app usage for " + apps.size());
 //    }
 
+
+    int REQUEST_CODE_SET_ZONE = 4;
+
     /**
      * On 'New Zone' click.
      * @param view
@@ -276,8 +279,27 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     public void createNewZone(View view) {
         // start set zone activity.
         Intent setZoneActivityIntent = new Intent(this, ZoneEditActivity.class);
-        int REQUEST_CODE_SET_ZONE = 4;
+
         startActivityForResult(setZoneActivityIntent, REQUEST_CODE_SET_ZONE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == REQUEST_CODE_SET_ZONE) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                // The user picked a contact.
+                // The Intent's data Uri identifies which contact was selected.
+                Bundle b = data.getExtras();
+                Zone z = b.getParcelable("zone");
+
+
+                Toast.makeText(MainActivity.this, "Zone data: packages(" + b.getString("packages") + "), keywords(" + b.getString("keywords") + "), r(" + z.radiusInMeters + "), LatLng(" + z.lat + "," + z.lng + ")", Toast.LENGTH_SHORT).show();
+
+                // Do something with the contact here (bigger example below)
+            }
+        }
     }
 
     public void editZone(View view) {

@@ -8,11 +8,14 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -28,7 +31,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMarkerDragListener, GoogleMap.OnMapLongClickListener, OnMapReadyCallback  {
+public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMarkerDragListener,
+        OnMapReadyCallback  {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,38 +40,52 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
         setContentView(R.layout.activity_zone_edit);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-
     }
+
+    int REQUEST_CODE_SET_ZONE_PREFS = 3212;
 
     public void setZoneCoords(View view) {
-        int RESULT_CODE = 123;
-        Intent zoneCoordinates = new Intent();
-        setResult(RESULT_CODE, zoneCoordinates);
-        finish();
+        Intent setZonePrefsActivityIntent = new Intent(this, ZonePreferenceEdit.class);
+        startActivityForResult(setZonePrefsActivityIntent, REQUEST_CODE_SET_ZONE_PREFS);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == REQUEST_CODE_SET_ZONE_PREFS) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+
+                String keywords = data.getStringExtra("keywords");
+                String packages = data.getStringExtra("packages");
+
+                Intent zoneCoordinates = new Intent();
+                LatLng pos = currentCircle.centerMarker.getPosition();
+                Zone z = new Zone(pos.latitude, pos.longitude, currentCircle.radius);
+                Bundle zone = new Bundle();
+                zone.putParcelable("zone", z);
+                zoneCoordinates.putExtras(zone);
+                zoneCoordinates.putExtra("keywords", keywords);
+                zoneCoordinates.putExtra("packages", packages);
+                setResult(RESULT_OK, zoneCoordinates);
+                finish(); // Leave
+            }
+        }
+    }
+
+
 
     private GoogleMap mMap;
 
     @Override
     public void onMapReady(GoogleMap map) {
         mMap = map;
-
-        // Override the default content description on the view, for accessibility mode.
-        map.setContentDescription("wut");
-
         mMap.setOnMarkerDragListener(this);
-        mMap.setOnMapLongClickListener(this);
-        mMap.getUiSettings().setIndoorLevelPickerEnabled(true);
-        mMap.setBuildingsEnabled(true);
-        mMap.setIndoorEnabled(true);
-        mMap.getUiSettings().setZoomControlsEnabled(true);
-        mMap.getUiSettings().setIndoorLevelPickerEnabled(true);
 
        final LatLng CURRENT_LOCATION = getCurrLocation();
 
         DraggableCircle circle = new DraggableCircle(CURRENT_LOCATION, DEFAULT_RADIUS);
-        mCircles.add(circle);
+        currentCircle = circle;
 
         setZoneLatLngs();
         enableCurrentLocation();
@@ -96,11 +114,7 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
     }
 
     private void onMarkerMoved(Marker marker) {
-        for (DraggableCircle draggableCircle : mCircles) {
-            if (draggableCircle.onMarkerMoved(marker)) {
-                break;
-            }
-        }
+        currentCircle.onMarkerMoved(marker);
     }
 
     private void enableCurrentLocation() {
@@ -110,11 +124,12 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
             // Move to curr location // mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
         } else {
             // Show rationale and request permission.
+
         }
     }
 
-    @Override
-    public void onMapLongClick(LatLng point) {
+    //@Override
+    //public void onMapLongClick(LatLng point) {
 //        // We know the center, let's place the outline at a point 3/4 along the view.
 //        View view = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
 //                .getView();
@@ -124,14 +139,14 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
 //        // ok create it
 //        DraggableCircle circle = new DraggableCircle(point, radiusLatLng);
 //        mCircles.add(circle);
-    }
+  //  }
 
     public Zone[] getZones() {
         return new Zone[] {
-                new Zone(new LatLng(52.9487713,-1.17), 100.0),
-                new Zone(new LatLng(52.9205425,-1.17), 100.0),
-                new Zone(new LatLng(52.9417713,-1.17), 100.0),
-                new Zone(new LatLng(52.9387713,-1.17), 100.0)
+                new Zone(52.9536037,-1.1890631, 10.0),
+                new Zone(52.9205425,-1.17, 100.0),
+                new Zone(52.9417713,-1.17, 100.0),
+                new Zone(52.9387713,-1.17, 100.0)
         };
     }
 
@@ -142,38 +157,33 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
         }
     }
 
-    class Zone {
-        LatLng coords;
-        double radiusInMeters;
-
-        public Zone(LatLng c, double r) {
-            coords = c;
-            radiusInMeters = r;
-        }
-    }
-
-
     private void drawCircle(Zone zone) {
         int strokeColor = 0xffff0000; //red outline
         int shadeColor = 0x44ff0000; //opaque red fill
         Circle mCircle;
 
         CircleOptions circleOptions = new CircleOptions()
-                .center(zone.coords)
+                .center(new LatLng(zone.lat, zone.lng))
                 .radius(zone.radiusInMeters)
                 .fillColor(shadeColor)
                 .strokeColor(strokeColor)
                 .strokeWidth(8);
         mCircle = mMap.addCircle(circleOptions);
+
+        Marker m = mMap.addMarker(new MarkerOptions()
+                .title("Hallward Library")
+                .snippet("75% productivity")
+                .position(new LatLng(zone.lat, zone.lng)));
+
+        // hard to show every info window...
+        m.showInfoWindow();
     }
-
-
 
     private static final double DEFAULT_RADIUS = 5;
 
     public static final double RADIUS_OF_EARTH_METERS = 6371009;
 
-    private List<DraggableCircle> mCircles = new ArrayList<DraggableCircle>(1);
+    private DraggableCircle currentCircle;
 
     private class DraggableCircle {
 
@@ -195,12 +205,14 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
                     .draggable(true)
                     .icon(BitmapDescriptorFactory.defaultMarker(
                             BitmapDescriptorFactory.HUE_AZURE)));
+
             circle = mMap.addCircle(new CircleOptions()
                     .center(center)
                     .radius(radius)
                     .strokeWidth(2f)
                     .strokeColor(Color.BLUE)
-                    .fillColor(Color.HSVToColor(100, new float[]{10,1,1})));
+                    .fillColor(Color.HSVToColor(100, new float[]{10, 1, 1})));
+
         }
 
         public DraggableCircle(LatLng center, LatLng radiusLatLng) {
@@ -219,6 +231,7 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
                     .strokeWidth(2f)
                     .strokeColor(Color.BLUE)
                     .fillColor(Color.HSVToColor(100, new float[]{10,1,1})));
+            radiusMarker.showInfoWindow();
         }
 
         public boolean onMarkerMoved(Marker marker) {

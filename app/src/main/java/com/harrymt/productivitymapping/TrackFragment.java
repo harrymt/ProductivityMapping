@@ -5,12 +5,11 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.text.format.Time;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -40,6 +39,12 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        Log.d("g53ids", "TrackFragment.onPause()");
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
     }
@@ -48,16 +53,17 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        mMap.setIndoorEnabled(false);
         setZoneLatLngs();
         enableCurrentLocation();
     }
 
     public Zone[] getZones() {
         return new Zone[] {
-                new Zone(new LatLng(52.9487713,-1.17), 100.0),
-                new Zone(new LatLng(52.9205425,-1.17), 100.0),
-                new Zone(new LatLng(52.9417713,-1.17), 100.0),
-                new Zone(new LatLng(52.9387713,-1.17), 100.0)
+                new Zone(52.9536037,-1.1890631, 10.0),
+                new Zone(52.9205425,-1.17, 100.0),
+                new Zone(52.9417713,-1.17, 100.0),
+                new Zone(52.9387713,-1.17, 100.0)
         };
     }
 
@@ -65,16 +71,6 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback {
         Zone[] zones = getZones();
         for(Zone zone : zones) {
             drawCircle(zone);
-        }
-    }
-
-    class Zone {
-        LatLng coords;
-        double radiusInMeters;
-
-        public Zone(LatLng c, double r) {
-            coords = c;
-            radiusInMeters = r;
         }
     }
 
@@ -88,40 +84,17 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-
     private void drawCircle(Zone zone) {
         int strokeColor = 0xffff0000; //red outline
         int shadeColor = 0x44ff0000; //opaque red fill
         Circle mCircle;
 
         CircleOptions circleOptions = new CircleOptions()
-                .center(zone.coords)
+                .center(new LatLng(zone.lat, zone.lng))
                 .radius(zone.radiusInMeters)
                 .fillColor(shadeColor)
                 .strokeColor(strokeColor)
                 .strokeWidth(8);
         mCircle = mMap.addCircle(circleOptions);
     }
-
-    private void drawMarkerWithCircle(LatLng position) {
-        Circle mCircle;
-        Marker mMarker;
-
-        double radiusInMeters = 100.0;
-        int strokeColor = 0xffff0000; //red outline
-        int shadeColor = 0x44ff0000; //opaque red fill
-
-        CircleOptions circleOptions = new CircleOptions()
-                .center(position)
-                .radius(radiusInMeters)
-                .fillColor(shadeColor)
-                .strokeColor(strokeColor)
-                .strokeWidth(8);
-        mCircle = mMap.addCircle(circleOptions);
-
-        MarkerOptions markerOptions = new MarkerOptions().position(position);
-        mMarker = mMap.addMarker(markerOptions);
-    }
-
-
 }

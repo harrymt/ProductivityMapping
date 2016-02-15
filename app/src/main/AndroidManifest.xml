@@ -68,6 +68,7 @@
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE" />
 
         <activity android:name=".ZoneEditActivity" />
+        <activity android:name=".ZonePreferenceEdit"></activity>
     </application>
 
 </manifest>
