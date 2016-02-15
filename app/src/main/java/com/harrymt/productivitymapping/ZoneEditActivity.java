@@ -1,21 +1,14 @@
 package com.harrymt.productivitymapping;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.View;
-import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.widget.SeekBar;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -28,8 +21,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMarkerDragListener,
         OnMapReadyCallback  {

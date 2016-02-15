@@ -13,11 +13,8 @@ import android.view.ViewGroup;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 
 /**
@@ -87,7 +84,6 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback {
     private void drawCircle(Zone zone) {
         int strokeColor = 0xffff0000; //red outline
         int shadeColor = 0x44ff0000; //opaque red fill
-        Circle mCircle;
 
         CircleOptions circleOptions = new CircleOptions()
                 .center(new LatLng(zone.lat, zone.lng))
@@ -95,6 +91,6 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback {
                 .fillColor(shadeColor)
                 .strokeColor(strokeColor)
                 .strokeWidth(8);
-        mCircle = mMap.addCircle(circleOptions);
+        mMap.addCircle(circleOptions);
     }
 }
