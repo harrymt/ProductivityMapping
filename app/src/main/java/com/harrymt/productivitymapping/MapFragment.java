@@ -18,7 +18,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 
-public class MapFragment extends Fragment implements OnMapReadyCallback {
+public class MapFragment extends Fragment  implements OnMapReadyCallback {
 
     private GoogleMap mMap;
 
@@ -35,6 +35,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        mMap.setIndoorEnabled(false);
         setZoneLatLngs();
 
         enableCurrentLocation();
