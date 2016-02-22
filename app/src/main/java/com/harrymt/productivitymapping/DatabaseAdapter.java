@@ -4,12 +4,17 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.service.notification.StatusBarNotification;
 import android.util.Log;
 
 public class DatabaseAdapter
 {
+    private static final String TAG = "g53ids"; // DatabaseAdapter.class.getSimpleName();
+
+    // https://developer.android.com/training/basics/data-storage/databases.html
+    // TODO move to a contract and add implement the BaseColumns class.
+
     private static final String ZONE_TABLE = "zoneTbl";
         public static final String ZONE_KEY_ID = "id";
         public static final String ZONE_KEY_X = "x";
@@ -55,23 +60,27 @@ public class DatabaseAdapter
 
     private static final String APPUSAGE_TABLE = "appUsageTbl";
         public static final String APPUSAGE_KEY_ID = "id";
-        public static final String APPUSAGE_KEY_APP_NAME = "appName";
-        public static final String APPUSAGE_KEY_TIME_SPENT = "timeSpent";
+        public static final String APPUSAGE_KEY_SESSION_ID = "sessionId";
+        public static final String APPUSAGE_KEY_APP_PACKAGE_NAME = "packageName";
+        public static final String APPUSAGE_KEY_TIME_SPENT = "timeSpent"; // in seconds
         public static final String APPUSAGE_KEY_CATEGORY = "category";
+
         // TODO add other appCharacteristics
 
     private static final String SQLITE_CREATE_TABLE_APPUSAGE =
         "CREATE TABLE if not exists " + APPUSAGE_TABLE + " (" +
             APPUSAGE_KEY_ID + " INTEGER PRIMARY KEY autoincrement," +
-            APPUSAGE_KEY_APP_NAME + " TEXT, " +
+            APPUSAGE_KEY_SESSION_ID + " INTEGER, " +
+            APPUSAGE_KEY_APP_PACKAGE_NAME + " TEXT, " +
             APPUSAGE_KEY_TIME_SPENT + " INTEGER, " +
             APPUSAGE_KEY_CATEGORY + " TEXT " +
         ");";
 
 
     private static final String NOTIFICATION_TABLE = "notificationTbl";
-        public static final String NOTIFICATION_KEY_ID = "id";
-        public static final String NOTIFICATION_KEY_TITLE = "title";
+    public static final String NOTIFICATION_KEY_ID = "id";
+    public static final String NOTIFICATION_KEY_SESSION_ID = "sessionId";
+        public static final String NOTIFICATION_KEY_PACKAGE = "package";
         // TODO add other notification characteristics
         // public static final String NOTIFICATION_KEY_ICON = "icon";
 
@@ -79,7 +88,8 @@ public class DatabaseAdapter
     private static final String SQLITE_CREATE_TABLE_NOTIFICATION =
         "CREATE TABLE if not exists " + NOTIFICATION_TABLE + " (" +
             NOTIFICATION_KEY_ID + " INTEGER PRIMARY KEY autoincrement," +
-            NOTIFICATION_KEY_TITLE + " TEXT " +
+            NOTIFICATION_KEY_SESSION_ID + " INTEGER, " +
+            NOTIFICATION_KEY_PACKAGE + " TEXT " +
         ");";
 
 
@@ -90,12 +100,12 @@ public class DatabaseAdapter
     private static class DatabaseHelper extends SQLiteOpenHelper {
 
         public DatabaseHelper(Context context) {
-            super(context, "martinDB", null, 5);
+            super(context, "userData", null, 7);
         }
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            Log.d("g54mdp", "onCreate");
+            Log.d("g53ids", "onCreate");
             // Create tables
             db.execSQL(SQLITE_CREATE_TABLE_ZONE);
             db.execSQL(SQLITE_CREATE_TABLE_SESSION);
@@ -105,10 +115,12 @@ public class DatabaseAdapter
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            db.execSQL("DROP TABLE IF EXISTS " + SQLITE_CREATE_TABLE_ZONE);
-            db.execSQL("DROP TABLE IF EXISTS " + SQLITE_CREATE_TABLE_SESSION);
-            db.execSQL("DROP TABLE IF EXISTS " + SQLITE_CREATE_TABLE_APPUSAGE);
-            db.execSQL("DROP TABLE IF EXISTS " + SQLITE_CREATE_TABLE_NOTIFICATION);
+            Log.d("g53ids", "onUpgrade() - UPGRADING DATABASE FROM: " + oldVersion + " TO NEWVERSION: " + newVersion);
+
+            db.execSQL("DROP TABLE IF EXISTS " + ZONE_TABLE);
+            db.execSQL("DROP TABLE IF EXISTS " + SESSION_TABLE);
+            db.execSQL("DROP TABLE IF EXISTS " + APPUSAGE_TABLE);
+            db.execSQL("DROP TABLE IF EXISTS " + NOTIFICATION_TABLE);
             onCreate(db);
         }
     }
@@ -134,17 +146,69 @@ public class DatabaseAdapter
     /** ------ Database interactions ------ **/
 
 
-    public void exampleInsertName(String name)
+    /**
+     * Track the notification in a new Notification Table row,
+     * based on the current session id.
+     *
+     * @param n The notification to save.
+     */
+    public void writeNotification(StatusBarNotification n)
     {
-        db.execSQL("INSERT INTO " + ZONE_TABLE + " (" + ZONE_KEY_NAME + ") " +
-                "VALUES " +
-                "('" + name + "');");
+        // Save the notification based on the current session
+        db.execSQL("INSERT INTO " + NOTIFICATION_TABLE + " ("
+                + NOTIFICATION_KEY_PACKAGE + ","
+                + NOTIFICATION_KEY_SESSION_ID
+                + ") "
+                + "VALUES "
+                + "('" + n.getPackageName() + "', " + ProjectStates.SESSION_ID  + ");");
     }
 
-    public Cursor fetchNameAsCursor()
+
+    /**
+     * Track the app usage by writing a new row to
+     * the Notification Table based on the session id.
+     *
+     * @param packageName Name of app's package.
+     * @param timeSpentInSeconds Length of time spent in app.
+     */
+    public void writeAppUsage(String packageName, long timeSpentInSeconds)
     {
-        Cursor c = db.query(ZONE_TABLE, new String[] { ZONE_KEY_ID, ZONE_KEY_NAME }, null, null, null, null, null);
-        return c;
+        Log.d("g53ids", "Writing app usage!");
+
+        // Save the app usage based on the current session
+        db.execSQL("INSERT INTO " + APPUSAGE_TABLE + " ("
+                + APPUSAGE_KEY_APP_PACKAGE_NAME + ", "
+                + APPUSAGE_KEY_TIME_SPENT + ", "
+                + APPUSAGE_KEY_SESSION_ID
+                + ") "
+                + "VALUES "
+                + "('" + packageName + "', " + timeSpentInSeconds + ", " + ProjectStates.SESSION_ID + ");");
     }
 
+    /**
+     * Starts a new session by creating a new row in the Session Table,
+     * and getting that new Session ID.
+     */
+    public void startNewSession(Integer zoneID, long startTime) {
+
+        // Create a new Row in the Session Table
+        db.execSQL("INSERT INTO " + SESSION_TABLE + " ("
+                + SESSION_KEY_ZONE_ID + ","
+                + SESSION_KEY_START_TIME + ""
+                + ") "
+                + "VALUES "
+                + "(" + zoneID + ", " + startTime + ");");
+
+        // Set the project state session ID
+        ProjectStates.SESSION_ID = getLastSessionId();
+    }
+
+    private Integer getLastSessionId()
+    {
+        Cursor c = db.query(SESSION_TABLE, new String[] { SESSION_KEY_ID }, null, null, null, null, null);
+        c.moveToLast();
+        Integer sessionId = c.getInt(0);
+        c.close();
+        return sessionId;
+    }
 }

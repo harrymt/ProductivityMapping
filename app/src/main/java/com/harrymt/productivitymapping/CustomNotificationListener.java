@@ -22,8 +22,25 @@ public class CustomNotificationListener extends android.service.notification.Not
             // Block notification from being posted to the phone
             cancelNotification(notification.getKey());
 
+            // Save notification to database
+            DatabaseAdapter dbAdapter;
+            dbAdapter = new DatabaseAdapter(this); // Open and prepare the database
+            dbAdapter.open();
+            dbAdapter.writeNotification(notification);
+            dbAdapter.writeAppUsage("test", 1);
+            dbAdapter.close();
+
+
+            // Save app usage to database
+            DatabaseAdapter dbAdapter2;
+            dbAdapter2 = new DatabaseAdapter(this);
+            dbAdapter2.open(); // Open and prepare the database, first time call means you create db
+            dbAdapter2.writeAppUsage("test", 1);
+            dbAdapter2.close();
+
+            // Dont actually *NEED* to broadcast the notification posted!
             // Broadcast that we received a block notification
-            Intent intent = new Intent(ProjectSettings.Broadcasts.NOTIFICATION_POSTED);
+            Intent intent = new Intent(ProjectStates.Broadcasts.NOTIFICATION_POSTED);
             intent.putExtra("notification", notification);
             LocalBroadcastManager.getInstance(CustomNotificationListener.this).sendBroadcast(intent);
 
@@ -88,22 +105,23 @@ public class CustomNotificationListener extends android.service.notification.Not
     /**
      * Decides if we should block the notification.
      *
-     * @param sbn Notificiation
+     * @param sbn notification
      * @return True if we should block the notification, false if not.
      */
     public boolean shouldWeBlockThisNotification(StatusBarNotification sbn) {
-        if (!ProjectSettings.STUDYING) {
+        if (!ProjectStates.STUDYING) {
             return false;
         }
 
         NotificationParts notification = new NotificationParts(sbn.getNotification(), sbn.getPackageName());
 
         // If a keyword matches, let it through
-        if (notification.containsKeywords(ProjectSettings.KEYWORDS_TO_LET_THROUGH)) {
+        if (notification.containsKeywords(ProjectStates.KEYWORDS_TO_LET_THROUGH)) {
+            // TODO keep track of # notifications received but not blocked based on keywords
             return false;
         }
 
         // If it matches the package, block it
-        return notification.containsPackage(ProjectSettings.PACKAGES_TO_BLOCK);
+        return notification.containsPackage(ProjectStates.PACKAGES_TO_BLOCK);
     }
 }

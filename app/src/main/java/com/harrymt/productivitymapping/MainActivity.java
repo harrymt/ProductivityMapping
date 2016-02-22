@@ -15,7 +15,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,18 +62,10 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     }
 
 
-    DatabaseAdapter dbAdapter;
-    SimpleCursorAdapter dataAdapter;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        // Open and prepare the database
-        dbAdapter = new DatabaseAdapter(this);
-        dbAdapter.open();
-
 
         // Create the adapter that will return a fragment for each of the three primary sections
         // of the app.
@@ -318,18 +309,32 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     }
 
     public void startCurrentZone(View view) {
-
         // Enable study state
-        ProjectSettings.STUDYING = true;
+        ProjectStates.STUDYING = true;
+
+
+        // Get the current Zone ID we are in!
+        Integer zoneID = 1; // getZoneID()
+        long startTime = System.currentTimeMillis() / 1000;// get current EPOCH time
+
+        // Start a new session
+        DatabaseAdapter dbAdapter;
+        dbAdapter = new DatabaseAdapter(this); // Prepare the database
+        dbAdapter.open(); // Open it for writing (if this is the first time its called, ten
+        dbAdapter.startNewSession(zoneID, startTime); // Start new session with this zone zone
+        dbAdapter.close();
+
+
+        // Assign text view values to project settings
+        ProjectStates.KEYWORDS_TO_LET_THROUGH = getKeywords();
+        ProjectStates.PACKAGES_TO_BLOCK = getPackages();
 
         // Reset service stored data e.g. app usage
+        // TODO dont do this
         binder.resetAppUsage();
         binder.resetBlockedNotifications();
 
-        // Assign text view values to project settings
-        ProjectSettings.KEYWORDS_TO_LET_THROUGH = getKeywords();
-        ProjectSettings.PACKAGES_TO_BLOCK = getPackages();
-
+        // Set UI
         TextView study = (TextView) findViewById(R.id.tvStudyStateText);
         study.setText("Studying...");
 
@@ -346,11 +351,11 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
     public void forceStopStudy(View view) {
         // Disable study state
-        ProjectSettings.STUDYING = false;
+        ProjectStates.STUDYING = false;
 
         // Reset settings
-        ProjectSettings.KEYWORDS_TO_LET_THROUGH = null;
-        ProjectSettings.PACKAGES_TO_BLOCK = null;
+        ProjectStates.KEYWORDS_TO_LET_THROUGH = null;
+        ProjectStates.PACKAGES_TO_BLOCK = null;
 
         // Store these!! TODO store me
         binder.getAllAppUsage();
