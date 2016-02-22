@@ -3,9 +3,11 @@ package com.harrymt.productivitymapping;
 /**
  * Created by harrymt on 23/11/15.
  */
-public class ProjectSettings
+public class ProjectStates
 {
     public static boolean STUDYING = false;
+
+    public static Integer SESSION_ID = 0;
 
     // App packages to block, e.g. calendar reminders, or google mail
     // "com.google.android.gm"; // google mail (gm), (calendar)
