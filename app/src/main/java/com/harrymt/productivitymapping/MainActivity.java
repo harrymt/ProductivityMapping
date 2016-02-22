@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -62,10 +63,17 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     }
 
 
+    DatabaseAdapter dbAdapter;
+    SimpleCursorAdapter dataAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Open and prepare the database
+        dbAdapter = new DatabaseAdapter(this);
+        dbAdapter.open();
 
 
         // Create the adapter that will return a fragment for each of the three primary sections

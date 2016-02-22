@@ -10,7 +10,6 @@ import android.util.Log;
 
 public class DatabaseAdapter
 {
-
     private static final String ZONE_TABLE = "zoneTbl";
         public static final String ZONE_KEY_ID = "id";
         public static final String ZONE_KEY_X = "x";
@@ -32,7 +31,7 @@ public class DatabaseAdapter
             ZONE_KEY_NAME + " TEXT, " +
             ZONE_KEY_AUTO_START_STOP + " INTEGER, " +
             ZONE_KEY_BLOCKING_APPS + " INTEGER, " +
-            ZONE_KEY_KEYWORDS + " TEXT, " +
+            ZONE_KEY_KEYWORDS + " TEXT " +
         ");";
 
 
@@ -50,7 +49,7 @@ public class DatabaseAdapter
             SESSION_KEY_ZONE_ID + " INTEGER, " +
             SESSION_KEY_START_TIME + " INTEGER, " +
             SESSION_KEY_STOP_TIME + " INTEGER, " +
-            SESSION_KEY_PRODUCTIVITY_PERCENTAGE + " REAL, " +
+            SESSION_KEY_PRODUCTIVITY_PERCENTAGE + " REAL " +
         ");";
 
 
@@ -66,7 +65,7 @@ public class DatabaseAdapter
             APPUSAGE_KEY_ID + " INTEGER PRIMARY KEY autoincrement," +
             APPUSAGE_KEY_APP_NAME + " TEXT, " +
             APPUSAGE_KEY_TIME_SPENT + " INTEGER, " +
-            APPUSAGE_KEY_CATEGORY + " TEXT, " +
+            APPUSAGE_KEY_CATEGORY + " TEXT " +
         ");";
 
 
@@ -80,7 +79,7 @@ public class DatabaseAdapter
     private static final String SQLITE_CREATE_TABLE_NOTIFICATION =
         "CREATE TABLE if not exists " + NOTIFICATION_TABLE + " (" +
             NOTIFICATION_KEY_ID + " INTEGER PRIMARY KEY autoincrement," +
-            NOTIFICATION_KEY_TITLE + " TEXT, " +
+            NOTIFICATION_KEY_TITLE + " TEXT " +
         ");";
 
 
