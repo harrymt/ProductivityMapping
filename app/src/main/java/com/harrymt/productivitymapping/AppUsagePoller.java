@@ -8,21 +8,9 @@ import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.Toast;
 
-
 /**
- *
- * USEFUL LINKS:
- * ---
- * Start the Settings Activity, so they can toggle this
- * Home Screen > System Settings > Accessibility > Accessibility Services > Toast2 > Change from Off to On,
- *
- *
- * Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
- * startActivityForResult(intent, 0);
- *
- *
+ * Polls for app usage using the accessibility service.
  */
-
 public class AppUsagePoller extends AccessibilityService
 {
     public static String TAG = "g53ids";
@@ -42,11 +30,17 @@ public class AppUsagePoller extends AccessibilityService
     public void onServiceConnected() {
         super.onServiceConnected();
         Log.d(TAG, "onServiceConnected");
+
         Toast.makeText(getApplicationContext(), "Starting service", Toast.LENGTH_SHORT).show();
         packageLastOpened = "com.started.service"; // Set initial package so we know
         timeLastOpened = System.nanoTime() / 1000000; // Set now as the time
     }
 
+    /**
+     * Triggered whenever something happens in the K.
+     *
+     * @param newEvent thing that happened.
+     */
     @Override
     public void onAccessibilityEvent(AccessibilityEvent newEvent)
     {
@@ -76,14 +70,14 @@ public class AppUsagePoller extends AccessibilityService
     @Override
     public void onInterrupt()
     {
-        Log.d(TAG, "onInterrupt");
+        Log.d(TAG, "onInterrupt()");
         Toast.makeText(getApplicationContext(), "onInterrupt", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public boolean onUnbind(Intent intent)
     {
-        Log.d(TAG, "onUnbind of service");
+        Log.d(TAG, "onUnbind() of service");
         return super.onUnbind(intent);
     }
 }

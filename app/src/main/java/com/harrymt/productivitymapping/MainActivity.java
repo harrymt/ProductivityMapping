@@ -138,13 +138,10 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     protected void onDestroy()
     {
         super.onDestroy();
-        // UNBIND SERVICE ON DESTORY
+
+        // UNBIND SERVICE ON DESTROY
         unbindService(this.notificationHandlerConnection);
     }
-
-
-
-
 
 
     // Notification Handler Service intent

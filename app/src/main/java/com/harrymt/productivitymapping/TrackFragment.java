@@ -18,7 +18,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 
 /**
- * Created by harrymt on 06/02/16.
+ * Created by harrymt on 06/02/16
  */
 public class TrackFragment extends Fragment implements OnMapReadyCallback {
 

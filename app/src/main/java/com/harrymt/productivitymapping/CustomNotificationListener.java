@@ -6,6 +6,10 @@ import android.service.notification.StatusBarNotification;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+/**
+ * Listens for notifications using the notification service.
+ *
+ */
 public class CustomNotificationListener extends android.service.notification.NotificationListenerService {
     private static final String TAG = "NotificationListener";
 
@@ -14,6 +18,7 @@ public class CustomNotificationListener extends android.service.notification.Not
         Log.d(TAG, "onNotificationPosted() " + notification.getNotification().extras.toString());
 
         if (shouldWeBlockThisNotification(notification)) {
+
             // Block notification from being posted to the phone
             cancelNotification(notification.getKey());
 
@@ -80,6 +85,12 @@ public class CustomNotificationListener extends android.service.notification.Not
         }
     }
 
+    /**
+     * Decides if we should block the notification.
+     *
+     * @param sbn Notificiation
+     * @return True if we should block the notification, false if not.
+     */
     public boolean shouldWeBlockThisNotification(StatusBarNotification sbn) {
         if (!ProjectSettings.STUDYING) {
             return false;

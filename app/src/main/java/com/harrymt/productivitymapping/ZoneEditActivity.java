@@ -64,8 +64,6 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
         }
     }
 
-
-
     private GoogleMap mMap;
 
     @Override
@@ -118,19 +116,6 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
 
         }
     }
-
-    //@Override
-    //public void onMapLongClick(LatLng point) {
-//        // We know the center, let's place the outline at a point 3/4 along the view.
-//        View view = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
-//                .getView();
-//        LatLng radiusLatLng = mMap.getProjection().fromScreenLocation(new Point(
-//                view.getHeight() * 3 / 4, view.getWidth() * 3 / 4));
-//
-//        // ok create it
-//        DraggableCircle circle = new DraggableCircle(point, radiusLatLng);
-//        mCircles.add(circle);
-  //  }
 
     public Zone[] getZones() {
         return new Zone[] {
@@ -203,7 +188,6 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
                     .strokeWidth(2f)
                     .strokeColor(Color.BLUE)
                     .fillColor(Color.HSVToColor(100, new float[]{10, 1, 1})));
-
         }
 
         public DraggableCircle(LatLng center, LatLng radiusLatLng) {

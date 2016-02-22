@@ -1,10 +1,7 @@
 package com.harrymt.productivitymapping;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,16 +42,6 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback {
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(52.9536037, -1.1890631), 18.0f));
     }
 
-//    private void setZoneLatLngs() {
-//        // Add a marker and move the camera.
-//        LatLng location = new LatLng(52.9487713,-1.17);
-//
-//        mMap.addMarker(new MarkerOptions().position(new LatLng(52.9505425,-1.1706994)).title("Marker at home"));
-//        mMap.addMarker(new MarkerOptions().position(new LatLng(52.9205425,-1.1706994)).title("Marker at home"));
-//        mMap.addMarker(new MarkerOptions().position(new LatLng(-52.9105425,-1.1706994)).title("Marker at home"));
-//
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
-//    }
     @Override
     public void onPause() {
         super.onPause();
@@ -66,9 +53,7 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback {
         super.onActivityCreated(savedInstanceState);
     }
 
-
     public Zone[] getZones() {
-
         return new Zone[] {
                 new Zone(52.9536037,-1.1890631, 10.0),
                 new Zone(52.9205425,-1.17, 100.0),

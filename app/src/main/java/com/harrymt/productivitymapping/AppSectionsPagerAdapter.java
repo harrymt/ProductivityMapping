@@ -1,14 +1,8 @@
 package com.harrymt.productivitymapping;
 
-/**
- * Created by harrymt on 06/02/16.
- */
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-
-import com.google.android.gms.maps.SupportMapFragment;
 
 /**
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to one of the primary
@@ -20,6 +14,12 @@ public class AppSectionsPagerAdapter extends FragmentPagerAdapter {
         super(fm);
     }
 
+    /**
+     * Gets the fragment at the position of the pager.
+     *
+     * @param position position of fragment
+     * @return fragment at the position
+     */
     @Override
     public Fragment getItem(int position) {
         switch (position) {
@@ -29,7 +29,6 @@ public class AppSectionsPagerAdapter extends FragmentPagerAdapter {
                 return new StatFragment();
             case 2:
                 return new MapFragment();
-
         }
         return null;
     }

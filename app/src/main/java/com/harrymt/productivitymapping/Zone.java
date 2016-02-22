@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import com.google.android.gms.maps.model.LatLng;
 
 /**
- * Created by harrymt on 15/02/16.
+ * Created by harrymt on 15/02/16
  */
 public class Zone implements Parcelable {
     double lat;
@@ -51,5 +51,4 @@ public class Zone implements Parcelable {
             return new Zone[size];
         }
     };
-
 }
