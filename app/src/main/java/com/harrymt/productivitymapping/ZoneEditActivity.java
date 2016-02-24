@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.support.v4.app.FragmentActivity;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -50,15 +49,15 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
                 String keywords = data.getStringExtra("keywords");
                 String packages = data.getStringExtra("packages");
 
-                Intent zoneCoordinates = new Intent();
+                Intent newZoneDetails = new Intent();
                 LatLng pos = currentCircle.centerMarker.getPosition();
                 Zone z = new Zone(pos.latitude, pos.longitude, currentCircle.radius);
                 Bundle zone = new Bundle();
                 zone.putParcelable("zone", z);
-                zoneCoordinates.putExtras(zone);
-                zoneCoordinates.putExtra("keywords", keywords);
-                zoneCoordinates.putExtra("packages", packages);
-                setResult(RESULT_OK, zoneCoordinates);
+                newZoneDetails.putExtras(zone);
+                newZoneDetails.putExtra("keywords", keywords);
+                newZoneDetails.putExtra("packages", packages);
+                setResult(RESULT_OK, newZoneDetails);
                 finish(); // Leave
             }
         }
@@ -71,10 +70,9 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
         mMap = map;
         mMap.setOnMarkerDragListener(this);
 
-       final LatLng CURRENT_LOCATION = getCurrLocation();
+        final LatLng CURRENT_LOCATION = getCurrLocation();
 
-        DraggableCircle circle = new DraggableCircle(CURRENT_LOCATION, DEFAULT_RADIUS);
-        currentCircle = circle;
+        currentCircle = new DraggableCircle(CURRENT_LOCATION, DEFAULT_RADIUS);
 
         setZoneLatLngs();
         enableCurrentLocation();
@@ -84,6 +82,7 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
     }
 
     private LatLng getCurrLocation() {
+        // TODO get current location
         return new LatLng(52.9532976,-1.187156);
     }
 
@@ -118,6 +117,7 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
     }
 
     public Zone[] getZones() {
+        // TODO, retrieve zones from database
         return new Zone[] {
                 new Zone(52.9536037,-1.1890631, 10.0),
                 new Zone(52.9205425,-1.17, 100.0),
@@ -146,6 +146,7 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
                 .strokeWidth(8);
         mCircle = mMap.addCircle(circleOptions);
 
+        // TODO add zone title and productivity percentage
         Marker m = mMap.addMarker(new MarkerOptions()
                 .title("Hallward Library")
                 .snippet("75% productivity")

@@ -13,16 +13,40 @@ public class Zone implements Parcelable {
     double lng;
     double radiusInMeters;
 
+    String name;
+    int autoStartStop; // 0: false, 1: true
+    String[] blockingApps = new String[] {};
+    String[] keywords = new String[] {};
+
     public Zone(double lt, double lg, double r) {
         lat = lt;
         lng = lg;
         radiusInMeters = r;
+        name = "default zone";
+        autoStartStop = 0;
+        blockingApps = new String[] {};
+        keywords = new String[] {};
+    }
+
+    public Zone(double lt, double lg, double r, String nm, int auto, String[] appsToBlock, String[] words) {
+        lat = lt;
+        lng = lg;
+        radiusInMeters = r;
+        name = nm;
+        autoStartStop = auto;
+        blockingApps = appsToBlock;
+        keywords = words;
     }
 
     public Zone(Parcel in) {
         lat = in.readDouble();
         lng = in.readDouble();
         radiusInMeters = in.readDouble();
+
+        name = in.readString();
+        autoStartStop = in.readInt();
+        in.readStringArray(blockingApps);
+        in.readStringArray(keywords);
     }
 
     /* everything below here is for implementing Parcelable */
@@ -39,6 +63,10 @@ public class Zone implements Parcelable {
         out.writeDouble(lat);
         out.writeDouble(lng);
         out.writeDouble(radiusInMeters);
+        out.writeString(name);
+        out.writeInt(autoStartStop);
+        out.writeStringArray(blockingApps);
+        out.writeStringArray(keywords);
     }
 
     // this is used to regenerate your object. All Parcelables must have a CREATOR that implements these two methods

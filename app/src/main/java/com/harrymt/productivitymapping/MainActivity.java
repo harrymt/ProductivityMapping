@@ -283,15 +283,17 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         if (requestCode == REQUEST_CODE_SET_ZONE) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
-                // The user picked a contact.
-                // The Intent's data Uri identifies which contact was selected.
                 Bundle b = data.getExtras();
                 Zone z = b.getParcelable("zone");
 
+                // Add the zone to a database.
+                DatabaseAdapter dbAdapter;
+                dbAdapter = new DatabaseAdapter(this); // Open and prepare the database
+                dbAdapter.open();
+                dbAdapter.writeZone(z);
+                dbAdapter.close();
 
                 Toast.makeText(MainActivity.this, "Zone data: packages(" + b.getString("packages") + "), keywords(" + b.getString("keywords") + "), r(" + z.radiusInMeters + "), LatLng(" + z.lat + "," + z.lng + ")", Toast.LENGTH_SHORT).show();
-
-                // Do something with the contact here (bigger example below)
             }
         }
     }

@@ -17,8 +17,8 @@ public class DatabaseAdapter
 
     private static final String ZONE_TABLE = "zoneTbl";
         public static final String ZONE_KEY_ID = "id";
-        public static final String ZONE_KEY_X = "x";
-        public static final String ZONE_KEY_Y = "y";
+        public static final String ZONE_KEY_LAT = "lat";
+        public static final String ZONE_KEY_LNG = "lng";
         public static final String ZONE_KEY_RADIUS = "radius";
         public static final String ZONE_KEY_NAME = "name";
         public static final String ZONE_KEY_AUTO_START_STOP = "autoStartStop";
@@ -30,8 +30,8 @@ public class DatabaseAdapter
     private static final String SQLITE_CREATE_TABLE_ZONE =
         "CREATE TABLE if not exists " + ZONE_TABLE + " (" +
             ZONE_KEY_ID + " INTEGER PRIMARY KEY autoincrement," +
-            ZONE_KEY_X + " REAL, " +
-            ZONE_KEY_Y + " REAL, " +
+            ZONE_KEY_LAT + " REAL, " +
+            ZONE_KEY_LNG + " REAL, " +
             ZONE_KEY_RADIUS + " REAL, " +
             ZONE_KEY_NAME + " TEXT, " +
             ZONE_KEY_AUTO_START_STOP + " INTEGER, " +
@@ -100,7 +100,7 @@ public class DatabaseAdapter
     private static class DatabaseHelper extends SQLiteOpenHelper {
 
         public DatabaseHelper(Context context) {
-            super(context, "userData", null, 7);
+            super(context, "userData", null, 8);
         }
 
         @Override
@@ -145,6 +145,66 @@ public class DatabaseAdapter
 
     /** ------ Database interactions ------ **/
 
+
+    /**
+     * Utility function to convert a String array to a delimited separated string.
+     * @param array
+     * @return String delimited by unique delimiter.
+     */
+    public String sqlConvertArrayToString(String array[])
+    {
+        if (array.length == 0) return "";
+
+        StringBuilder sb = new StringBuilder();
+        int i;
+
+        for(i = 0; i < array.length - 1; i++) {
+            sb.append(array[i]);
+            sb.append(uniqueDelimiter);
+        }
+        sb.append(array[i]);
+        return sb.toString();
+    }
+
+    private String uniqueDelimiter = "_%@%_";
+
+    /**
+     * Utility function to convert a String separated by the unqiue delimited back into a String.
+     * @param str
+     * @return String[]
+     */
+    public String[] sqlConvertStringToArray(String str)
+    {
+        if (str.length() == 0) return new String[] {};
+        return str.split(uniqueDelimiter, -1);
+    }
+
+    /**
+     * Write a new zone (give) to the Zone Table database.
+     * @param zone to write.
+     */
+    public void writeZone(Zone zone)
+    {
+        db.execSQL("INSERT INTO " + ZONE_TABLE + " ("
+                + ZONE_KEY_NAME + ","
+                + ZONE_KEY_RADIUS + ","
+                + ZONE_KEY_LAT + ","
+                + ZONE_KEY_LNG + ","
+                + ZONE_KEY_AUTO_START_STOP + ","
+                + ZONE_KEY_BLOCKING_APPS + ","
+                + ZONE_KEY_KEYWORDS
+                + ") "
+                + "VALUES "
+                + "('"
+                + zone.name + "', "
+                + zone.radiusInMeters + ", "
+                + zone.lat + ", "
+                + zone.lng + ", "
+                + zone.autoStartStop + ", '"
+                + sqlConvertArrayToString(zone.blockingApps) + "', '"
+                + sqlConvertArrayToString(zone.keywords)
+                + "');");
+    }
 
     /**
      * Track the notification in a new Notification Table row,
