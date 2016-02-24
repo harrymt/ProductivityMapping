@@ -27,16 +27,15 @@ public class CustomNotificationListener extends android.service.notification.Not
             dbAdapter = new DatabaseAdapter(this); // Open and prepare the database
             dbAdapter.open();
             dbAdapter.writeNotification(notification);
-            dbAdapter.writeAppUsage("test", 1);
             dbAdapter.close();
-
-
-            // Save app usage to database
-            DatabaseAdapter dbAdapter2;
-            dbAdapter2 = new DatabaseAdapter(this);
-            dbAdapter2.open(); // Open and prepare the database, first time call means you create db
-            dbAdapter2.writeAppUsage("test", 1);
-            dbAdapter2.close();
+//
+//
+//            // Save app usage to database
+//            DatabaseAdapter dbAdapter2;
+//            dbAdapter2 = new DatabaseAdapter(this);
+//            dbAdapter2.open(); // Open and prepare the database, first time call means you create db
+//            dbAdapter2.writeAppUsage("test", 1);
+//            dbAdapter2.close();
 
             // Dont actually *NEED* to broadcast the notification posted!
             // Broadcast that we received a block notification

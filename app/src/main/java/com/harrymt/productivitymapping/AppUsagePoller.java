@@ -46,8 +46,6 @@ public class AppUsagePoller extends AccessibilityService
     @Override
     public void onAccessibilityEvent(AccessibilityEvent newEvent)
     {
-        Toast.makeText(getApplicationContext(), "OMG", Toast.LENGTH_SHORT).show();
-        Log.d(TAG, "Accessibility event!");
         if(newEvent.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED)
         {
             // Calculate time spent in app/area of phone, e.g. lock screen, app drawer
