@@ -49,17 +49,18 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
 
+                // Create new Zone
                 String keywords = data.getStringExtra("keywords");
                 String packages = data.getStringExtra("packages");
-
-                Intent newZoneDetails = new Intent();
+                String name = data.getStringExtra("name");
                 LatLng pos = currentCircle.centerMarker.getPosition();
-                Zone z = new Zone(pos.latitude, pos.longitude, currentCircle.radius);
+                Zone z = new Zone(pos.latitude, pos.longitude, currentCircle.radius, name, 0, keywords.split(",", -1), packages.split(",", -1));
+
                 Bundle zone = new Bundle();
                 zone.putParcelable("zone", z);
+
+                Intent newZoneDetails = new Intent();
                 newZoneDetails.putExtras(zone);
-                newZoneDetails.putExtra("keywords", keywords);
-                newZoneDetails.putExtra("packages", packages);
                 setResult(RESULT_OK, newZoneDetails);
                 finish(); // Leave
             }

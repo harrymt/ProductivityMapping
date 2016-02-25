@@ -273,7 +273,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     public void createNewZone(View view) {
         // start set zone activity.
         Intent setZoneActivityIntent = new Intent(this, ZoneEditActivity.class);
-
         startActivityForResult(setZoneActivityIntent, REQUEST_CODE_SET_ZONE);
     }
 
@@ -293,7 +292,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 dbAdapter.writeZone(z);
                 dbAdapter.close();
 
-                Toast.makeText(MainActivity.this, "Zone data: packages(" + b.getString("packages") + "), keywords(" + b.getString("keywords") + "), r(" + z.radiusInMeters + "), LatLng(" + z.lat + "," + z.lng + ")", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Zone data: packages(" + z.blockingApps.toString() + "), keywords(" + z.keywords.toString() + "), r(" + z.radiusInMeters + "), LatLng(" + z.lat + "," + z.lng + ")", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -314,7 +313,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         // Enable study state
         ProjectStates.STUDYING = true;
 
-
         // Get the current Zone ID we are in!
         Integer zoneID = 1; // getZoneID()
         long startTime = System.currentTimeMillis() / 1000;// get current EPOCH time
@@ -325,7 +323,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         dbAdapter.open(); // Open it for writing (if this is the first time its called, ten
         dbAdapter.startNewSession(zoneID, startTime); // Start new session with this zone zone
         dbAdapter.close();
-
 
         // Assign text view values to project settings
         ProjectStates.KEYWORDS_TO_LET_THROUGH = getKeywords();
