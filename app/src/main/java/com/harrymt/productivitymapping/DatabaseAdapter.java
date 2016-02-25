@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 public class DatabaseAdapter
 {
     private static final String TAG = "g53ids"; // DatabaseAdapter.class.getSimpleName();
@@ -177,6 +179,42 @@ public class DatabaseAdapter
     {
         if (str.length() == 0) return new String[] {};
         return str.split(uniqueDelimiter, -1);
+    }
+
+    /**
+     * Read all the Zones from the Zone Table database.
+     */
+    public ArrayList<Zone> getAllZones()
+    {
+        Cursor c = db.query(ZONE_TABLE, new String[]{
+                ZONE_KEY_NAME,
+                ZONE_KEY_RADIUS,
+                ZONE_KEY_LAT,
+                ZONE_KEY_LNG,
+                ZONE_KEY_AUTO_START_STOP,
+                ZONE_KEY_BLOCKING_APPS,
+                ZONE_KEY_KEYWORDS
+        }, null, null, null, null, null);
+
+        ArrayList<Zone> zones = new ArrayList<>();
+        if(c.moveToFirst()) {
+            while (c.moveToNext()) {
+                String name = c.getString(c.getColumnIndex(ZONE_KEY_NAME));
+                double radius = c.getDouble(c.getColumnIndex(ZONE_KEY_RADIUS));
+                double lat = c.getDouble(c.getColumnIndex(ZONE_KEY_LAT));
+                double lng = c.getDouble(c.getColumnIndex(ZONE_KEY_LNG));
+                int autoStart = c.getInt(c.getColumnIndex(ZONE_KEY_AUTO_START_STOP));
+                String[] blockingApps = sqlConvertStringToArray(c.getString(c.getColumnIndex(ZONE_KEY_BLOCKING_APPS)));
+                String[] keywords = sqlConvertStringToArray(c.getString(c.getColumnIndex(ZONE_KEY_KEYWORDS)));
+
+                Zone z = new Zone(lat, lng, radius, name, autoStart, blockingApps, keywords);
+                zones.add(z);
+
+            }
+        }
+        c.close();
+
+        return zones;
     }
 
     /**

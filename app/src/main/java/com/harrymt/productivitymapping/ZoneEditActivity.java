@@ -3,6 +3,7 @@ package com.harrymt.productivitymapping;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
@@ -19,6 +20,8 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.ArrayList;
 
 
 public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMarkerDragListener,
@@ -74,7 +77,8 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
 
         currentCircle = new DraggableCircle(CURRENT_LOCATION, DEFAULT_RADIUS);
 
-        setZoneLatLngs();
+        drawExistingZonesToMap();
+
         enableCurrentLocation();
 
         // Move the map so that it is centered on the initial circle
@@ -116,21 +120,18 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
         }
     }
 
-    public Zone[] getZones() {
-        // TODO, retrieve zones from database
-        return new Zone[] {
-                new Zone(52.9536037,-1.1890631, 10.0),
-                new Zone(52.9205425,-1.17, 100.0),
-                new Zone(52.9417713,-1.17, 100.0),
-                new Zone(52.9387713,-1.17, 100.0)
-        };
-    }
+    /**
+     * Draw all the existing zones to the map.
+     */
+    private void drawExistingZonesToMap() {
+        DatabaseAdapter dbAdapter = new DatabaseAdapter(this); // Prepare the database
+        dbAdapter.open(); // Open it for writing
 
-    private void setZoneLatLngs() {
-        Zone[] zones = getZones();
+        ArrayList<Zone> zones = dbAdapter.getAllZones();
         for(Zone zone : zones) {
             drawCircle(zone);
         }
+        dbAdapter.close();
     }
 
     private void drawCircle(Zone zone) {
@@ -148,8 +149,8 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
 
         // TODO add zone title and productivity percentage
         Marker m = mMap.addMarker(new MarkerOptions()
-                .title("Hallward Library")
-                .snippet("75% productivity")
+                .title(zone.name)
+                .snippet("56%")
                 .position(new LatLng(zone.lat, zone.lng)));
 
         // hard to show every info window...
