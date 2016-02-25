@@ -2,6 +2,7 @@ package com.harrymt.productivitymapping;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -45,8 +46,8 @@ public class Zone implements Parcelable {
 
         name = in.readString();
         autoStartStop = in.readInt();
-        in.readStringArray(blockingApps);
-        in.readStringArray(keywords);
+        blockingApps = in.createStringArray();
+        keywords = in.createStringArray();
     }
 
     /* everything below here is for implementing Parcelable */
