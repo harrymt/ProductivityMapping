@@ -10,6 +10,8 @@ import com.google.android.gms.maps.model.LatLng;
  * Created by harrymt on 15/02/16
  */
 public class Zone implements Parcelable {
+    int zoneID;
+
     double lat;
     double lng;
     double radiusInMeters;
@@ -20,6 +22,7 @@ public class Zone implements Parcelable {
     String[] keywords = new String[] {};
 
     public Zone(double lt, double lg, double r) {
+        zoneID = -1;
         lat = lt;
         lng = lg;
         radiusInMeters = r;
@@ -29,7 +32,8 @@ public class Zone implements Parcelable {
         keywords = new String[] {};
     }
 
-    public Zone(double lt, double lg, double r, String nm, int auto, String[] appsToBlock, String[] words) {
+    public Zone(int id, double lt, double lg, double r, String nm, int auto, String[] appsToBlock, String[] words) {
+        zoneID = id;
         lat = lt;
         lng = lg;
         radiusInMeters = r;
@@ -40,6 +44,8 @@ public class Zone implements Parcelable {
     }
 
     public Zone(Parcel in) {
+        zoneID = in.readInt();
+
         lat = in.readDouble();
         lng = in.readDouble();
         radiusInMeters = in.readDouble();
@@ -61,6 +67,7 @@ public class Zone implements Parcelable {
     // write your object's data to the passed-in Parcel
     @Override
     public void writeToParcel(Parcel out, int flags) {
+        out.writeInt(zoneID);
         out.writeDouble(lat);
         out.writeDouble(lng);
         out.writeDouble(radiusInMeters);

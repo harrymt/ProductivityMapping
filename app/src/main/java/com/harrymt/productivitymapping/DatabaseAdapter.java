@@ -102,7 +102,7 @@ public class DatabaseAdapter
     private static class DatabaseHelper extends SQLiteOpenHelper {
 
         public DatabaseHelper(Context context) {
-            super(context, "userData", null, 8);
+            super(context, "userData", null, 9);
         }
 
         @Override
@@ -186,7 +186,8 @@ public class DatabaseAdapter
      */
     public ArrayList<Zone> getAllZones()
     {
-        Cursor c = db.query(ZONE_TABLE, new String[]{
+        Cursor c = db.query(ZONE_TABLE, new String[] {
+                ZONE_KEY_ID,
                 ZONE_KEY_NAME,
                 ZONE_KEY_RADIUS,
                 ZONE_KEY_LAT,
@@ -199,6 +200,8 @@ public class DatabaseAdapter
         ArrayList<Zone> zones = new ArrayList<>();
         if(c.moveToFirst()) {
             while (c.moveToNext()) {
+                int id = c.getInt(c.getColumnIndex(ZONE_KEY_ID));
+
                 String name = c.getString(c.getColumnIndex(ZONE_KEY_NAME));
                 double radius = c.getDouble(c.getColumnIndex(ZONE_KEY_RADIUS));
                 double lat = c.getDouble(c.getColumnIndex(ZONE_KEY_LAT));
@@ -207,9 +210,8 @@ public class DatabaseAdapter
                 String[] blockingApps = sqlConvertStringToArray(c.getString(c.getColumnIndex(ZONE_KEY_BLOCKING_APPS)));
                 String[] keywords = sqlConvertStringToArray(c.getString(c.getColumnIndex(ZONE_KEY_KEYWORDS)));
 
-                Zone z = new Zone(lat, lng, radius, name, autoStart, blockingApps, keywords);
+                Zone z = new Zone(id, lat, lng, radius, name, autoStart, blockingApps, keywords);
                 zones.add(z);
-
             }
         }
         c.close();
@@ -242,6 +244,36 @@ public class DatabaseAdapter
                 + sqlConvertArrayToString(zone.blockingApps) + "', '"
                 + sqlConvertArrayToString(zone.keywords)
                 + "');");
+    }
+
+    /**
+     * Edit a current zone in the Zone Table database, based on the ID of the zone object.
+     * @param zone to edit.
+     */
+    public void editZone(Zone zone)
+    {
+        db.execSQL("INSERT INTO " + ZONE_TABLE + " ("
+                + ZONE_KEY_NAME + ","
+                + ZONE_KEY_RADIUS + ","
+                + ZONE_KEY_LAT + ","
+                + ZONE_KEY_LNG + ","
+                + ZONE_KEY_AUTO_START_STOP + ","
+                + ZONE_KEY_BLOCKING_APPS + ","
+                + ZONE_KEY_KEYWORDS
+                + ") "
+                + "VALUES "
+                + "('"
+                + zone.name + "', "
+                + zone.radiusInMeters + ", "
+                + zone.lat + ", "
+                + zone.lng + ", "
+                + zone.autoStartStop + ", '"
+                + sqlConvertArrayToString(zone.blockingApps) + "', '"
+                + sqlConvertArrayToString(zone.keywords)
+                + "') "
+                + " WHERE "
+                + ZONE_KEY_ID + " = " + zone.zoneID
+                + ";");
     }
 
     /**

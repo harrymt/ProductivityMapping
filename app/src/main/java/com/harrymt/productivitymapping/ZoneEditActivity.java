@@ -53,9 +53,14 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
         setContentView(R.layout.activity_zone_edit);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
+
+
+
     }
 
     int REQUEST_CODE_SET_ZONE_PREFS = 3212;
@@ -89,7 +94,8 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
                 String packages = data.getStringExtra("packages");
                 String name = data.getStringExtra("name");
                 LatLng pos = currentCircle.centerMarker.getPosition();
-                Zone z = new Zone(pos.latitude, pos.longitude, currentCircle.radius, name, 0, sqlConvertStringToArray(keywords), sqlConvertStringToArray(packages));
+                // ID is -1 because we the ID will auto generate
+                Zone z = new Zone(-1, pos.latitude, pos.longitude, currentCircle.radius, name, 0, sqlConvertStringToArray(keywords), sqlConvertStringToArray(packages));
 
                 Bundle zone = new Bundle();
                 zone.putParcelable("zone", z);
