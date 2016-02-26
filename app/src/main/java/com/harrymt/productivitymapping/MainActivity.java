@@ -8,6 +8,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
@@ -38,6 +42,24 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
     private static final String TAG = "g53ids-MainActivity";
 
+    private final LocationListener mLocationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(final Location location) {
+            Toast.makeText(MainActivity.this, "New Location: " + location.getLatitude() + "," + location.getLongitude(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+        }
+    };
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide fragments for each of the
@@ -73,6 +95,18 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        int LOCATION_REFRESH_TIME = 1000;
+        int LOCATION_REFRESH_DISTANCE = 10;
+        LocationManager mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(MainActivity.this, "No permissions for location :(", Toast.LENGTH_SHORT).show();
+        } else {
+            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME, LOCATION_REFRESH_DISTANCE, mLocationListener);
+            Toast.makeText(MainActivity.this, "Permissions granted!", Toast.LENGTH_SHORT).show();
+        }
+
 
         // Create the adapter that will return a fragment for each of the three primary sections
         // of the app.
@@ -295,7 +329,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         // Check which request we're responding to
-        if (requestCode == REQUEST_CODE_SET_ZONE) {
+        if (requestCode == REQUEST_CODE_SET_ZONE || requestCode == REQUEST_CODE_EDIT_ZONE) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
                 Bundle b = data.getExtras();
@@ -305,23 +339,14 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 DatabaseAdapter dbAdapter;
                 dbAdapter = new DatabaseAdapter(this); // Open and prepare the database
                 dbAdapter.open();
-                dbAdapter.writeZone(z);
+                if (requestCode == REQUEST_CODE_EDIT_ZONE) {
+                    dbAdapter.editZone(z);
+                } else {
+                    dbAdapter.writeZone(z);
+                }
                 dbAdapter.close();
 
                 Toast.makeText(MainActivity.this, "Zone data: packages(" + z.blockingApps.toString() + "), keywords(" + z.keywords.toString() + "), r(" + z.radiusInMeters + "), LatLng(" + z.lat + "," + z.lng + ")", Toast.LENGTH_SHORT).show();
-            }
-        } else if (requestCode == REQUEST_CODE_EDIT_ZONE) {
-            // Make sure the request was successful
-            if (resultCode == Activity.RESULT_OK) {
-                Bundle b = data.getExtras();
-                Zone z = b.getParcelable("zone");
-
-                // Add the zone to a database.
-                DatabaseAdapter dbAdapter;
-                dbAdapter = new DatabaseAdapter(this); // Open and prepare the database
-                dbAdapter.open();
-                dbAdapter.editZone(z);
-                dbAdapter.close();
             }
         }
     }
