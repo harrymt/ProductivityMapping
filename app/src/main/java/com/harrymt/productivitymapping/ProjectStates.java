@@ -1,5 +1,7 @@
 package com.harrymt.productivitymapping;
 
+import android.location.Location;
+
 /**
  * Created by harrymt on 23/11/15.
  */
@@ -11,9 +13,12 @@ public class ProjectStates
 
     // App packages to block, e.g. calendar reminders, or google mail
     // "com.google.android.gm"; // google mail (gm), (calendar)
+//
+//    static String[] PACKAGES_TO_BLOCK = {}; // = "com.harrymt.sendnotification";
+//    static String[] KEYWORDS_TO_LET_THROUGH = {}; // "IMPORTANT";
 
-    static String[] PACKAGES_TO_BLOCK = {}; // = "com.harrymt.sendnotification";
-    static String[] KEYWORDS_TO_LET_THROUGH = {}; // "IMPORTANT";
+    static Zone CURRENT_ZONE;
+    static Location LAST_LOCATION;
 
     class Broadcasts
     {
