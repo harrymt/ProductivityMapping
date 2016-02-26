@@ -26,9 +26,9 @@ public class AppSectionsPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 return new TrackFragment();
             case 1:
-                return new StatFragment();
-            case 2:
                 return new MapFragment();
+            case 2:
+                return new StatFragment();
         }
         return null;
     }
@@ -44,9 +44,9 @@ public class AppSectionsPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 return "Track";
             case 1:
-                return "Stats";
+                return "Zones";
             case 2:
-                return "Map";
+                return "Stats";
         }
         return null;
     }
