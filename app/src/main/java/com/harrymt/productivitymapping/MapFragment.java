@@ -31,7 +31,6 @@ import java.util.HashSet;
 import java.util.Random;
 
 import android.support.v4.app.ListFragment;
-import android.widget.Toast;
 
 public class MapFragment extends Fragment {
 

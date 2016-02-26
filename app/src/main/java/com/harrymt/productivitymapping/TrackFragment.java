@@ -10,11 +10,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.ui.IconGenerator;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 
 /**
@@ -42,33 +51,61 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback {
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        mMap.setIndoorEnabled(false);
-        setZoneLatLngs();
+        final LatLng CURRENT_ZONE = new LatLng(52.9536037,-1.1890631); // TODO get current zone
+        drawExistingZonesToMap();
         enableCurrentLocation();
+
+        // Move the map so that it is centered on the initial circle
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CURRENT_ZONE, 17.0f));
     }
 
-    public Zone[] getZones() {
-        return new Zone[] {
-                new Zone(52.9536037,-1.1890631, 10.0),
-                new Zone(52.9205425,-1.17, 100.0),
-                new Zone(52.9417713,-1.17, 100.0),
-                new Zone(52.9387713,-1.17, 100.0)
-        };
-    }
+    /**
+     * Draw all the existing zones to the map.
+     */
+    private void drawExistingZonesToMap() {
+        DatabaseAdapter dbAdapter = new DatabaseAdapter(getContext()); // Prepare the database
+        dbAdapter.open(); // Open it for writing
 
-    private void setZoneLatLngs() {
-        Zone[] zones = getZones();
-        for(Zone zone : zones) {
-            drawCircle(zone);
+        ArrayList<Zone> zones = dbAdapter.getAllZones();
+        for (Zone zone : zones) {
+            int strokeColor = 0xffff0000; //red outline
+            int shadeColor = 0x44faaaaa; //0x44ff0000; //opaque red fill
+
+            drawCircle(zone, strokeColor, shadeColor);
         }
+        dbAdapter.close();
+    }
+
+    private void drawCircle(Zone zone, int stroke, int shade) {
+
+        CircleOptions circleOptions = new CircleOptions()
+                .center(new LatLng(zone.lat, zone.lng))
+                .radius(zone.radiusInMeters)
+                .fillColor(stroke)
+                .strokeColor(shade)
+                .strokeWidth(8);
+        mMap.addCircle(circleOptions);
+
+        // Add icon with percentage and name
+        IconGenerator ic = new IconGenerator(getContext());
+        // Choose colour
+        double productivityPercentage = (double) Math.round(new Random().nextDouble() * 100d) / 100d; // TODO get P%
+        int iconColor = IconGenerator.STYLE_DEFAULT;
+        if(productivityPercentage > 0.7) {
+            iconColor = IconGenerator.STYLE_GREEN;
+        } else if (productivityPercentage < 0.3) {
+            iconColor = IconGenerator.STYLE_RED;
+        }
+        ic.setStyle(iconColor);
+        Marker m = mMap.addMarker(new MarkerOptions()
+                        .icon(BitmapDescriptorFactory.fromBitmap(ic.makeIcon(productivityPercentage + "% : " + zone.name)))
+                        .position(new LatLng(zone.lat, zone.lng))
+        );
+
+        m.showInfoWindow();
     }
 
     private void enableCurrentLocation() {
@@ -81,16 +118,5 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    private void drawCircle(Zone zone) {
-        int strokeColor = 0xffff0000; //red outline
-        int shadeColor = 0x44ff0000; //opaque red fill
 
-        CircleOptions circleOptions = new CircleOptions()
-                .center(new LatLng(zone.lat, zone.lng))
-                .radius(zone.radiusInMeters)
-                .fillColor(shadeColor)
-                .strokeColor(strokeColor)
-                .strokeWidth(8);
-        mMap.addCircle(circleOptions);
-    }
 }

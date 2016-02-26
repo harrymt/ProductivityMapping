@@ -1,5 +1,6 @@
 package com.harrymt.productivitymapping;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.service.notification.StatusBarNotification;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.ListFragment;
@@ -31,8 +33,6 @@ import android.support.v4.view.ViewPager;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.*;
 
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
 
@@ -400,28 +400,4 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         forceStopStudy.setEnabled(false);
     }
 
-    // Sort Hashmaps
-    public static class MapUtil
-    {
-        public static <K, V extends Comparable<? super V>> Map<K, V>
-        sortByValue( Map<K, V> map )
-        {
-            List<Map.Entry<K, V>> list =
-                    new LinkedList<Map.Entry<K, V>>( map.entrySet() );
-            Collections.sort( list, new Comparator<Map.Entry<K, V>>()
-            {
-                public int compare( Map.Entry<K, V> o1, Map.Entry<K, V> o2 )
-                {
-                    return (o1.getValue()).compareTo( o2.getValue() );
-                }
-            } );
-
-            Map<K, V> result = new LinkedHashMap<K, V>();
-            for (Map.Entry<K, V> entry : list)
-            {
-                result.put( entry.getKey(), entry.getValue() );
-            }
-            return result;
-        }
-    }
 }
