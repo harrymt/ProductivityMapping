@@ -38,22 +38,28 @@ public class MapFragment extends Fragment {
         Log.d("g53ids", "MapFragment.onCreateView()");
 
         View v = inflater.inflate(R.layout.fragment_map, container, false);
+        loadZonesToListView();
+        return v;
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("g53ids", "MapFragment.resume()");
+
+        loadZonesToListView();
+    }
+
+    // Reload all zones from the DB again
+    private void loadZonesToListView() {
         // Set a custom list adapter for a list of locations
         ArrayList<Zone> zs = getZones();
         // Convert to array
         Zone[] zones = new Zone[zs.size()]; int i = 0;for (Zone z : zs) { zones[i] = z; i++;}
-
-        mAdapter = new MapAdapter(getActivity(), zones);
-        mList = (ListFragment) getChildFragmentManager().findFragmentById(R.id.list); // getActivity().getSupportFragmentManager().findFragmentById(R.id.list);
-        mList.setListAdapter(mAdapter);
-
+        mList = (ListFragment) getChildFragmentManager().findFragmentById(R.id.list);
+        mList.setListAdapter(new MapAdapter(getActivity(), zones));
         // Set a RecyclerListener to clean up MapView from ListView
-        AbsListView lv = mList.getListView();
-        lv.setRecyclerListener(mRecycleListener);
-
-
-        return v;
+        mList.getListView().setRecyclerListener(mRecycleListener);
     }
 
     /**
