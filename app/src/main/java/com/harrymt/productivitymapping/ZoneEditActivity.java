@@ -3,15 +3,11 @@ package com.harrymt.productivitymapping;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.Icon;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.View;
 import android.support.v4.app.FragmentActivity;
 
@@ -22,24 +18,23 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.maps.android.ui.BubbleIconFactory;
 import com.google.maps.android.ui.IconGenerator;
 
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Random;
 
 
 public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMarkerDragListener,
         OnMapReadyCallback {
+
+    // The zone that we are editing.
+    private Zone zoneToEdit = null;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -58,16 +53,24 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
-
-
+        // Get the zone that is passed in here.
+        Intent dataSentHere = getIntent();
+        Bundle data = dataSentHere.getExtras();
+        zoneToEdit = data.getParcelable("zone");
 
     }
 
     int REQUEST_CODE_SET_ZONE_PREFS = 3212;
 
-    public void setZoneCoords(View view) {
-        Intent setZonePrefsActivityIntent = new Intent(this, ZonePreferenceEdit.class);
-        startActivityForResult(setZonePrefsActivityIntent, REQUEST_CODE_SET_ZONE_PREFS);
+    public void moveToTheNextScreen(View view) {
+        Intent zoneIntent = new Intent(this, ZonePreferenceEdit.class);
+        LatLng pos = currentCircle.centerMarker.getPosition();
+        zoneToEdit.lat = pos.latitude;
+        zoneToEdit.lng = pos.longitude;
+        zoneToEdit.radiusInMeters = currentCircle.radius;
+
+        zoneIntent.putExtra("zone", zoneToEdit);
+        startActivityForResult(zoneIntent, REQUEST_CODE_SET_ZONE_PREFS);
     }
 
     private String uniqueDelimiter = "_%@%_";
@@ -82,26 +85,19 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
         if (str.length() == 0) return new String[] {};
         return str.split(uniqueDelimiter, -1);
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check which request we're responding to
         if (requestCode == REQUEST_CODE_SET_ZONE_PREFS) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
+                // Pass the Zone object back to the MainActivity
+                zoneToEdit.keywords = data.getStringArrayExtra("keywords");
+                zoneToEdit.blockingApps = data.getStringArrayExtra("packages");
+                zoneToEdit.name = data.getStringExtra("name");
 
-                // Create new Zone
-                String keywords = data.getStringExtra("keywords");
-                String packages = data.getStringExtra("packages");
-                String name = data.getStringExtra("name");
-                LatLng pos = currentCircle.centerMarker.getPosition();
-                // ID is -1 because we the ID will auto generate
-                Zone z = new Zone(-1, pos.latitude, pos.longitude, currentCircle.radius, name, 0, sqlConvertStringToArray(keywords), sqlConvertStringToArray(packages));
-
-                Bundle zone = new Bundle();
-                zone.putParcelable("zone", z);
-
-                Intent newZoneDetails = new Intent();
-                newZoneDetails.putExtras(zone);
+                Intent newZoneDetails = new Intent(); newZoneDetails.putExtra("zone", zoneToEdit);
                 setResult(RESULT_OK, newZoneDetails);
                 finish(); // Leave
             }
@@ -115,22 +111,16 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
         mMap = map;
         mMap.setOnMarkerDragListener(this);
 
-        final LatLng CURRENT_LOCATION = getCurrLocation();
-
-        currentCircle = new DraggableCircle(CURRENT_LOCATION, DEFAULT_RADIUS);
+        final LatLng CURRENT_ZONE = new LatLng(zoneToEdit.lat, zoneToEdit.lng);
+        currentCircle = new DraggableCircle(CURRENT_ZONE, zoneToEdit.radiusInMeters);
 
         drawExistingZonesToMap();
-
         enableCurrentLocation();
 
         // Move the map so that it is centered on the initial circle
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CURRENT_LOCATION, 20.0f));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CURRENT_ZONE, 20.0f));
     }
 
-    private LatLng getCurrLocation() {
-        // TODO get current location
-        return new LatLng(52.9532976, -1.187156);
-    }
 
     @Override
     public void onMarkerDragStart(Marker marker) {
@@ -171,20 +161,21 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
 
         ArrayList<Zone> zones = dbAdapter.getAllZones();
         for (Zone zone : zones) {
-            drawCircle(zone);
+            int strokeColor = 0xffff0000; //red outline
+            int shadeColor = 0x44faaaaa; //0x44ff0000; //opaque red fill
+
+            drawCircle(zone, strokeColor, shadeColor);
         }
         dbAdapter.close();
     }
 
-    private void drawCircle(Zone zone) {
-        int strokeColor = 0xffff0000; //red outline
-        int shadeColor = 0x44ff0000; //opaque red fill
+    private void drawCircle(Zone zone, int stroke, int shade) {
 
         CircleOptions circleOptions = new CircleOptions()
                 .center(new LatLng(zone.lat, zone.lng))
                 .radius(zone.radiusInMeters)
-                .fillColor(shadeColor)
-                .strokeColor(strokeColor)
+                .fillColor(stroke)
+                .strokeColor(shade)
                 .strokeWidth(8);
         mMap.addCircle(circleOptions);
 
@@ -270,35 +261,14 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
                     .draggable(true));
             radiusMarker = mMap.addMarker(new MarkerOptions()
                     .position(toRadiusLatLng(center, radius))
-                    .draggable(true)
-                    .icon(BitmapDescriptorFactory.defaultMarker(
-                            BitmapDescriptorFactory.HUE_AZURE)));
-
-            circle = mMap.addCircle(new CircleOptions()
-                    .center(center)
-                    .radius(radius)
-                    .strokeWidth(2f)
-                    .strokeColor(Color.BLUE)
-                    .fillColor(Color.HSVToColor(100, new float[]{10, 1, 1})));
-        }
-
-        public DraggableCircle(LatLng center, LatLng radiusLatLng) {
-            this.radius = toRadiusMeters(center, radiusLatLng);
-            centerMarker = mMap.addMarker(new MarkerOptions()
-                    .position(center)
                     .draggable(true));
-            radiusMarker = mMap.addMarker(new MarkerOptions()
-                    .position(radiusLatLng)
-                    .draggable(true)
-                    .icon(BitmapDescriptorFactory.defaultMarker(
-                            BitmapDescriptorFactory.HUE_AZURE)));
+
             circle = mMap.addCircle(new CircleOptions()
                     .center(center)
                     .radius(radius)
                     .strokeWidth(2f)
                     .strokeColor(Color.BLUE)
                     .fillColor(Color.HSVToColor(100, new float[]{10, 1, 1})));
-            radiusMarker.showInfoWindow();
         }
 
         public boolean onMarkerMoved(Marker marker) {

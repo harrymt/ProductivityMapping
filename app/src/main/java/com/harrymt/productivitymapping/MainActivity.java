@@ -1,5 +1,6 @@
 package com.harrymt.productivitymapping;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.ComponentName;
@@ -10,10 +11,14 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.service.notification.StatusBarNotification;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.ListFragment;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +27,8 @@ import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -265,6 +272,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
 
     int REQUEST_CODE_SET_ZONE = 4;
+    int REQUEST_CODE_EDIT_ZONE = 3;
 
     /**
      * On 'New Zone' click.
@@ -272,12 +280,20 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
      */
     public void createNewZone(View view) {
         // start set zone activity.
-        Intent setZoneActivityIntent = new Intent(this, ZoneEditActivity.class);
-        startActivityForResult(setZoneActivityIntent, REQUEST_CODE_SET_ZONE);
+        Intent editZoneActivityIntent = new Intent(this, ZoneEditActivity.class);
+        // Create a new Zone with default parameters
+        editZoneActivityIntent.putExtra("zone", new Zone(getCurrLocation().latitude, getCurrLocation().longitude));
+        startActivityForResult(editZoneActivityIntent, REQUEST_CODE_SET_ZONE);
+    }
+
+    // TODO get current location
+    private LatLng getCurrLocation() {
+        return new LatLng(52.9532976, -1.187156);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         // Check which request we're responding to
         if (requestCode == REQUEST_CODE_SET_ZONE) {
             // Make sure the request was successful
@@ -294,10 +310,20 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
                 Toast.makeText(MainActivity.this, "Zone data: packages(" + z.blockingApps.toString() + "), keywords(" + z.keywords.toString() + "), r(" + z.radiusInMeters + "), LatLng(" + z.lat + "," + z.lng + ")", Toast.LENGTH_SHORT).show();
             }
-        }
-    }
+        } else if (requestCode == REQUEST_CODE_EDIT_ZONE) {
+            // Make sure the request was successful
+            if (resultCode == Activity.RESULT_OK) {
+                Bundle b = data.getExtras();
+                Zone z = b.getParcelable("zone");
 
-    public void editZone(View view) {
+                // Add the zone to a database.
+                DatabaseAdapter dbAdapter;
+                dbAdapter = new DatabaseAdapter(this); // Open and prepare the database
+                dbAdapter.open();
+                dbAdapter.editZone(z);
+                dbAdapter.close();
+            }
+        }
     }
 
 

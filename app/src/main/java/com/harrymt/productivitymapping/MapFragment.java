@@ -1,6 +1,8 @@
 package com.harrymt.productivitymapping;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -9,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -28,11 +31,11 @@ import java.util.HashSet;
 import java.util.Random;
 
 import android.support.v4.app.ListFragment;
+import android.widget.Toast;
 
 public class MapFragment extends Fragment {
 
     private ListFragment mList;
-    private MapAdapter mAdapter;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d("g53ids", "MapFragment.onCreateView()");
@@ -94,6 +97,8 @@ public class MapFragment extends Fragment {
                 holder.productivityPercentage = (TextView) row.findViewById(R.id.tvZoneProductivityPercentage);
                 holder.appsToBlock = (TextView) row.findViewById(R.id.tvZoneAppsToBlock);
                 holder.keywords = (TextView) row.findViewById(R.id.tvZoneKeywords);
+                holder.editZone = (Button) row.findViewById(R.id.btnEditZone);
+
 
                 // Set holder as tag for row for more efficient access.
                 row.setTag(holder);
@@ -123,32 +128,27 @@ public class MapFragment extends Fragment {
             // Set the text label for this zone
             holder.name.setText(zone.name);
             holder.productivityPercentage.setText("75% productive!");
-            holder.appsToBlock.setText("Blocked Apps: " + sqlConvertArrayToString(zone.blockingApps));
-            holder.keywords.setText("Keywords: " + sqlConvertArrayToString(zone.keywords));
+            holder.appsToBlock.setText("Blocked Apps: " + zone.blockingAppsAsStr());
+            holder.keywords.setText("Keywords: " + zone.keywordsAsStr());
+
+            // setup on click for edit zone button
+            holder.editZone.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    // Get the zone object, saved in the tag!
+                    ViewHolder vh = (ViewHolder) ((View) v.getParent()).getTag();
+                    Zone z = (Zone) vh.mapView.getTag();
+
+                    // start set zone activity, for this current zone
+                    Intent editZoneActivityIntent = new Intent(getActivity(), ZoneEditActivity.class);
+                    editZoneActivityIntent.putExtra("zone", z);
+                    getActivity().startActivityForResult(editZoneActivityIntent, REQUEST_CODE_EDIT_ZONE);
+                }
+            });
+
             return row;
         }
-
-        /**
-         * Utility function to convert a String array to a delimited separated string.
-         * @param array
-         * @return String delimited by unique delimiter.
-         */
-        private String sqlConvertArrayToString(String array[])
-        {
-            if (array.length == 0) return "";
-
-            StringBuilder sb = new StringBuilder();
-            int i;
-
-            for(i = 0; i < array.length - 1; i++) {
-                sb.append(array[i]);
-                sb.append(uniqueDelimiter);
-            }
-            sb.append(array[i]);
-            return sb.toString();
-        }
-
-        private String uniqueDelimiter = "_%@%_";
 
 
         /**
@@ -160,6 +160,8 @@ public class MapFragment extends Fragment {
             return mMaps;
         }
     }
+
+    int REQUEST_CODE_EDIT_ZONE = 3;
 
     /**
      * Displays a on a
@@ -224,6 +226,7 @@ public class MapFragment extends Fragment {
         TextView appsToBlock;
         TextView keywords;
 
+        Button editZone;
 
         GoogleMap map;
 

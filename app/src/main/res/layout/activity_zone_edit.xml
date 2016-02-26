@@ -12,7 +12,7 @@
 
     <Button
         android:text="Set"
-        android:onClick="setZoneCoords"
+        android:onClick="moveToTheNextScreen"
         android:layout_width="match_parent"
         android:layout_height="50dp" />
 

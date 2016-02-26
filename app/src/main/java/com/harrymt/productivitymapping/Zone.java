@@ -2,14 +2,12 @@ package com.harrymt.productivitymapping;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
-
-import com.google.android.gms.maps.model.LatLng;
 
 /**
  * Created by harrymt on 15/02/16
  */
 public class Zone implements Parcelable {
+    static String uniqueDelimiter = "_%@%_";
     int zoneID;
 
     double lat;
@@ -21,15 +19,50 @@ public class Zone implements Parcelable {
     String[] blockingApps = new String[] {};
     String[] keywords = new String[] {};
 
+    /**
+     * Utility function to convert a String separated by the unqiue delimited back into a String.
+     * @param str
+     * @return String[]
+     */
+    public static String[] stringToArray(String str)
+    {
+        if (str.length() == 0) return new String[] {};
+        return str.split(uniqueDelimiter, -1);
+    }
+
+    /**
+     * Utility function to convert a String array to a delimited separated string.
+     * @param array
+     * @return String delimited by unique delimiter.
+     */
+    public static String arrayToString(String[] array) {
+        if (array.length == 0) return "";
+
+        StringBuilder sb = new StringBuilder();
+        int i;
+
+        for(i = 0; i < array.length - 1; i++) {
+            sb.append(array[i]);
+            sb.append(Zone.uniqueDelimiter);
+        }
+        sb.append(array[i]);
+        return sb.toString();
+    }
+
+    public String keywordsAsStr() {
+        return arrayToString(keywords);
+    }
+
+    public String blockingAppsAsStr() {
+        return arrayToString(blockingApps);
+    }
+
+    public Zone(double lt, double lg) {
+        this(lt, lg, 5.0);
+    }
+
     public Zone(double lt, double lg, double r) {
-        zoneID = -1;
-        lat = lt;
-        lng = lg;
-        radiusInMeters = r;
-        name = "default zone";
-        autoStartStop = 0;
-        blockingApps = new String[] {};
-        keywords = new String[] {};
+        this(-1, lt, lg, r, "default zone", 0, new String[] {}, new String[] {});
     }
 
     public Zone(int id, double lt, double lg, double r, String nm, int auto, String[] appsToBlock, String[] words) {

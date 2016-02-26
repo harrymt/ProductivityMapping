@@ -102,7 +102,7 @@ public class DatabaseAdapter
     private static class DatabaseHelper extends SQLiteOpenHelper {
 
         public DatabaseHelper(Context context) {
-            super(context, "userData", null, 9);
+            super(context, "userData", null, 10);
         }
 
         @Override
@@ -149,39 +149,6 @@ public class DatabaseAdapter
 
 
     /**
-     * Utility function to convert a String array to a delimited separated string.
-     * @param array
-     * @return String delimited by unique delimiter.
-     */
-    public String sqlConvertArrayToString(String array[])
-    {
-        if (array.length == 0) return "";
-
-        StringBuilder sb = new StringBuilder();
-        int i;
-
-        for(i = 0; i < array.length - 1; i++) {
-            sb.append(array[i]);
-            sb.append(uniqueDelimiter);
-        }
-        sb.append(array[i]);
-        return sb.toString();
-    }
-
-    private String uniqueDelimiter = "_%@%_";
-
-    /**
-     * Utility function to convert a String separated by the unqiue delimited back into a String.
-     * @param str
-     * @return String[]
-     */
-    public String[] sqlConvertStringToArray(String str)
-    {
-        if (str.length() == 0) return new String[] {};
-        return str.split(uniqueDelimiter, -1);
-    }
-
-    /**
      * Read all the Zones from the Zone Table database.
      */
     public ArrayList<Zone> getAllZones()
@@ -207,8 +174,8 @@ public class DatabaseAdapter
                 double lat = c.getDouble(c.getColumnIndex(ZONE_KEY_LAT));
                 double lng = c.getDouble(c.getColumnIndex(ZONE_KEY_LNG));
                 int autoStart = c.getInt(c.getColumnIndex(ZONE_KEY_AUTO_START_STOP));
-                String[] blockingApps = sqlConvertStringToArray(c.getString(c.getColumnIndex(ZONE_KEY_BLOCKING_APPS)));
-                String[] keywords = sqlConvertStringToArray(c.getString(c.getColumnIndex(ZONE_KEY_KEYWORDS)));
+                String[] blockingApps = Zone.stringToArray(c.getString(c.getColumnIndex(ZONE_KEY_BLOCKING_APPS)));
+                String[] keywords = Zone.stringToArray(c.getString(c.getColumnIndex(ZONE_KEY_KEYWORDS)));
 
                 Zone z = new Zone(id, lat, lng, radius, name, autoStart, blockingApps, keywords);
                 zones.add(z);
@@ -241,8 +208,8 @@ public class DatabaseAdapter
                 + zone.lat + ", "
                 + zone.lng + ", "
                 + zone.autoStartStop + ", '"
-                + sqlConvertArrayToString(zone.blockingApps) + "', '"
-                + sqlConvertArrayToString(zone.keywords)
+                + zone.blockingAppsAsStr() + "', '"
+                + zone.keywordsAsStr()
                 + "');");
     }
 
@@ -252,25 +219,15 @@ public class DatabaseAdapter
      */
     public void editZone(Zone zone)
     {
-        db.execSQL("INSERT INTO " + ZONE_TABLE + " ("
-                + ZONE_KEY_NAME + ","
-                + ZONE_KEY_RADIUS + ","
-                + ZONE_KEY_LAT + ","
-                + ZONE_KEY_LNG + ","
-                + ZONE_KEY_AUTO_START_STOP + ","
-                + ZONE_KEY_BLOCKING_APPS + ","
-                + ZONE_KEY_KEYWORDS
-                + ") "
-                + "VALUES "
-                + "('"
-                + zone.name + "', "
-                + zone.radiusInMeters + ", "
-                + zone.lat + ", "
-                + zone.lng + ", "
-                + zone.autoStartStop + ", '"
-                + sqlConvertArrayToString(zone.blockingApps) + "', '"
-                + sqlConvertArrayToString(zone.keywords)
-                + "') "
+        db.execSQL("UPDATE " + ZONE_TABLE
+                + " SET "
+                + ZONE_KEY_NAME + "= '" + zone.name + "', "
+                + ZONE_KEY_RADIUS + "=" + zone.radiusInMeters + ", "
+                + ZONE_KEY_LAT + "=" + zone.lat + ", "
+                + ZONE_KEY_LNG + "=" + zone.lng + ", "
+                + ZONE_KEY_AUTO_START_STOP + "=" + zone.autoStartStop + ", "
+                + ZONE_KEY_BLOCKING_APPS + "='" + zone.blockingAppsAsStr() + "', "
+                + ZONE_KEY_KEYWORDS + "='" + zone.keywordsAsStr() + "'"
                 + " WHERE "
                 + ZONE_KEY_ID + " = " + zone.zoneID
                 + ";");
