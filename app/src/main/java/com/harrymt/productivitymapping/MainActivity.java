@@ -36,6 +36,8 @@ import android.support.v4.view.ViewPager;
 
 import com.google.android.gms.maps.model.LatLng;
 
+
+
 import java.util.ArrayList;
 
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
@@ -43,6 +45,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     private static final String TAG = "g53ids-MainActivity";
 
     private final LocationListener mLocationListener = new LocationListener() {
+
         @Override
         public void onLocationChanged(final Location location) {
             Toast.makeText(MainActivity.this, "New Location: " + location.getLatitude() + "," + location.getLongitude(), Toast.LENGTH_SHORT).show();
