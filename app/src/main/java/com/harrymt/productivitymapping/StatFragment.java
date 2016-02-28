@@ -7,8 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 /**
  * Created by harrymt on 06/02/16.
  */
@@ -19,42 +17,45 @@ public class StatFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_stat, container, false);
 
-        ArrayList<String> stats = getStats();
-        String fullStatsText = "Stats\n\n";
-        for (String stat : stats) {
-            fullStatsText += stat + "\n";
-        }
         TextView tvStats = (TextView) v.findViewById(R.id.tvStats);
-        tvStats.setText(fullStatsText);
+        TextView tvEveryonesStats = (TextView) v.findViewById(R.id.tvEveryonesStats);
+        tvStats.setText(getYourStatsString());
+        tvEveryonesStats.setText(getEveryonesStatsString());
 
-        return v; // inflater.inflate(R.layout.fragment_stat, container, false);
+        return v;
     }
 
-    @Override
-    public void onActivityCreated (Bundle savedInstanceState)
-    {
-        super.onActivityCreated(savedInstanceState);
-
+    private String getEveryonesStatsString() {
+        return "The most popular apps blocked are " + getDataMostPopularAppBlocked() + " and " + getDataSecondMostPopularAppBlocked() + ".\n" +
+                "'Family' is the most used keyword, used by 107 people, across 10 zones";
     }
 
-    private ArrayList<String> getStats() {
-        ArrayList<String> stats = new ArrayList<>();
-
-        String numberOfZones = "Number of Zones: " + getNumberOfZones();
-        stats.add(numberOfZones);
-
-        String numberOfDifferentAppsTracked = "Number of unique apps tracked: " + getNumberOfDifferentAppsTracked();
-        stats.add(numberOfDifferentAppsTracked);
-
-        return stats;
+    private String getYourStatsString() {
+        return "You have created " +
+                getNumberOfZones() + " zones, with " +
+                getUniqueNumberOfKeywords() + " different keywords and " +
+                getUniqueNumberOfBlockingApps() + " unqiue apps."
+                + "\n'Harry' is your most popular keyword and Facebook is your most blocked app";
     }
 
 
-    private String getNumberOfDifferentAppsTracked() {
-        return "99";
+    private String getDataMostPopularAppBlocked() {
+        return "Facebook";
+    }
+    private String getDataSecondMostPopularAppBlocked() {
+        return "WhatsApp";
+    }
+    private String getDataMostPopularKeyword() {
+        return "help";
     }
 
+    private String getUniqueNumberOfKeywords() {
+        return "12";
+    }
+    private String getUniqueNumberOfBlockingApps() {
+        return "35";
+    }
     private String getNumberOfZones() {
-        return "21";
+        return "5";
     }
 }
