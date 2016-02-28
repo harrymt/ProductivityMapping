@@ -46,6 +46,8 @@ import com.google.android.gms.location.GeofenceStatusCodes;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 
 
@@ -458,7 +460,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     /**
      * Represents a geographical location.
      */
-    protected Location mCurrentLocation;
+    public Location mCurrentLocation;
 
     /**
      * Tracks the status of the location updates request. Value changes when the user presses the
@@ -569,6 +571,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     private void updateUI() {
         Toast.makeText(this, mLastUpdateTime + ". " + mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude(),
                 Toast.LENGTH_SHORT).show();
+
     }
 
     /**
@@ -685,5 +688,4 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         savedInstanceState.putString(LAST_UPDATED_TIME_STRING_KEY, mLastUpdateTime);
         super.onSaveInstanceState(savedInstanceState);
     }
-
 }

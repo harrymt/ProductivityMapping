@@ -2,17 +2,20 @@ package com.harrymt.productivitymapping;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -26,40 +29,66 @@ import java.util.ArrayList;
 import java.util.Random;
 
 
-/**
- * Created by harrymt on 06/02/16
- */
-public class TrackFragment extends Fragment implements OnMapReadyCallback {
-
-    private GoogleMap mMap;
+public class TrackFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+    public GoogleMap mMap;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_track, container, false);
+
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map_track);
         mapFragment.getMapAsync(this);
+        buildGoogleApiClient();
 
         return v;
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        Log.d("g53ids", "TrackFragment.onPause()");
+    public void onStart() {
+        super.onStart();mGoogleApiClient.connect();
+    }
+    @Override
+    public void onStop() {
+        mGoogleApiClient.disconnect(); super.onStop();
+    }
+
+    protected GoogleApiClient mGoogleApiClient;
+
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(getContext())
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+    }
+
+    /**
+     * Runs when a GoogleApiClient object successfully connects.
+     */
+    @Override
+    public void onConnected(Bundle connectionHint) {
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.d("g53ids", "Permission ERROR");
+            return;
+        }
+        Location loc = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(loc.getLatitude(), loc.getLongitude()), 18.0f));
+        mMap.setMyLocationEnabled(true);
+    }
+
+    @Override
+    public void onConnectionSuspended(int cause) {
+        mGoogleApiClient.connect();
+    }
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        Log.i("g53ids", "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        final LatLng CURRENT_ZONE = new LatLng(52.9536037,-1.1890631); // TODO get current zone
         drawExistingZonesToMap();
-        enableCurrentLocation();
-
-        // Move the map so that it is centered on the initial circle
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CURRENT_ZONE, 17.0f));
     }
 
     /**
@@ -70,10 +99,14 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback {
         dbAdapter.open(); // Open it for writing
 
         ArrayList<Zone> zones = dbAdapter.getAllZones();
+        // Move to first zone
+        if(zones.size() > 0) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(zones.get(0).lat, zones.get(0).lng), 18.0f));
+        }
+
         for (Zone zone : zones) {
             int strokeColor = 0xffff0000; //red outline
             int shadeColor = 0x44faaaaa; //0x44ff0000; //opaque red fill
-
             drawCircle(zone, strokeColor, shadeColor);
         }
         dbAdapter.close();
@@ -107,16 +140,4 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback {
 
         m.showInfoWindow();
     }
-
-    private void enableCurrentLocation() {
-        if (ContextCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            mMap.setMyLocationEnabled(true);
-            // Move to curr location // mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
-        } else {
-            // Show rationale and request permission.
-        }
-    }
-
-
 }

@@ -37,8 +37,6 @@ public class MapFragment extends Fragment {
     private ListFragment mList;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d("g53ids", "MapFragment.onCreateView()");
-
         View v = inflater.inflate(R.layout.fragment_map, container, false);
         loadZonesToListView();
         return v;
@@ -47,8 +45,6 @@ public class MapFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("g53ids", "MapFragment.resume()");
-
         loadZonesToListView();
     }
 
