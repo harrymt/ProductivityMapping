@@ -33,6 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Zone has blocked a total of 32 apps and 21 notifications."/>
 
