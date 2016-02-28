@@ -3,6 +3,8 @@ package com.harrymt.productivitymapping;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
@@ -18,6 +20,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
@@ -196,8 +199,6 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
         m.showInfoWindow();
     }
 
-    private static final double DEFAULT_RADIUS = 5;
-
     public static final double RADIUS_OF_EARTH_METERS = 6371009;
 
     private DraggableCircle currentCircle;
@@ -242,6 +243,11 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
         client.disconnect();
     }
 
+    private BitmapDescriptor getLargeMarker(){
+        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_marker_black);
+        return BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(largeIcon, 300, 300, false));
+    }
+
     private class DraggableCircle {
 
         private final Marker centerMarker;
@@ -256,10 +262,12 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
             this.radius = radius;
             centerMarker = mMap.addMarker(new MarkerOptions()
                     .position(center)
-                    .draggable(true));
+                    .draggable(true)
+                    .icon(getLargeMarker()));
             radiusMarker = mMap.addMarker(new MarkerOptions()
                     .position(toRadiusLatLng(center, radius))
-                    .draggable(true));
+                    .draggable(true)
+                    .icon(getLargeMarker()));
 
             circle = mMap.addCircle(new CircleOptions()
                     .center(center)
