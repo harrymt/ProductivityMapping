@@ -7,6 +7,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 /**
+ *
  * Listens for notifications using the notification service.
  *
  */
@@ -28,8 +29,7 @@ public class CustomNotificationListener extends android.service.notification.Not
             dbAdapter.open();
             dbAdapter.writeNotification(notification);
             dbAdapter.close();
-//
-//
+
 //            // Save app usage to database
 //            DatabaseAdapter dbAdapter2;
 //            dbAdapter2 = new DatabaseAdapter(this);
@@ -115,12 +115,12 @@ public class CustomNotificationListener extends android.service.notification.Not
         NotificationParts notification = new NotificationParts(sbn.getNotification(), sbn.getPackageName());
 
         // If a keyword matches, let it through
-        if (notification.containsKeywords(ProjectStates.KEYWORDS_TO_LET_THROUGH)) {
+        if (notification.containsKeywords(ProjectStates.CURRENT_ZONE.keywords)) {
             // TODO keep track of # notifications received but not blocked based on keywords
             return false;
         }
 
         // If it matches the package, block it
-        return notification.containsPackage(ProjectStates.PACKAGES_TO_BLOCK);
+        return notification.containsPackage(ProjectStates.CURRENT_ZONE.blockingApps);
     }
 }
