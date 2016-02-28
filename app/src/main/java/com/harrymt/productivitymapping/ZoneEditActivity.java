@@ -54,10 +54,8 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
         // Get the zone that is passed in here.
-        Intent dataSentHere = getIntent();
-        Bundle data = dataSentHere.getExtras();
+        Intent dataSentHere = getIntent(); Bundle data = dataSentHere.getExtras();
         zoneToEdit = data.getParcelable("zone");
-
     }
 
     int REQUEST_CODE_SET_ZONE_PREFS = 3212;
@@ -145,10 +143,9 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
-            // Move to curr location // mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+            // mMap.moveCamera(CameraUpdateFactory.newLatLng(location)); // Move to curr location
         } else {
             // Show rationale and request permission.
-
         }
     }
 
@@ -161,10 +158,11 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
 
         ArrayList<Zone> zones = dbAdapter.getAllZones();
         for (Zone zone : zones) {
-            int strokeColor = 0xffff0000; //red outline
-            int shadeColor = 0x44faaaaa; //0x44ff0000; //opaque red fill
-
-            drawCircle(zone, strokeColor, shadeColor);
+            if (zone.zoneID != zoneToEdit.zoneID) { // if it isnt our zone we are editing!
+                int strokeColor = 0xffff0000; // red outline
+                int shadeColor = 0x44ff0000; // 0x44ff0000; // opaque red fill
+                drawCircle(zone, strokeColor, shadeColor);
+            }
         }
         dbAdapter.close();
     }
