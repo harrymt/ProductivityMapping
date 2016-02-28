@@ -94,7 +94,6 @@ public class DatabaseAdapter
             NOTIFICATION_KEY_PACKAGE + " TEXT " +
         ");";
 
-
     private DatabaseHelper dbHelper;
     public SQLiteDatabase db;
     private Context context;
@@ -102,7 +101,7 @@ public class DatabaseAdapter
     private static class DatabaseHelper extends SQLiteOpenHelper {
 
         public DatabaseHelper(Context context) {
-            super(context, "userData", null, 10);
+            super(context, "userData", null, 11);
         }
 
         @Override
@@ -170,7 +169,7 @@ public class DatabaseAdapter
                 int id = c.getInt(c.getColumnIndex(ZONE_KEY_ID));
 
                 String name = c.getString(c.getColumnIndex(ZONE_KEY_NAME));
-                double radius = c.getDouble(c.getColumnIndex(ZONE_KEY_RADIUS));
+                float radius = c.getFloat(c.getColumnIndex(ZONE_KEY_RADIUS));
                 double lat = c.getDouble(c.getColumnIndex(ZONE_KEY_LAT));
                 double lng = c.getDouble(c.getColumnIndex(ZONE_KEY_LNG));
                 int autoStart = c.getInt(c.getColumnIndex(ZONE_KEY_AUTO_START_STOP));

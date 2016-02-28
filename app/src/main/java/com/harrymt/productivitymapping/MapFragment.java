@@ -54,10 +54,14 @@ public class MapFragment extends Fragment {
 
     // Reload all zones from the DB again
     private void loadZonesToListView() {
+
+        // TODO add empty list item to zones that says no zones, go create one.
         // Set a custom list adapter for a list of locations
         ArrayList<Zone> zs = getZones();
+        Zone[] zones;
         // Convert to array
-        Zone[] zones = new Zone[zs.size()]; int i = 0;for (Zone z : zs) { zones[i] = z; i++;}
+        zones = new Zone[zs.size()]; int i = 0;for (Zone z : zs) { zones[i] = z; i++;}
+
         mList = (ListFragment) getChildFragmentManager().findFragmentById(R.id.list);
         mList.setListAdapter(new MapAdapter(getActivity(), zones));
         // Set a RecyclerListener to clean up MapView from ListView

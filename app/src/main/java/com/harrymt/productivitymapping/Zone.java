@@ -12,7 +12,7 @@ public class Zone implements Parcelable {
 
     double lat;
     double lng;
-    double radiusInMeters;
+    float radiusInMeters;
 
     String name;
     int autoStartStop; // 0: false, 1: true
@@ -36,7 +36,7 @@ public class Zone implements Parcelable {
      * @return String delimited by unique delimiter.
      */
     public static String arrayToString(String[] array) {
-        if (array.length == 0) return "";
+        if (array == null || array.length == 0) return "";
 
         StringBuilder sb = new StringBuilder();
         int i;
@@ -58,14 +58,14 @@ public class Zone implements Parcelable {
     }
 
     public Zone(double lt, double lg) {
-        this(lt, lg, 5.0);
+        this(lt, lg, 5.0f);
     }
 
-    public Zone(double lt, double lg, double r) {
+    public Zone(double lt, double lg, float r) {
         this(-1, lt, lg, r, "default zone", 0, new String[] {}, new String[] {});
     }
 
-    public Zone(int id, double lt, double lg, double r, String nm, int auto, String[] appsToBlock, String[] words) {
+    public Zone(int id, double lt, double lg, float r, String nm, int auto, String[] appsToBlock, String[] words) {
         zoneID = id;
         lat = lt;
         lng = lg;
@@ -81,7 +81,7 @@ public class Zone implements Parcelable {
 
         lat = in.readDouble();
         lng = in.readDouble();
-        radiusInMeters = in.readDouble();
+        radiusInMeters = in.readFloat();
 
         name = in.readString();
         autoStartStop = in.readInt();
@@ -103,7 +103,7 @@ public class Zone implements Parcelable {
         out.writeInt(zoneID);
         out.writeDouble(lat);
         out.writeDouble(lng);
-        out.writeDouble(radiusInMeters);
+        out.writeFloat(radiusInMeters);
         out.writeString(name);
         out.writeInt(autoStartStop);
         out.writeStringArray(blockingApps);
