@@ -196,8 +196,8 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
         CircleOptions circleOptions = new CircleOptions()
                 .center(new LatLng(zone.lat, zone.lng))
                 .radius(zone.radiusInMeters)
-                .fillColor(stroke)
-                .strokeColor(shade)
+                .fillColor(shade)
+                .strokeColor(stroke)
                 .strokeWidth(8);
         mMap.addCircle(circleOptions);
 
