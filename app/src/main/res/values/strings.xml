@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Productivity Mapping</string>
+    <string name="app_name">Study Mapper</string>
 
     <string name="latitude_label">Latitude</string>
     <string name="longitude_label">Longitude</string>
