@@ -3,6 +3,7 @@ package com.harrymt.productivitymapping;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,4 +25,5 @@ public class LastSession extends Activity {
     public void sendAllBlockedNotifications(View view) {
         Toast.makeText(this, "0 notifications to send", Toast.LENGTH_SHORT).show();
     }
+
 }

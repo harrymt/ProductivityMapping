@@ -29,4 +29,14 @@
         android:layout_height="wrap_content"
         android:id="@+id/tvEveryonesStats"
         android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+
+    <Button
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sync with server"
+        android:id="@+id/btnSync"
+        android:onClick="syncWithServer"
+        android:enabled="true"/>
 </LinearLayout>

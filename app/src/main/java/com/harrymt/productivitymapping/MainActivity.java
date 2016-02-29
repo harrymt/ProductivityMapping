@@ -708,4 +708,10 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         startActivity(new Intent(this, LastSession.class));
     }
 
+    public void syncWithServer(View view) {
+        Toast.makeText(this, "Syncing with server", Toast.LENGTH_SHORT).show();
+        // TODO sync
+        Toast.makeText(this, "Sync successful", Toast.LENGTH_SHORT).show();
+    }
+
 }
