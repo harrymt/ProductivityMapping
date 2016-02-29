@@ -688,4 +688,12 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         savedInstanceState.putString(LAST_UPDATED_TIME_STRING_KEY, mLastUpdateTime);
         super.onSaveInstanceState(savedInstanceState);
     }
+
+    public void editCurrentZone(View view) {
+        // start edit zone activity.
+        // TODO get the current zone we are in and set it here
+        Intent editZoneActivityIntent = new Intent(this, ZoneEditActivity.class);
+        editZoneActivityIntent.putExtra("zone", new Zone(getCurrLocation().latitude, getCurrLocation().longitude));
+        startActivityForResult(editZoneActivityIntent, REQUEST_CODE_SET_ZONE);
+    }
 }
