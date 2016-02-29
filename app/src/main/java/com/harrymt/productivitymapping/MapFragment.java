@@ -129,8 +129,11 @@ public class MapFragment extends Fragment {
             // Set the text label for this zone
             holder.name.setText(zone.name);
 
-            holder.appsToBlock.setText("Apps blocked: " + (zone.blockingAppsAsStr() == "" ? "none" : zone.blockingAppsAsStr()));
-            holder.keywords.setText("Keywords set: " + (zone.keywordsAsStr() == "" ? "none" : zone.keywordsAsStr()));
+            String apps = ""; for(String app : zone.blockingApps) { apps += app + ", "; }
+            String keywords = ""; for(String word : zone.keywords) { keywords += word + ", "; }
+
+            holder.appsToBlock.setText("Apps blocked: " + (zone.blockingApps.length == 0 ? "none" : apps));
+            holder.keywords.setText("Keywords set: " + (zone.keywords.length ==0 ? "none" : keywords));
 
             // setup on click for edit zone button
             holder.editZone.setOnClickListener(new View.OnClickListener() {
