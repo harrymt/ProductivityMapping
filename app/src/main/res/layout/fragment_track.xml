@@ -35,7 +35,8 @@
         android:layout_height="wrap_content"
         android:text="Current Zone"
         android:id="@+id/btnCurrentZone"
-        android:onClick="startCurrentZone"/>
+        android:onClick="startCurrentZone"
+        android:enabled="false"/>
 
     <Button
         android:layout_width="match_parent"
