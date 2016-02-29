@@ -9,13 +9,17 @@ import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.support.v4.app.FragmentActivity;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -54,7 +58,9 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+        client = new GoogleApiClient.Builder(this)
+                .addApi(AppIndex.API)
+                .build();
 
         // Get the zone that is passed in here.
         Intent dataSentHere = getIntent(); Bundle data = dataSentHere.getExtras();
@@ -69,6 +75,7 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
             }
         }
     }
+
 
     int REQUEST_CODE_SET_ZONE_PREFS = 3212;
 
@@ -125,11 +132,13 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
         final LatLng CURRENT_ZONE = new LatLng(zoneToEdit.lat, zoneToEdit.lng);
         currentCircle = new DraggableCircle(CURRENT_ZONE, zoneToEdit.radiusInMeters);
 
+        // Move the map so that it is centered on the initial circle
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CURRENT_ZONE, 20.0f));
+
         drawExistingZonesToMap();
         enableCurrentLocation();
 
-        // Move the map so that it is centered on the initial circle
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CURRENT_ZONE, 20.0f));
+
     }
 
 

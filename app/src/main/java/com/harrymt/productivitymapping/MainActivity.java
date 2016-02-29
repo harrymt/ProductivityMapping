@@ -315,9 +315,15 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         startActivityForResult(editZoneActivityIntent, REQUEST_CODE_SET_ZONE);
     }
 
-    // TODO get current location
+
     private LatLng getCurrLocation() {
-        return new LatLng(52.9532976, -1.187156);
+        if (mCurrentLocation != null) {
+            return new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+        } else {
+            // TODO change this fallback
+            return new LatLng(52.9532976, -1.187156);
+
+        }
     }
 
     @Override
