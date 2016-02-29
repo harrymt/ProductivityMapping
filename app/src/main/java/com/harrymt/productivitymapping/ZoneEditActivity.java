@@ -257,7 +257,7 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
 
     private BitmapDescriptor getLargeMarker(){
         Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_marker_black);
-        return BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(largeIcon, 300, 300, false));
+        return BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(largeIcon, 250, 250, false));
     }
 
     private class DraggableCircle {
