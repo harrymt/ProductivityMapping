@@ -46,8 +46,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="5dp"
-        android:layout_marginBottom="10dp">
+        android:paddingTop="5dp">
 
         <Button
             android:layout_width="250dp"
@@ -67,8 +66,16 @@
 
     </LinearLayout>
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Last Session"
+        android:id="@+id/btnLastSession"
+        android:onClick="showLastSession"
+        android:enabled="true"/>
 
     <fragment
+        android:layout_marginTop="10dp"
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:map="http://schemas.android.com/apk/res-auto"
         class="com.google.android.gms.maps.SupportMapFragment"

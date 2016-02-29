@@ -696,4 +696,10 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         editZoneActivityIntent.putExtra("zone", new Zone(getCurrLocation().latitude, getCurrLocation().longitude));
         startActivityForResult(editZoneActivityIntent, REQUEST_CODE_SET_ZONE);
     }
+
+    public void showLastSession(View view) {
+        // start last session activity
+        startActivity(new Intent(this, LastSession.class));
+    }
+
 }
