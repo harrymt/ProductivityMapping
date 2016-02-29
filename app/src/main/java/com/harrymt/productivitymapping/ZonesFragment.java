@@ -34,7 +34,7 @@ import java.util.Random;
 
 import android.support.v4.app.ListFragment;
 
-public class MapFragment extends Fragment {
+public class ZonesFragment extends Fragment {
 
     private ListFragment mList;
 

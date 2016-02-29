@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class DatabaseAdapter
 {
-    private static final String TAG = "g53ids"; // DatabaseAdapter.class.getSimpleName();
+    private static final String TAG = "g53ids";
 
     // https://developer.android.com/training/basics/data-storage/databases.html
     // TODO move to a contract and add implement the BaseColumns class.

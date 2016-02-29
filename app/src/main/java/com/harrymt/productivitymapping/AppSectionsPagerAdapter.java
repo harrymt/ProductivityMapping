@@ -26,7 +26,7 @@ public class AppSectionsPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 return new TrackFragment();
             case 1:
-                return new MapFragment();
+                return new ZonesFragment();
             case 2:
                 return new StatFragment();
         }
