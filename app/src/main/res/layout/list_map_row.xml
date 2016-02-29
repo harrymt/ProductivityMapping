@@ -13,12 +13,6 @@
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
-        android:id="@+id/tvZoneProductivityPercentage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
         android:id="@+id/tvZoneAppsToBlock"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -35,7 +29,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Zone has blocked a total of 32 apps and 21 notifications."/>
+        android:text="Zone has blocked a total of 32 apps, 21 notifications and is roughly 72% productive."/>
 
 
     <!-- MapView in lite mode. Note that it needs to be initialised

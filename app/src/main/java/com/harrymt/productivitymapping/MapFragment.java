@@ -95,7 +95,6 @@ public class MapFragment extends Fragment {
                 holder = new ViewHolder();
                 holder.mapView = (MapView) row.findViewById(R.id.lite_listrow_map);
                 holder.name = (TextView) row.findViewById(R.id.tvZoneName);
-                holder.productivityPercentage = (TextView) row.findViewById(R.id.tvZoneProductivityPercentage);
                 holder.appsToBlock = (TextView) row.findViewById(R.id.tvZoneAppsToBlock);
                 holder.keywords = (TextView) row.findViewById(R.id.tvZoneKeywords);
                 holder.editZone = (Button) row.findViewById(R.id.btnEditZone);
@@ -129,9 +128,9 @@ public class MapFragment extends Fragment {
 
             // Set the text label for this zone
             holder.name.setText(zone.name);
-            holder.productivityPercentage.setText("75% productive!");
-            holder.appsToBlock.setText("Blocked Apps: " + zone.blockingAppsAsStr());
-            holder.keywords.setText("Keywords: " + zone.keywordsAsStr());
+
+            holder.appsToBlock.setText("Apps blocked: " + (zone.blockingAppsAsStr() == "" ? "none" : zone.blockingAppsAsStr()));
+            holder.keywords.setText("Keywords set: " + (zone.keywordsAsStr() == "" ? "none" : zone.keywordsAsStr()));
 
             // setup on click for edit zone button
             holder.editZone.setOnClickListener(new View.OnClickListener() {
@@ -234,22 +233,12 @@ public class MapFragment extends Fragment {
 
         // Add icon with percentage and name
         IconGenerator ic = new IconGenerator(getContext());
-        // Choose colour
-        double productivityPercentage = (double) Math.round(new Random().nextDouble() * 100d) / 100d; // TODO get Productivity percentage%
-        int iconColor = IconGenerator.STYLE_DEFAULT;
-        if(productivityPercentage > 0.7) {
-            iconColor = IconGenerator.STYLE_GREEN;
-        } else if (productivityPercentage < 0.3) {
-            iconColor = IconGenerator.STYLE_RED;
-        }
-        ic.setStyle(iconColor);
         Marker m = map.addMarker(new MarkerOptions()
-                        .icon(BitmapDescriptorFactory.fromBitmap(ic.makeIcon(productivityPercentage + "% : " + zone.name)))
+                        .icon(BitmapDescriptorFactory.fromBitmap(ic.makeIcon(zone.name)))
                         .position(new LatLng(zone.lat, zone.lng))
         );
 
         m.showInfoWindow();
-
 
 
         // Set the map type back to normal.
@@ -271,7 +260,6 @@ public class MapFragment extends Fragment {
         MapView mapView;
 
         TextView name;
-        TextView productivityPercentage;
         TextView appsToBlock;
         TextView keywords;
 
