@@ -43,9 +43,24 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback, Googl
     }
 
     @Override
-    public void onStart() {
-        super.onStart();mGoogleApiClient.connect();
+    public void setMenuVisibility(final boolean visible) {
+        super.setMenuVisibility(visible);
+        if (visible && mMap != null) {
+            mMap.clear();
+            drawExistingZonesToMap();
+        }
     }
+
+    @Override
+    public void onStart() {
+        super.onStart(); mGoogleApiClient.connect();
+
+        if (mMap != null) {
+            mMap.clear();
+            drawExistingZonesToMap();
+        }
+    }
+
     @Override
     public void onStop() {
         mGoogleApiClient.disconnect(); super.onStop();
@@ -70,6 +85,7 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback, Googl
             Log.d("g53ids", "Permission ERROR");
             return;
         }
+
         Location loc = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(loc.getLatitude(), loc.getLongitude()), 18.0f));
         mMap.setMyLocationEnabled(true);
@@ -79,6 +95,7 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback, Googl
     public void onConnectionSuspended(int cause) {
         mGoogleApiClient.connect();
     }
+
     @Override
     public void onConnectionFailed(ConnectionResult result) {
         Log.i("g53ids", "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
