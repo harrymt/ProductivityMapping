@@ -201,17 +201,8 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
 
         // Add icon with percentage and name
         IconGenerator ic = new IconGenerator(this);
-        // Choose colour
-        double productivityPercentage = (double) Math.round(new Random().nextDouble() * 100d) / 100d; // TODO get P%
-        int iconColor = IconGenerator.STYLE_DEFAULT;
-        if(productivityPercentage > 0.7) {
-            iconColor = IconGenerator.STYLE_GREEN;
-        } else if (productivityPercentage < 0.3) {
-            iconColor = IconGenerator.STYLE_RED;
-        }
-        ic.setStyle(iconColor);
         Marker m = mMap.addMarker(new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromBitmap(ic.makeIcon(productivityPercentage + "% : " + zone.name)))
+                .icon(BitmapDescriptorFactory.fromBitmap(ic.makeIcon(zone.name)))
                 .position(new LatLng(zone.lat, zone.lng))
         );
 
