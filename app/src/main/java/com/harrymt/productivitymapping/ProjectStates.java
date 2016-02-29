@@ -10,6 +10,7 @@ public class ProjectStates
     public static boolean STUDYING = false;
 
     public static Integer SESSION_ID = 0;
+    static boolean IS_DEBUG = false;
 
     // App packages to block, e.g. calendar reminders, or google mail
     // "com.google.android.gm"; // google mail (gm), (calendar)
@@ -18,6 +19,7 @@ public class ProjectStates
 //    static String[] KEYWORDS_TO_LET_THROUGH = {}; // "IMPORTANT";
 
     static Zone CURRENT_ZONE;
+
     static Location LAST_LOCATION;
 
     class Broadcasts

@@ -33,7 +33,7 @@ public class AppUsagePoller extends AccessibilityService
         super.onServiceConnected();
         Log.d(TAG, "onServiceConnected");
 
-        Toast.makeText(getApplicationContext(), "Starting service", Toast.LENGTH_SHORT).show();
+        if (ProjectStates.IS_DEBUG) Toast.makeText(getApplicationContext(), "Starting service", Toast.LENGTH_SHORT).show();
         packageLastOpened = "com.started.service"; // Set initial package so we know
         timeLastOpened = System.nanoTime() / 1000000; // Set now as the time TODO should this be set to EPOCH time?
     }

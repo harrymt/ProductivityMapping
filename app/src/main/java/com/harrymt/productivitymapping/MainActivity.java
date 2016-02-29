@@ -168,7 +168,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         if (Settings.Secure.getString(this.getContentResolver(), "enabled_notification_listeners") != null &&
                 Settings.Secure.getString(this.getContentResolver(), "enabled_notification_listeners").contains(getApplicationContext().getPackageName())) {
             //service is enabled do something
-            Toast.makeText(MainActivity.this, "Can listen to notifications", Toast.LENGTH_SHORT).show();
+            if (ProjectStates.IS_DEBUG) Toast.makeText(MainActivity.this, "Can listen to notifications", Toast.LENGTH_SHORT).show();
         } else {
             //service is not enabled try to enabled by calling...
             startActivity(new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS));
@@ -347,7 +347,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 }
                 dbAdapter.close();
 
-                Toast.makeText(MainActivity.this, "Zone data: packages(" + z.blockingApps.toString() + "), keywords(" + z.keywords.toString() + "), r(" + z.radiusInMeters + "), LatLng(" + z.lat + "," + z.lng + ")", Toast.LENGTH_SHORT).show();
+                if (ProjectStates.IS_DEBUG) Toast.makeText(MainActivity.this, "Zone data: packages(" + z.blockingApps.toString() + "), keywords(" + z.keywords.toString() + "), r(" + z.radiusInMeters + "), LatLng(" + z.lat + "," + z.lng + ")", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -575,8 +575,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
      * Updates the latitude, the longitude, and the last location time in the UI.
      */
     private void updateUI() {
-        Toast.makeText(this, mLastUpdateTime + ". " + mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude(),
-                Toast.LENGTH_SHORT).show();
+        if (ProjectStates.IS_DEBUG)  Toast.makeText(this, mLastUpdateTime + ". " + mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
 
     }
 
@@ -665,8 +664,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         mCurrentLocation = location;
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
         updateUI();
-        Toast.makeText(this, getResources().getString(R.string.location_updated_message),
-                Toast.LENGTH_SHORT).show();
+        if (ProjectStates.IS_DEBUG) Toast.makeText(this, getResources().getString(R.string.location_updated_message), Toast.LENGTH_SHORT).show();
     }
 
     @Override
