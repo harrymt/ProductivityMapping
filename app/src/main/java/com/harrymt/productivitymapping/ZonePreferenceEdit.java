@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 
 public class ZonePreferenceEdit extends Activity {
@@ -24,6 +25,8 @@ public class ZonePreferenceEdit extends Activity {
         EditText name = (EditText) findViewById(R.id.etZoneName);
         name.setText(z.name);
 
+        CheckBox autoStartStop = (CheckBox) findViewById(R.id.cbAutoStartStop);
+        autoStartStop.setChecked(z.autoStartStop == 1);
 
         this.setTitle("Set zone preferences");
     }
@@ -33,11 +36,14 @@ public class ZonePreferenceEdit extends Activity {
         EditText packages = (EditText) findViewById(R.id.etPackage);
         EditText keywords = (EditText) findViewById(R.id.etKeywords);
         EditText name = (EditText) findViewById(R.id.etZoneName);
+        CheckBox autoStartStop = (CheckBox) findViewById(R.id.cbAutoStartStop);
 
         Intent data = new Intent();
         data.putExtra("keywords", convertCSVToStringArray(keywords.getText().toString()));
         data.putExtra("packages", convertCSVToStringArray(packages.getText().toString()));
         data.putExtra("name", name.getText().toString());
+        data.putExtra("autoStartStop", autoStartStop.isChecked());
+
         setResult(RESULT_OK, data);
         finish(); // Leave
     }

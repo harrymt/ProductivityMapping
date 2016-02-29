@@ -58,6 +58,12 @@
             android:id="@+id/etKeywords"
             android:inputType="text" />
 
+    <CheckBox
+        android:text="Auto Start/Stop on Enter/Exit"
+        android:id="@+id/cbAutoStartStop"
+        android:layout_width="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_height="wrap_content"/>
 
 
 </LinearLayout>
