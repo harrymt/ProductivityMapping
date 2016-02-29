@@ -221,8 +221,8 @@ public class MapFragment extends Fragment {
         // Add a marker for this item and set the camera
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(zone.lat, zone.lng), 18.0f));
 
-        int strokeColor = 0xffff0000; //red outline
         int shadeColor = 0x44ff0000; //opaque red fill
+        int strokeColor = 0xffff0000; //red outline
 
         CircleOptions circleOptions = new CircleOptions()
                 .center(new LatLng(zone.lat, zone.lng))

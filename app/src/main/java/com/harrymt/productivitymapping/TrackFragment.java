@@ -105,36 +105,27 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback, Googl
         }
 
         for (Zone zone : zones) {
-            int strokeColor = 0xffff0000; //red outline
-            int shadeColor = 0x44faaaaa; //0x44ff0000; //opaque red fill
-            drawCircle(zone, strokeColor, shadeColor);
+            drawCircle(zone);
         }
         dbAdapter.close();
     }
 
-    private void drawCircle(Zone zone, int stroke, int shade) {
+    private void drawCircle(Zone zone) {
+        int shadeColor = 0x44ff0000; //opaque red fill
+        int strokeColor = 0xffff0000; //red outline
 
         CircleOptions circleOptions = new CircleOptions()
                 .center(new LatLng(zone.lat, zone.lng))
                 .radius(zone.radiusInMeters)
-                .fillColor(stroke)
-                .strokeColor(shade)
+                .fillColor(shadeColor)
+                .strokeColor(strokeColor)
                 .strokeWidth(8);
         mMap.addCircle(circleOptions);
 
-        // Add icon with percentage and name
+        // Add icon with name
         IconGenerator ic = new IconGenerator(getContext());
-        // Choose colour
-        double productivityPercentage = (double) Math.round(new Random().nextDouble() * 100d) / 100d; // TODO get P%
-        int iconColor = IconGenerator.STYLE_DEFAULT;
-        if(productivityPercentage > 0.7) {
-            iconColor = IconGenerator.STYLE_GREEN;
-        } else if (productivityPercentage < 0.3) {
-            iconColor = IconGenerator.STYLE_RED;
-        }
-        ic.setStyle(iconColor);
         Marker m = mMap.addMarker(new MarkerOptions()
-                        .icon(BitmapDescriptorFactory.fromBitmap(ic.makeIcon(productivityPercentage + "% : " + zone.name)))
+                        .icon(BitmapDescriptorFactory.fromBitmap(ic.makeIcon(zone.name)))
                         .position(new LatLng(zone.lat, zone.lng))
         );
 
