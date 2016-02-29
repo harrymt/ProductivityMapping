@@ -132,8 +132,10 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
         final LatLng CURRENT_ZONE = new LatLng(zoneToEdit.lat, zoneToEdit.lng);
         currentCircle = new DraggableCircle(CURRENT_ZONE, zoneToEdit.radiusInMeters);
 
+        float radiusMultiplier = zoneToEdit.radiusInMeters / 18;
+
         // Move the map so that it is centered on the initial circle
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CURRENT_ZONE, 20.0f));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CURRENT_ZONE, 20.0f - radiusMultiplier));
 
         drawExistingZonesToMap();
         enableCurrentLocation();
