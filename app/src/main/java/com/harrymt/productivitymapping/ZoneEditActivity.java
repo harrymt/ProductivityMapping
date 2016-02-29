@@ -59,6 +59,15 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
         // Get the zone that is passed in here.
         Intent dataSentHere = getIntent(); Bundle data = dataSentHere.getExtras();
         zoneToEdit = data.getParcelable("zone");
+
+        // If its a new zone
+        if(zoneToEdit != null) {
+            if (zoneToEdit.zoneID == -1) {
+                this.setTitle("Create new zone");
+            } else {
+                this.setTitle("Edit zone");
+            }
+        }
     }
 
     int REQUEST_CODE_SET_ZONE_PREFS = 3212;

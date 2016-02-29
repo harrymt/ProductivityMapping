@@ -23,6 +23,9 @@ public class ZonePreferenceEdit extends Activity {
         keywords.setText(z.keywordsAsStr());
         EditText name = (EditText) findViewById(R.id.etZoneName);
         name.setText(z.name);
+
+
+        this.setTitle("Set zone preferences");
     }
 
     // Send data back in an intent
