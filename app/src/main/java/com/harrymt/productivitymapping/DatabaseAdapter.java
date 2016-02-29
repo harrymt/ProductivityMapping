@@ -147,6 +147,11 @@ public class DatabaseAdapter
     /** ------ Database interactions ------ **/
 
 
+    public void deleteZone(int id) {
+        db.execSQL("DELETE FROM " + ZONE_TABLE
+                + " WHERE " + ZONE_KEY_ID + "=" + id + ";");
+    }
+
     /**
      * Read all the Zones from the Zone Table database.
      */

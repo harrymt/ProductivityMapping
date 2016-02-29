@@ -38,6 +38,7 @@
 
         <EditText
             android:text="com.harrymt.sendnotification,com.google.android.gm"
+            android:hint="com.google.android.gm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/etPackage"

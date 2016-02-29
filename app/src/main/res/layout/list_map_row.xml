@@ -48,10 +48,24 @@
         map:mapType="none"
         android:layout_marginBottom="20dp"/>
 
-    <Button
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:map="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Edit"
-        android:id="@+id/btnEditZone"/>
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:paddingTop="5dp">
 
+        <Button
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:text="Edit"
+            android:id="@+id/btnEditZone"/>
+
+        <Button
+            android:text="Delete"
+            android:id="@+id/btnDeleteZone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        </LinearLayout>
 </LinearLayout>

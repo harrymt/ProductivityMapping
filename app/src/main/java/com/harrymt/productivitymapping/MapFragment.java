@@ -1,7 +1,9 @@
 package com.harrymt.productivitymapping;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -97,6 +99,7 @@ public class MapFragment extends Fragment {
                 holder.appsToBlock = (TextView) row.findViewById(R.id.tvZoneAppsToBlock);
                 holder.keywords = (TextView) row.findViewById(R.id.tvZoneKeywords);
                 holder.editZone = (Button) row.findViewById(R.id.btnEditZone);
+                holder.deleteZone = (Button) row.findViewById(R.id.btnDeleteZone);
 
 
                 // Set holder as tag for row for more efficient access.
@@ -136,7 +139,7 @@ public class MapFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     // Get the zone object, saved in the tag!
-                    ViewHolder vh = (ViewHolder) ((View) v.getParent()).getTag();
+                    ViewHolder vh = (ViewHolder) ((View) v.getParent().getParent()).getTag();
                     Zone z = (Zone) vh.mapView.getTag();
 
                     // start set zone activity, for this current zone
@@ -146,8 +149,55 @@ public class MapFragment extends Fragment {
                 }
             });
 
+
+            // setup on click for edit zone button
+            holder.deleteZone.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    // Get the zone object, saved in the tag!
+                    ViewHolder vh = (ViewHolder) ((View) v.getParent().getParent()).getTag();
+                    final Zone z = (Zone) vh.mapView.getTag();
+
+                    // Show dialog box for this zone
+                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which){
+                                case DialogInterface.BUTTON_POSITIVE:
+                                    // Delete the zone
+                                    DatabaseAdapter dbAdapter = new DatabaseAdapter(getContext());
+                                    dbAdapter.open(); // Open it for writing
+                                    dbAdapter.deleteZone(z.zoneID);
+                                    dbAdapter.close();
+
+                                    // Reload the listview
+                                    loadZonesToListView();
+
+                                    dialog.dismiss();
+                                    break;
+
+                                case DialogInterface.BUTTON_NEGATIVE:
+                                    dialog.dismiss();
+                                    break;
+                            }
+                        }
+                    };
+
+                    // Actually show the dialog box
+                    AlertDialog.Builder ab = new AlertDialog.Builder(v.getContext());
+                    ab.setMessage("Are you sure to delete?")
+                            .setPositiveButton("Yes", dialogClickListener)
+                            .setNegativeButton("No", dialogClickListener).show();
+
+
+                }
+            });
+
             return row;
         }
+
 
 
         /**
@@ -226,6 +276,7 @@ public class MapFragment extends Fragment {
         TextView keywords;
 
         Button editZone;
+        Button deleteZone;
 
         GoogleMap map;
 
