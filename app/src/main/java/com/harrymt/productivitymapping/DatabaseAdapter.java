@@ -37,7 +37,7 @@ public class DatabaseAdapter
             ZONE_KEY_RADIUS + " REAL, " +
             ZONE_KEY_NAME + " TEXT, " +
             ZONE_KEY_AUTO_START_STOP + " INTEGER, " +
-            ZONE_KEY_BLOCKING_APPS + " INTEGER, " +
+            ZONE_KEY_BLOCKING_APPS + " TEXT, " +
             ZONE_KEY_KEYWORDS + " TEXT " +
         ");";
 
@@ -101,7 +101,7 @@ public class DatabaseAdapter
     private static class DatabaseHelper extends SQLiteOpenHelper {
 
         public DatabaseHelper(Context context) {
-            super(context, "userData", null, 11);
+            super(context, "userData", null, 12);
         }
 
         @Override
