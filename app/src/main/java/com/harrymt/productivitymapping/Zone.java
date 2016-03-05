@@ -10,6 +10,8 @@ public class Zone implements Parcelable {
     static String uniqueDelimiter = "_%@%_";
     int zoneID;
 
+    int hasSynced; // if zone has been synced with server
+
     double lat;
     double lng;
     float radiusInMeters;
@@ -62,16 +64,17 @@ public class Zone implements Parcelable {
     }
 
     public Zone(double lt, double lg, float r) {
-        this(-1, lt, lg, r, "default zone", 0, new String[] {}, new String[] {});
+        this(-1, lt, lg, r, "default zone", 0, 0, new String[] {}, new String[] {});
     }
 
-    public Zone(int id, double lt, double lg, float r, String nm, int auto, String[] appsToBlock, String[] words) {
+    public Zone(int id, double lt, double lg, float r, String nm, int auto, int synced, String[] appsToBlock, String[] words) {
         zoneID = id;
         lat = lt;
         lng = lg;
         radiusInMeters = r;
         name = nm;
         autoStartStop = auto;
+        hasSynced = synced;
         blockingApps = appsToBlock;
         keywords = words;
     }
@@ -85,6 +88,8 @@ public class Zone implements Parcelable {
 
         name = in.readString();
         autoStartStop = in.readInt();
+        hasSynced= in.readInt();
+
         blockingApps = in.createStringArray();
         keywords = in.createStringArray();
     }
@@ -106,6 +111,7 @@ public class Zone implements Parcelable {
         out.writeFloat(radiusInMeters);
         out.writeString(name);
         out.writeInt(autoStartStop);
+        out.writeInt(hasSynced);
         out.writeStringArray(blockingApps);
         out.writeStringArray(keywords);
     }

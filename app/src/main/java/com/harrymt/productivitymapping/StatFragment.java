@@ -44,10 +44,10 @@ public class StatFragment extends Fragment {
         final TextView tvBlockedAppsStats = (TextView) v.findViewById(R.id.tvBlockedAppsStats);
         final TextView tvKeywordsStats = (TextView) v.findViewById(R.id.tvKeywordsStats);
 
-        String base_url = "http://horizab1.miniserver.com/~harry/server/ProductivityMapping-Server/api/v1";
+
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        queue.add(makeJSONrequest(base_url + "/apps/3", tvBlockedAppsStats));
-        queue.add(makeJSONrequest(base_url + "/keywords/3", tvKeywordsStats));
+        queue.add(makeJSONrequest(ProjectStates.base_url + "/apps/3", tvBlockedAppsStats));
+        queue.add(makeJSONrequest(ProjectStates.base_url + "/keywords/3", tvKeywordsStats));
     }
 
     private JsonObjectRequest makeJSONrequest(String url, final TextView tv) {
@@ -75,7 +75,7 @@ public class StatFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 // TODO Auto-generated method stub
-                tv.setText("Can't get stats, please connect to the internet and try again later.");
+                tv.setText(" Can't get stats, please connect to the internet and try again later. " + error.getMessage()); // TODO remove this error.getMessage
             }
         });
     }

@@ -57,11 +57,13 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -716,10 +718,60 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         startActivity(new Intent(this, LastSession.class));
     }
 
-    public void syncWithServer(View view) {
-        Toast.makeText(this, "Syncing with server", Toast.LENGTH_SHORT).show();
-        // TODO sync
-        Toast.makeText(this, "Sync successful", Toast.LENGTH_SHORT).show();
+    public void syncWithServer(View view) throws JSONException {
+
+        DatabaseAdapter dbAdapter;
+        dbAdapter = new DatabaseAdapter(getApplicationContext()); // Open and prepare the database
+        dbAdapter.open();
+        ArrayList<Zone> zones = dbAdapter.getAllZonesThatNeedToBeSynced();
+        dbAdapter.close();
+        Toast.makeText(getApplicationContext(), "Found " + zones.size() + " zones to sync!", Toast.LENGTH_SHORT).show();
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        // Send all the zones!
+        for (Zone z : zones) {
+            Toast.makeText(getApplicationContext(), "Sending Zone " + z.name, Toast.LENGTH_SHORT).show();
+
+            JSONObject payload = new JSONObject();
+            payload.put("user_id", ProjectStates.getUniqueDeviceId(this));
+            payload.put("id", z.zoneID);
+            payload.put("name", z.name);
+            payload.put("lat", z.lat);
+            payload.put("lng", z.lng);
+            payload.put("radius", z.radiusInMeters);
+            payload.put("blockingApps", new JSONArray(new ArrayList<>(Arrays.asList(z.blockingApps))));
+            payload.put("keywords", new JSONArray(new ArrayList<>(Arrays.asList(z.keywords))));
+            queue.add(makeJSONRequest(ProjectStates.base_url + "/zone/", payload, z.zoneID));
+        }
     }
 
+    private JsonObjectRequest makeJSONRequest(String url, final JSONObject payload, final int zone_id) {
+        return new JsonObjectRequest(Request.Method.POST, url, payload, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                String friendlyResponse = "";
+
+                try {
+                    friendlyResponse = response.get("success").toString();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                Toast.makeText(getApplicationContext(), "Sync successful " + friendlyResponse, Toast.LENGTH_SHORT).show();
+
+                // Mark that zone as sync'd
+                DatabaseAdapter dbAdapter;
+                dbAdapter = new DatabaseAdapter(getApplicationContext()); // Open and prepare the database
+                dbAdapter.open();
+                dbAdapter.setZoneAsSynced(zone_id);
+                dbAdapter.close();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), "Failed to sync " + error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
 }

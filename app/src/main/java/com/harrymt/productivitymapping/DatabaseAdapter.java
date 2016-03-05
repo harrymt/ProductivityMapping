@@ -24,9 +24,12 @@ public class DatabaseAdapter
         public static final String ZONE_KEY_RADIUS = "radius";
         public static final String ZONE_KEY_NAME = "name";
         public static final String ZONE_KEY_AUTO_START_STOP = "autoStartStop";
+        public static final String ZONE_KEY_HAS_SYNCED= "hasSynced"; // 1 it has, 0 is hasnt
+
         // TODO possibly want to extract these 2 into another table..?
         public static final String ZONE_KEY_BLOCKING_APPS = "blockingApps";
         public static final String ZONE_KEY_KEYWORDS = "keywords";
+
 
 
     private static final String SQLITE_CREATE_TABLE_ZONE =
@@ -37,6 +40,7 @@ public class DatabaseAdapter
             ZONE_KEY_RADIUS + " REAL, " +
             ZONE_KEY_NAME + " TEXT, " +
             ZONE_KEY_AUTO_START_STOP + " INTEGER, " +
+            ZONE_KEY_HAS_SYNCED + " INTEGER, " +
             ZONE_KEY_BLOCKING_APPS + " TEXT, " +
             ZONE_KEY_KEYWORDS + " TEXT " +
         ");";
@@ -101,7 +105,7 @@ public class DatabaseAdapter
     private static class DatabaseHelper extends SQLiteOpenHelper {
 
         public DatabaseHelper(Context context) {
-            super(context, "userData", null, 12);
+            super(context, "userData", null, 13);
         }
 
         @Override
@@ -152,6 +156,44 @@ public class DatabaseAdapter
                 + " WHERE " + ZONE_KEY_ID + "=" + id + ";");
     }
 
+
+    /**
+     * Get all zones that have their synced flag as 0
+     */
+    public ArrayList<Zone> getAllZonesThatNeedToBeSynced()
+    {
+        Cursor c = db.query(ZONE_TABLE, new String[] {
+                ZONE_KEY_ID,
+                ZONE_KEY_NAME,
+                ZONE_KEY_RADIUS,
+                ZONE_KEY_LAT,
+                ZONE_KEY_LNG,
+                ZONE_KEY_HAS_SYNCED,
+                ZONE_KEY_BLOCKING_APPS,
+                ZONE_KEY_KEYWORDS
+        }, ZONE_KEY_HAS_SYNCED + "=0", null, null, null, null);
+
+        ArrayList<Zone> zones = new ArrayList<>();
+        if(c.moveToFirst()) {
+            while (c.moveToNext()) {
+                int id = c.getInt(c.getColumnIndex(ZONE_KEY_ID));
+                String name = c.getString(c.getColumnIndex(ZONE_KEY_NAME));
+                float radius = c.getFloat(c.getColumnIndex(ZONE_KEY_RADIUS));
+                double lat = c.getDouble(c.getColumnIndex(ZONE_KEY_LAT));
+                double lng = c.getDouble(c.getColumnIndex(ZONE_KEY_LNG));
+                int hasSynced = c.getInt(c.getColumnIndex(ZONE_KEY_HAS_SYNCED));
+                String[] blockingApps = Zone.stringToArray(c.getString(c.getColumnIndex(ZONE_KEY_BLOCKING_APPS)));
+                String[] keywords = Zone.stringToArray(c.getString(c.getColumnIndex(ZONE_KEY_KEYWORDS)));
+
+                Zone z = new Zone(id, lat, lng, radius, name, -1, hasSynced, blockingApps, keywords);
+                zones.add(z);
+            }
+        }
+        c.close();
+
+        return zones;
+    }
+
     /**
      * Read all the Zones from the Zone Table database.
      */
@@ -164,6 +206,7 @@ public class DatabaseAdapter
                 ZONE_KEY_LAT,
                 ZONE_KEY_LNG,
                 ZONE_KEY_AUTO_START_STOP,
+                ZONE_KEY_HAS_SYNCED,
                 ZONE_KEY_BLOCKING_APPS,
                 ZONE_KEY_KEYWORDS
         }, null, null, null, null, null);
@@ -178,10 +221,11 @@ public class DatabaseAdapter
                 double lat = c.getDouble(c.getColumnIndex(ZONE_KEY_LAT));
                 double lng = c.getDouble(c.getColumnIndex(ZONE_KEY_LNG));
                 int autoStart = c.getInt(c.getColumnIndex(ZONE_KEY_AUTO_START_STOP));
+                int hasSynced = c.getInt(c.getColumnIndex(ZONE_KEY_HAS_SYNCED));
                 String[] blockingApps = Zone.stringToArray(c.getString(c.getColumnIndex(ZONE_KEY_BLOCKING_APPS)));
                 String[] keywords = Zone.stringToArray(c.getString(c.getColumnIndex(ZONE_KEY_KEYWORDS)));
 
-                Zone z = new Zone(id, lat, lng, radius, name, autoStart, blockingApps, keywords);
+                Zone z = new Zone(id, lat, lng, radius, name, autoStart, hasSynced, blockingApps, keywords);
                 zones.add(z);
             }
         }
@@ -202,6 +246,7 @@ public class DatabaseAdapter
                 + ZONE_KEY_LAT + ","
                 + ZONE_KEY_LNG + ","
                 + ZONE_KEY_AUTO_START_STOP + ","
+                + ZONE_KEY_HAS_SYNCED + ","
                 + ZONE_KEY_BLOCKING_APPS + ","
                 + ZONE_KEY_KEYWORDS
                 + ") "
@@ -211,9 +256,10 @@ public class DatabaseAdapter
                 + zone.radiusInMeters + ", "
                 + zone.lat + ", "
                 + zone.lng + ", "
-                + zone.autoStartStop + ", '"
-                + zone.blockingAppsAsStr() + "', '"
-                + zone.keywordsAsStr()
+                + zone.autoStartStop + ", "
+                + zone.hasSynced + ", "
+                + "'" + zone.blockingAppsAsStr() + "', "
+                + "'" + zone.keywordsAsStr()
                 + "');");
     }
 
@@ -230,12 +276,29 @@ public class DatabaseAdapter
                 + ZONE_KEY_LAT + "=" + zone.lat + ", "
                 + ZONE_KEY_LNG + "=" + zone.lng + ", "
                 + ZONE_KEY_AUTO_START_STOP + "=" + zone.autoStartStop + ", "
+                + ZONE_KEY_HAS_SYNCED + "=" + zone.hasSynced + ", "
                 + ZONE_KEY_BLOCKING_APPS + "='" + zone.blockingAppsAsStr() + "', "
                 + ZONE_KEY_KEYWORDS + "='" + zone.keywordsAsStr() + "'"
                 + " WHERE "
                 + ZONE_KEY_ID + " = " + zone.zoneID
                 + ";");
     }
+
+    /**
+     * Mark a zone as synced to the server.
+     *
+     * @param zone_id to mark as synced.
+     */
+    public void setZoneAsSynced(int zone_id)
+    {
+        db.execSQL("UPDATE " + ZONE_TABLE
+                + " SET "
+                + ZONE_KEY_HAS_SYNCED + "=" + 1
+                + " WHERE "
+                + ZONE_KEY_ID + " = " + zone_id
+                + ";");
+    }
+
 
     /**
      * Track the notification in a new Notification Table row,

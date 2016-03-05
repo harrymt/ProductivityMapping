@@ -1,5 +1,6 @@
 package com.harrymt.productivitymapping;
 
+import android.content.Context;
 import android.location.Location;
 
 /**
@@ -8,6 +9,8 @@ import android.location.Location;
 public class ProjectStates
 {
     public static boolean STUDYING = false;
+
+    public static String base_url = "http://horizab1.miniserver.com/~harry/server/ProductivityMapping-Server/api/v1";
 
     public static Integer SESSION_ID = 0;
     static boolean IS_DEBUG = false;
@@ -21,6 +24,10 @@ public class ProjectStates
     static Zone CURRENT_ZONE;
 
     static Location LAST_LOCATION;
+
+    public static String getUniqueDeviceId(Context c) {
+        return android.provider.Settings.Secure.getString(c.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+    }
 
     class Broadcasts
     {
