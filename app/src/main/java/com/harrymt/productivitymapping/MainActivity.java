@@ -742,7 +742,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             payload.put("radius", z.radiusInMeters);
             payload.put("blockingApps", new JSONArray(new ArrayList<>(Arrays.asList(z.blockingApps))));
             payload.put("keywords", new JSONArray(new ArrayList<>(Arrays.asList(z.keywords))));
-            queue.add(makeJSONRequest(ProjectStates.base_url + "/zone/", payload, z.zoneID));
+            queue.add(makeJSONRequest(ProjectStates.base_url + "/zone/" + ProjectStates.apiKey(), payload, z.zoneID));
         }
     }
 

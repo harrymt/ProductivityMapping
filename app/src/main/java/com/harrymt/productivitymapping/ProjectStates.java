@@ -25,6 +25,12 @@ public class ProjectStates
 
     static Location LAST_LOCATION;
 
+    public static String apiKey() {
+        return "?apikey=" + secret_key;
+    }
+
+    private static String secret_key = "abc123"; // TODO change me to actual api key
+
     public static String getUniqueDeviceId(Context c) {
         return android.provider.Settings.Secure.getString(c.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
     }
