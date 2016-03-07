@@ -33,7 +33,7 @@ public class AppUsagePoller extends AccessibilityService
         super.onServiceConnected();
         Log.d(TAG, "onServiceConnected");
 
-        if (ProjectStates.IS_DEBUG) Toast.makeText(getApplicationContext(), "Starting service", Toast.LENGTH_SHORT).show();
+        if (PROJECT_GLOBALS.IS_DEBUG) Toast.makeText(getApplicationContext(), "Starting service", Toast.LENGTH_SHORT).show();
         packageLastOpened = "com.started.service"; // Set initial package so we know
         timeLastOpened = System.nanoTime() / 1000000; // Set now as the time TODO should this be set to EPOCH time?
     }
@@ -56,7 +56,7 @@ public class AppUsagePoller extends AccessibilityService
             // Broadcast app usage
             // TODO should we remove this?
             // TODO use content provider
-            Intent intent = new Intent(ProjectStates.Broadcasts.APP_USAGE);
+            Intent intent = new Intent(PROJECT_GLOBALS.Broadcasts.APP_USAGE);
             intent.putExtra("app_package", packageLastOpened);
             intent.putExtra("app_time_seconds", timeSpentInSeconds);
             LocalBroadcastManager.getInstance(AppUsagePoller.this).sendBroadcast(intent);

@@ -10,7 +10,6 @@ import android.os.IBinder;
 import android.service.notification.StatusBarNotification;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,8 +20,8 @@ public class NotificationHandlerService extends Service {
     private static String TAG = "NotificationHandlerService";
 
     // Setup broadcasters
-    private IntentFilter notificationPostedIntentFilter = new IntentFilter(ProjectStates.Broadcasts.NOTIFICATION_POSTED);
-    private IntentFilter appUsageIntentFilter = new IntentFilter(ProjectStates.Broadcasts.APP_USAGE);
+    private IntentFilter notificationPostedIntentFilter = new IntentFilter(PROJECT_GLOBALS.Broadcasts.NOTIFICATION_POSTED);
+    private IntentFilter appUsageIntentFilter = new IntentFilter(PROJECT_GLOBALS.Broadcasts.APP_USAGE);
     final private NotificationReceiver notificationReceiver = new NotificationReceiver();
     final private AppUsageReceiver appUsageReceiver = new AppUsageReceiver();
 

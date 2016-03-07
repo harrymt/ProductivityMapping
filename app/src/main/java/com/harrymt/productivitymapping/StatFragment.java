@@ -46,8 +46,8 @@ public class StatFragment extends Fragment {
 
 
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        queue.add(makeJSONrequest(ProjectStates.base_url + "/apps/3" + ProjectStates.apiKey(), tvBlockedAppsStats));
-        queue.add(makeJSONrequest(ProjectStates.base_url + "/keywords/3" + ProjectStates.apiKey(), tvKeywordsStats));
+        queue.add(makeJSONrequest(PROJECT_GLOBALS.base_url + "/apps/3" + PROJECT_GLOBALS.apiKey(getContext()), tvBlockedAppsStats));
+        queue.add(makeJSONrequest(PROJECT_GLOBALS.base_url + "/keywords/3" + PROJECT_GLOBALS.apiKey(getContext()), tvKeywordsStats));
     }
 
     private JsonObjectRequest makeJSONrequest(String url, final TextView tv) {

@@ -1,33 +1,23 @@
 package com.harrymt.productivitymapping;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.service.notification.StatusBarNotification;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.ListFragment;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,15 +35,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.Geofence;
-import com.google.android.gms.location.GeofenceStatusCodes;
-import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 
 
@@ -65,9 +48,6 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
@@ -180,7 +160,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         if (Settings.Secure.getString(this.getContentResolver(), "enabled_notification_listeners") != null &&
                 Settings.Secure.getString(this.getContentResolver(), "enabled_notification_listeners").contains(getApplicationContext().getPackageName())) {
             //service is enabled do something
-            if (ProjectStates.IS_DEBUG) Toast.makeText(MainActivity.this, "Can listen to notifications", Toast.LENGTH_SHORT).show();
+            if (PROJECT_GLOBALS.IS_DEBUG) Toast.makeText(MainActivity.this, "Can listen to notifications", Toast.LENGTH_SHORT).show();
         } else {
             //service is not enabled try to enabled by calling...
             startActivity(new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS));
@@ -359,7 +339,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 }
                 dbAdapter.close();
 
-                if (ProjectStates.IS_DEBUG) Toast.makeText(MainActivity.this, "Zone data: packages(" + z.blockingApps.toString() + "), keywords(" + z.keywords.toString() + "), r(" + z.radiusInMeters + "), LatLng(" + z.lat + "," + z.lng + ")", Toast.LENGTH_SHORT).show();
+                if (PROJECT_GLOBALS.IS_DEBUG) Toast.makeText(MainActivity.this, "Zone data: packages(" + z.blockingApps.toString() + "), keywords(" + z.keywords.toString() + "), r(" + z.radiusInMeters + "), LatLng(" + z.lat + "," + z.lng + ")", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -371,12 +351,12 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
     public void startCurrentZone(View view) {
         // Enable study state
-        ProjectStates.STUDYING = true;
+        PROJECT_GLOBALS.STUDYING = true;
 
-        ProjectStates.CURRENT_ZONE = getCurrentZone();
+        PROJECT_GLOBALS.CURRENT_ZONE = getCurrentZone();
 
         // Get the current Zone ID we are in!
-        Integer zoneID = ProjectStates.CURRENT_ZONE.zoneID;
+        Integer zoneID = PROJECT_GLOBALS.CURRENT_ZONE.zoneID;
         long startTime = System.currentTimeMillis() / 1000; // get current EPOCH time
 
         // Start a new session
@@ -408,10 +388,10 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
     public void forceStopStudy(View view) {
         // Disable study state
-        ProjectStates.STUDYING = false;
+        PROJECT_GLOBALS.STUDYING = false;
 
         // Reset settings
-        ProjectStates.CURRENT_ZONE = null;
+        PROJECT_GLOBALS.CURRENT_ZONE = null;
 
         // Store these!! TODO store me
         binder.getAllAppUsage();
@@ -587,7 +567,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
      * Updates the latitude, the longitude, and the last location time in the UI.
      */
     private void updateUI() {
-        if (ProjectStates.IS_DEBUG)  Toast.makeText(this, mLastUpdateTime + ". " + mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
+        if (PROJECT_GLOBALS.IS_DEBUG)  Toast.makeText(this, mLastUpdateTime + ". " + mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
 
     }
 
@@ -676,7 +656,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         mCurrentLocation = location;
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
         updateUI();
-        if (ProjectStates.IS_DEBUG) Toast.makeText(this, getResources().getString(R.string.location_updated_message), Toast.LENGTH_SHORT).show();
+        if (PROJECT_GLOBALS.IS_DEBUG) Toast.makeText(this, getResources().getString(R.string.location_updated_message), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -734,7 +714,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             Toast.makeText(getApplicationContext(), "Sending Zone " + z.name, Toast.LENGTH_SHORT).show();
 
             JSONObject payload = new JSONObject();
-            payload.put("user_id", ProjectStates.getUniqueDeviceId(this));
+            payload.put("user_id", PROJECT_GLOBALS.getUniqueDeviceId(this));
             payload.put("id", z.zoneID);
             payload.put("name", z.name);
             payload.put("lat", z.lat);
@@ -742,7 +722,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             payload.put("radius", z.radiusInMeters);
             payload.put("blockingApps", new JSONArray(new ArrayList<>(Arrays.asList(z.blockingApps))));
             payload.put("keywords", new JSONArray(new ArrayList<>(Arrays.asList(z.keywords))));
-            queue.add(makeJSONRequest(ProjectStates.base_url + "/zone/" + ProjectStates.apiKey(), payload, z.zoneID));
+            queue.add(makeJSONRequest(PROJECT_GLOBALS.base_url + "/zone/" + PROJECT_GLOBALS.apiKey(this), payload, z.zoneID));
         }
     }
 

@@ -314,7 +314,7 @@ public class DatabaseAdapter
                 + NOTIFICATION_KEY_SESSION_ID
                 + ") "
                 + "VALUES "
-                + "('" + n.getPackageName() + "', " + ProjectStates.SESSION_ID  + ");");
+                + "('" + n.getPackageName() + "', " + PROJECT_GLOBALS.SESSION_ID  + ");");
     }
 
 
@@ -336,7 +336,7 @@ public class DatabaseAdapter
                 + APPUSAGE_KEY_SESSION_ID
                 + ") "
                 + "VALUES "
-                + "('" + packageName + "', " + timeSpentInSeconds + ", " + ProjectStates.SESSION_ID + ");");
+                + "('" + packageName + "', " + timeSpentInSeconds + ", " + PROJECT_GLOBALS.SESSION_ID + ");");
     }
 
     /**
@@ -354,7 +354,7 @@ public class DatabaseAdapter
                 + "(" + zoneID + ", " + startTime + ");");
 
         // Set the project state session ID
-        ProjectStates.SESSION_ID = getLastSessionId();
+        PROJECT_GLOBALS.SESSION_ID = getLastSessionId();
     }
 
     private Integer getLastSessionId()

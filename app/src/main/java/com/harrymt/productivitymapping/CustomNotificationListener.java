@@ -39,7 +39,7 @@ public class CustomNotificationListener extends android.service.notification.Not
 
             // Dont actually *NEED* to broadcast the notification posted!
             // Broadcast that we received a block notification
-            Intent intent = new Intent(ProjectStates.Broadcasts.NOTIFICATION_POSTED);
+            Intent intent = new Intent(PROJECT_GLOBALS.Broadcasts.NOTIFICATION_POSTED);
             intent.putExtra("notification", notification);
             LocalBroadcastManager.getInstance(CustomNotificationListener.this).sendBroadcast(intent);
 
@@ -108,19 +108,19 @@ public class CustomNotificationListener extends android.service.notification.Not
      * @return True if we should block the notification, false if not.
      */
     public boolean shouldWeBlockThisNotification(StatusBarNotification sbn) {
-        if (!ProjectStates.STUDYING) {
+        if (!PROJECT_GLOBALS.STUDYING) {
             return false;
         }
 
         NotificationParts notification = new NotificationParts(sbn.getNotification(), sbn.getPackageName());
 
         // If a keyword matches, let it through
-        if (notification.containsKeywords(ProjectStates.CURRENT_ZONE.keywords)) {
+        if (notification.containsKeywords(PROJECT_GLOBALS.CURRENT_ZONE.keywords)) {
             // TODO keep track of # notifications received but not blocked based on keywords
             return false;
         }
 
         // If it matches the package, block it
-        return notification.containsPackage(ProjectStates.CURRENT_ZONE.blockingApps);
+        return notification.containsPackage(PROJECT_GLOBALS.CURRENT_ZONE.blockingApps);
     }
 }
