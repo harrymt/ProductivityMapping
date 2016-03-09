@@ -1,4 +1,4 @@
-package com.harrymt.productivitymapping;
+package com.harrymt.productivitymapping.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,6 +13,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.harrymt.productivitymapping.PROJECT_GLOBALS;
+import com.harrymt.productivitymapping.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,8 +48,8 @@ public class StatFragment extends Fragment {
 
 
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        queue.add(makeJSONrequest(PROJECT_GLOBALS.base_url + "/apps/3" + PROJECT_GLOBALS.apiKey(getContext()), tvBlockedAppsStats));
-        queue.add(makeJSONrequest(PROJECT_GLOBALS.base_url + "/keywords/3" + PROJECT_GLOBALS.apiKey(getContext()), tvKeywordsStats));
+        queue.add(makeJSONrequest(PROJECT_GLOBALS.base_url(getContext()) + "/apps/3" + PROJECT_GLOBALS.apiKey(getContext()), tvBlockedAppsStats));
+        queue.add(makeJSONrequest(PROJECT_GLOBALS.base_url(getContext()) + "/keywords/3" + PROJECT_GLOBALS.apiKey(getContext()), tvKeywordsStats));
     }
 
     private JsonObjectRequest makeJSONrequest(String url, final TextView tv) {
@@ -55,19 +57,31 @@ public class StatFragment extends Fragment {
         return new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                String statsString = "";
-                for (Iterator<String> iter = response.keys(); iter.hasNext(); ) {
-                    String element = iter.next();
-                    String value = "";
-                    try {
-                        value = response.get(element).toString();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        value = "error";
+                JSONObject response_value;
+                try {
+                    response_value = (JSONObject) response.get("response");
+
+                    String statsString = "";
+                    for (Iterator<String> iter = response_value.keys(); iter.hasNext(); ) {
+                        String element = iter.next();
+                        String value = "";
+                        try {
+                            value = response_value.get(element).toString();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            value = "error";
+                        }
+                        statsString += element + ": " + value + "\n";
                     }
-                    statsString += element + ": " + value + "\n";
+                    tv.setText(statsString);
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    tv.setText(e.getMessage());
                 }
-                tv.setText(statsString);
+
+
 
             }
         }, new Response.ErrorListener() {

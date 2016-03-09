@@ -8,7 +8,8 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    tools:context="com.harrymt.productivitymapping.ZonePreferenceEdit">
+    tools:context=".activities.ZonePreferenceEdit"
+    android:focusableInTouchMode="true">
 
     <Button
         android:text="Set"
@@ -16,54 +17,42 @@
         android:layout_width="match_parent"
         android:layout_height="50dp" />
 
-    <TextView
-        android:text="Zone Name"
-        android:layout_width="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_height="wrap_content"/>
+    <EditText
+        android:text=""
+        android:hint="Zone name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/etZoneName"
+        android:inputType="text"/>
 
-        <EditText
-            android:text=""
-            android:hint="Zone name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/etZoneName"
-            android:inputType="text" />
-
-    <TextView
-        android:text="Apps to block"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-        <EditText
-            android:text="com.harrymt.sendnotification,com.google.android.gm"
-            android:hint="com.google.android.gm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/etPackage"
-            android:inputType="text" />
-
-    <TextView
-        android:text="Keywords to let through"
-        android:layout_width="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_height="wrap_content"/>
-
-        <EditText
-            android:text="IMPORTANT"
-            android:hint="Keywords"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/etKeywords"
-            android:inputType="text" />
+    <EditText
+        android:text="IMPORTANT"
+        android:hint="Keywords"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/etKeywords"
+        android:inputType="text"/>
 
     <CheckBox
-        android:text="Auto Start/Stop on Enter/Exit"
+        android:text="Auto start"
         android:id="@+id/cbAutoStartStop"
         android:layout_width="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_height="wrap_content"/>
+
+    <TextView
+        android:text="Block"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"/>
+
+    <ListView
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/lvAppsToBlock"
+        android:layout_gravity="center_horizontal" />
 
 
 </LinearLayout>

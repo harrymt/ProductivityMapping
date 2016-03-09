@@ -1,4 +1,4 @@
-package com.harrymt.productivitymapping;
+package com.harrymt.productivitymapping.activities;
 
 import android.Manifest;
 import android.content.Intent;
@@ -9,17 +9,13 @@ import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.View;
 import android.support.v4.app.FragmentActivity;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -32,9 +28,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.ui.IconGenerator;
+import com.harrymt.productivitymapping.database.DatabaseAdapter;
+import com.harrymt.productivitymapping.R;
+import com.harrymt.productivitymapping.Zone;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 
 public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMarkerDragListener,

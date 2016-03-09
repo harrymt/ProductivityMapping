@@ -1,10 +1,13 @@
-package com.harrymt.productivitymapping;
+package com.harrymt.productivitymapping.services;
 
 import android.app.Notification;
 import android.content.Intent;
 import android.service.notification.StatusBarNotification;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+
+import com.harrymt.productivitymapping.database.DatabaseAdapter;
+import com.harrymt.productivitymapping.PROJECT_GLOBALS;
 
 /**
  *

@@ -1,14 +1,19 @@
-package com.harrymt.productivitymapping;
+package com.harrymt.productivitymapping.database;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 
+import com.harrymt.productivitymapping.PROJECT_GLOBALS;
+import com.harrymt.productivitymapping.Zone;
+
 import java.util.ArrayList;
+
+// Import the database schema
+import static com.harrymt.productivitymapping.database.DatabaseSchema.*;
 
 public class DatabaseAdapter
 {
@@ -17,118 +22,9 @@ public class DatabaseAdapter
     // https://developer.android.com/training/basics/data-storage/databases.html
     // TODO move to a contract and add implement the BaseColumns class.
 
-    private static final String ZONE_TABLE = "zoneTbl";
-        public static final String ZONE_KEY_ID = "id";
-        public static final String ZONE_KEY_LAT = "lat";
-        public static final String ZONE_KEY_LNG = "lng";
-        public static final String ZONE_KEY_RADIUS = "radius";
-        public static final String ZONE_KEY_NAME = "name";
-        public static final String ZONE_KEY_AUTO_START_STOP = "autoStartStop";
-        public static final String ZONE_KEY_HAS_SYNCED= "hasSynced"; // 1 it has, 0 is hasnt
-
-        // TODO possibly want to extract these 2 into another table..?
-        public static final String ZONE_KEY_BLOCKING_APPS = "blockingApps";
-        public static final String ZONE_KEY_KEYWORDS = "keywords";
-
-
-
-    private static final String SQLITE_CREATE_TABLE_ZONE =
-        "CREATE TABLE if not exists " + ZONE_TABLE + " (" +
-            ZONE_KEY_ID + " INTEGER PRIMARY KEY autoincrement," +
-            ZONE_KEY_LAT + " REAL, " +
-            ZONE_KEY_LNG + " REAL, " +
-            ZONE_KEY_RADIUS + " REAL, " +
-            ZONE_KEY_NAME + " TEXT, " +
-            ZONE_KEY_AUTO_START_STOP + " INTEGER, " +
-            ZONE_KEY_HAS_SYNCED + " INTEGER, " +
-            ZONE_KEY_BLOCKING_APPS + " TEXT, " +
-            ZONE_KEY_KEYWORDS + " TEXT " +
-        ");";
-
-
-    private static final String SESSION_TABLE = "sessionTbl";
-        public static final String SESSION_KEY_ID = "id";
-        public static final String SESSION_KEY_ZONE_ID = "zoneId";
-        public static final String SESSION_KEY_START_TIME = "startTime";
-        public static final String SESSION_KEY_STOP_TIME = "stopTime";
-        public static final String SESSION_KEY_PRODUCTIVITY_PERCENTAGE = "productivityPercentage";
-
-
-    private static final String SQLITE_CREATE_TABLE_SESSION =
-        "CREATE TABLE if not exists " + SESSION_TABLE + " (" +
-            SESSION_KEY_ID + " INTEGER PRIMARY KEY autoincrement," +
-            SESSION_KEY_ZONE_ID + " INTEGER, " +
-            SESSION_KEY_START_TIME + " INTEGER, " +
-            SESSION_KEY_STOP_TIME + " INTEGER, " +
-            SESSION_KEY_PRODUCTIVITY_PERCENTAGE + " REAL " +
-        ");";
-
-
-    private static final String APPUSAGE_TABLE = "appUsageTbl";
-        public static final String APPUSAGE_KEY_ID = "id";
-        public static final String APPUSAGE_KEY_SESSION_ID = "sessionId";
-        public static final String APPUSAGE_KEY_APP_PACKAGE_NAME = "packageName";
-        public static final String APPUSAGE_KEY_TIME_SPENT = "timeSpent"; // in seconds
-        public static final String APPUSAGE_KEY_CATEGORY = "category";
-
-        // TODO add other appCharacteristics
-
-    private static final String SQLITE_CREATE_TABLE_APPUSAGE =
-        "CREATE TABLE if not exists " + APPUSAGE_TABLE + " (" +
-            APPUSAGE_KEY_ID + " INTEGER PRIMARY KEY autoincrement," +
-            APPUSAGE_KEY_SESSION_ID + " INTEGER, " +
-            APPUSAGE_KEY_APP_PACKAGE_NAME + " TEXT, " +
-            APPUSAGE_KEY_TIME_SPENT + " INTEGER, " +
-            APPUSAGE_KEY_CATEGORY + " TEXT " +
-        ");";
-
-
-    private static final String NOTIFICATION_TABLE = "notificationTbl";
-    public static final String NOTIFICATION_KEY_ID = "id";
-    public static final String NOTIFICATION_KEY_SESSION_ID = "sessionId";
-        public static final String NOTIFICATION_KEY_PACKAGE = "package";
-        // TODO add other notification characteristics
-        // public static final String NOTIFICATION_KEY_ICON = "icon";
-
-
-    private static final String SQLITE_CREATE_TABLE_NOTIFICATION =
-        "CREATE TABLE if not exists " + NOTIFICATION_TABLE + " (" +
-            NOTIFICATION_KEY_ID + " INTEGER PRIMARY KEY autoincrement," +
-            NOTIFICATION_KEY_SESSION_ID + " INTEGER, " +
-            NOTIFICATION_KEY_PACKAGE + " TEXT " +
-        ");";
-
     private DatabaseHelper dbHelper;
     public SQLiteDatabase db;
     private Context context;
-
-    private static class DatabaseHelper extends SQLiteOpenHelper {
-
-        public DatabaseHelper(Context context) {
-            super(context, "userData", null, 13);
-        }
-
-        @Override
-        public void onCreate(SQLiteDatabase db) {
-            Log.d("g53ids", "onCreate");
-            // Create tables
-            db.execSQL(SQLITE_CREATE_TABLE_ZONE);
-            db.execSQL(SQLITE_CREATE_TABLE_SESSION);
-            db.execSQL(SQLITE_CREATE_TABLE_APPUSAGE);
-            db.execSQL(SQLITE_CREATE_TABLE_NOTIFICATION);
-        }
-
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            Log.d("g53ids", "onUpgrade() - UPGRADING DATABASE FROM: " + oldVersion + " TO NEWVERSION: " + newVersion);
-
-            db.execSQL("DROP TABLE IF EXISTS " + ZONE_TABLE);
-            db.execSQL("DROP TABLE IF EXISTS " + SESSION_TABLE);
-            db.execSQL("DROP TABLE IF EXISTS " + APPUSAGE_TABLE);
-            db.execSQL("DROP TABLE IF EXISTS " + NOTIFICATION_TABLE);
-            onCreate(db);
-        }
-    }
 
     public DatabaseAdapter(Context context) {
         this.context = context;
@@ -145,10 +41,6 @@ public class DatabaseAdapter
             dbHelper.close();
         }
     }
-
-
-
-    /** ------ Database interactions ------ **/
 
 
     public void deleteZone(int id) {

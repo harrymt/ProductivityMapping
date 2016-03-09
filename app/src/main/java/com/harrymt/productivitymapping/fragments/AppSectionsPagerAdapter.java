@@ -1,8 +1,12 @@
-package com.harrymt.productivitymapping;
+package com.harrymt.productivitymapping.fragments;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+
+import com.harrymt.productivitymapping.fragments.StatFragment;
+import com.harrymt.productivitymapping.fragments.TrackFragment;
+import com.harrymt.productivitymapping.fragments.ZonesFragment;
 
 /**
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to one of the primary

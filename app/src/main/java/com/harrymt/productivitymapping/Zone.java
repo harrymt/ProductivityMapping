@@ -8,18 +8,18 @@ import android.os.Parcelable;
  */
 public class Zone implements Parcelable {
     static String uniqueDelimiter = "_%@%_";
-    int zoneID;
+    public int zoneID;
 
-    int hasSynced; // if zone has been synced with server
+    public int hasSynced; // if zone has been synced with server
 
-    double lat;
-    double lng;
-    float radiusInMeters;
+    public double lat;
+    public double lng;
+    public float radiusInMeters;
 
-    String name;
-    int autoStartStop; // 0: false, 1: true
-    String[] blockingApps = new String[] {};
-    String[] keywords = new String[] {};
+    public String name;
+    public int autoStartStop; // 0: false, 1: true
+    public String[] blockingApps = new String[] {};
+    public String[] keywords = new String[] {};
 
     /**
      * Utility function to convert a String separated by the unqiue delimited back into a String.

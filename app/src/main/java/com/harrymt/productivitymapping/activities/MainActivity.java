@@ -1,4 +1,4 @@
-package com.harrymt.productivitymapping;
+package com.harrymt.productivitymapping.activities;
 
 import android.Manifest;
 import android.app.Notification;
@@ -38,6 +38,12 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+import com.harrymt.productivitymapping.fragments.AppSectionsPagerAdapter;
+import com.harrymt.productivitymapping.database.DatabaseAdapter;
+import com.harrymt.productivitymapping.PROJECT_GLOBALS;
+import com.harrymt.productivitymapping.R;
+import com.harrymt.productivitymapping.Zone;
+import com.harrymt.productivitymapping.services.NotificationHandlerService;
 
 
 import org.json.JSONArray;
@@ -48,6 +54,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
 
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
@@ -141,10 +148,43 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         buildGoogleApiClient();
 
 
+        // Cache the most commonly used keywords and packages blocked
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(makeJSONrequest(PROJECT_GLOBALS.base_url(this) + "/apps/3" + PROJECT_GLOBALS.apiKey(this)));
+
         // START SERVICES
         intentNotificationHandlerService = new Intent(this, NotificationHandlerService.class);
         startService(intentNotificationHandlerService);
         bindService(intentNotificationHandlerService, notificationHandlerConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    private JsonObjectRequest makeJSONrequest(String url) {
+        return new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                JSONObject response_value;
+                try {
+                    response_value = (JSONObject) response.get("response");
+
+                    PROJECT_GLOBALS.TOP_APPS_BLOCKED = new ArrayList<>();
+
+                    for (Iterator<String> iter = response_value.keys(); iter.hasNext(); ) {
+                        // Get the name of the top apps blocked
+                        PROJECT_GLOBALS.TOP_APPS_BLOCKED.add(iter.next());
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("g53ids", " Can't get stats, please connect to the internet and try again later. " + error.getMessage());
+            }
+        });
     }
 
     @Override
@@ -722,7 +762,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             payload.put("radius", z.radiusInMeters);
             payload.put("blockingApps", new JSONArray(new ArrayList<>(Arrays.asList(z.blockingApps))));
             payload.put("keywords", new JSONArray(new ArrayList<>(Arrays.asList(z.keywords))));
-            queue.add(makeJSONRequest(PROJECT_GLOBALS.base_url + "/zone/" + PROJECT_GLOBALS.apiKey(this), payload, z.zoneID));
+
+            queue.add(makeJSONRequest(PROJECT_GLOBALS.base_url(this) + "/zone/" + PROJECT_GLOBALS.apiKey(this), payload, z.zoneID));
         }
     }
 
@@ -733,7 +774,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 String friendlyResponse = "";
 
                 try {
-                    friendlyResponse = response.get("success").toString();
+                    friendlyResponse = response.get("response").toString();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -750,7 +791,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), "Failed to sync " + error.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Failed to sync " + error.networkResponse.statusCode , Toast.LENGTH_SHORT).show();
             }
         });
     }

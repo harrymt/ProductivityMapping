@@ -1,4 +1,4 @@
-package com.harrymt.productivitymapping;
+package com.harrymt.productivitymapping.services;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -10,6 +10,8 @@ import android.os.IBinder;
 import android.service.notification.StatusBarNotification;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+
+import com.harrymt.productivitymapping.PROJECT_GLOBALS;
 
 import java.util.ArrayList;
 import java.util.HashMap;

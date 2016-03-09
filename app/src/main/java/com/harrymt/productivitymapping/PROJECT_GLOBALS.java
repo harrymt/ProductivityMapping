@@ -6,6 +6,8 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 /**
  * Created by harrymt on 23/11/15.
  */
@@ -13,19 +15,23 @@ public class PROJECT_GLOBALS
 {
     public static boolean STUDYING = false;
 
-    public static String base_url = "http://horizab1.miniserver.com/~harry/server/ProductivityMapping-Server/api/v1";
+    public static String base_url(Context c) {
+        return getEnvironmentVariableMetaData(c, "api_server_url");
+    }
 
     public static Integer SESSION_ID = 0;
-    static boolean IS_DEBUG = false;
+    public static boolean IS_DEBUG = false;
 
-    static Zone CURRENT_ZONE;
+    public static Zone CURRENT_ZONE;
+
+    public static ArrayList<String> TOP_APPS_BLOCKED;
 
     public static String apiKey(Context c) {
-        String secret_key = getMetaData(c, "api_key");
+        String secret_key = getEnvironmentVariableMetaData(c, "api_key");
         return "?apikey=" + secret_key;
     }
 
-    private static String getMetaData(Context context, String resourceID) {
+    private static String getEnvironmentVariableMetaData(Context context, String resourceID) {
         try {
             ApplicationInfo ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
             Bundle bundle = ai.metaData;
@@ -42,9 +48,9 @@ public class PROJECT_GLOBALS
         return android.provider.Settings.Secure.getString(c.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
     }
 
-    class Broadcasts
+    public class Broadcasts
     {
-        static final String NOTIFICATION_POSTED = "NOTIFICATION_POSTED";
-        static final String APP_USAGE = "APP_USAGE";
+        public static final String NOTIFICATION_POSTED = "NOTIFICATION_POSTED";
+        public static final String APP_USAGE = "APP_USAGE";
     }
 }

@@ -1,13 +1,11 @@
-package com.harrymt.productivitymapping;
+package com.harrymt.productivitymapping.fragments;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,10 +25,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.ui.IconGenerator;
+import com.harrymt.productivitymapping.database.DatabaseAdapter;
+import com.harrymt.productivitymapping.R;
+import com.harrymt.productivitymapping.Zone;
+import com.harrymt.productivitymapping.activities.ZoneEditActivity;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Random;
 
 import android.support.v4.app.ListFragment;
 
@@ -133,7 +134,7 @@ public class ZonesFragment extends Fragment {
             String keywords = ""; for(String word : zone.keywords) { keywords += word + ", "; }
 
             holder.appsToBlock.setText("Apps blocked: " + (zone.blockingApps.length == 0 ? "none" : apps));
-            holder.keywords.setText("Keywords set: " + (zone.keywords.length ==0 ? "none" : keywords));
+            holder.keywords.setText("Keywords set: " + (zone.keywords.length == 0 ? "none" : keywords));
 
             // setup on click for edit zone button
             holder.editZone.setOnClickListener(new View.OnClickListener() {

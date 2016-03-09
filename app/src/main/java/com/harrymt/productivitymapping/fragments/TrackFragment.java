@@ -1,4 +1,4 @@
-package com.harrymt.productivitymapping;
+package com.harrymt.productivitymapping.fragments;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -24,6 +24,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.ui.IconGenerator;
+import com.harrymt.productivitymapping.database.DatabaseAdapter;
+import com.harrymt.productivitymapping.R;
+import com.harrymt.productivitymapping.Zone;
 
 import java.util.ArrayList;
 
