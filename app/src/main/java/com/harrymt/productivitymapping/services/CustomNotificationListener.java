@@ -1,11 +1,11 @@
 package com.harrymt.productivitymapping.services;
 
-import android.app.Notification;
 import android.content.Intent;
 import android.service.notification.StatusBarNotification;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.harrymt.productivitymapping.NotificationParts;
 import com.harrymt.productivitymapping.database.DatabaseAdapter;
 import com.harrymt.productivitymapping.PROJECT_GLOBALS;
 
@@ -26,12 +26,8 @@ public class CustomNotificationListener extends android.service.notification.Not
             // Block notification from being posted to the phone
             cancelNotification(notification.getKey());
 
-            // Save notification to database
-            DatabaseAdapter dbAdapter;
-            dbAdapter = new DatabaseAdapter(this); // Open and prepare the database
-            dbAdapter.open();
-            dbAdapter.writeNotification(notification);
-            dbAdapter.close();
+
+            saveNotification(notification);
 
 //            // Save app usage to database
 //            DatabaseAdapter dbAdapter2;
@@ -55,55 +51,6 @@ public class CustomNotificationListener extends android.service.notification.Not
         Log.d(TAG, "Notification Removed");
     }
 
-    // The parts of the notification we actually want to compare
-    class NotificationParts {
-        String title;
-        String text;
-        String bigText;
-        String subText;
-        String packageName;
-
-        public NotificationParts(Notification n, String pack) {
-            this.title = "";
-            this.text = "";
-            this.bigText = "";
-            this.subText = "";
-            this.packageName = "";
-            CharSequence titleCS = n.extras.getCharSequence(Notification.EXTRA_TITLE); // e.g. Name of sender
-            CharSequence textCS = n.extras.getCharSequence(Notification.EXTRA_TEXT);
-            CharSequence bigTextCS = n.extras.getCharSequence(Notification.EXTRA_BIG_TEXT); // Content of email
-            CharSequence subTextCS = n.extras.getCharSequence(Notification.EXTRA_SUB_TEXT); // Email address
-
-            if (titleCS != null) this.title = titleCS.toString();
-            if (textCS != null) this.text = textCS.toString();
-            if (bigTextCS != null) this.bigText = bigTextCS.toString();
-            if (subTextCS != null) this.subText = subTextCS.toString();
-
-            this.packageName = pack;
-        }
-
-        public boolean containsPackage(String[] packagesToBlock) {
-            for (String aPackagesToBlock : packagesToBlock) {
-                if (aPackagesToBlock.equals(this.packageName)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public boolean containsKeywords(String[] keywordsToBlock) {
-            for (String aKeywordsToBlock : keywordsToBlock) {
-                if (this.title.contains(aKeywordsToBlock) ||
-                        this.bigText.contains(aKeywordsToBlock) ||
-                        this.subText.contains(aKeywordsToBlock) ||
-                        this.text.contains(aKeywordsToBlock)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
-
     /**
      * Decides if we should block the notification.
      *
@@ -125,5 +72,17 @@ public class CustomNotificationListener extends android.service.notification.Not
 
         // If it matches the package, block it
         return notification.containsPackage(PROJECT_GLOBALS.CURRENT_ZONE.blockingApps);
+    }
+
+    /**
+     * Save the notification to the database.
+     *
+     * @param n
+     */
+    private void saveNotification(StatusBarNotification n) {
+        DatabaseAdapter dbAdapter;
+        dbAdapter = new DatabaseAdapter(this); // Open and prepare the database
+        dbAdapter.writeNotification(n);
+        dbAdapter.close();
     }
 }

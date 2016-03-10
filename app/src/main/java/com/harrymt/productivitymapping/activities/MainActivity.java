@@ -371,7 +371,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 // Add the zone to a database.
                 DatabaseAdapter dbAdapter;
                 dbAdapter = new DatabaseAdapter(this); // Open and prepare the database
-                dbAdapter.open();
                 if (requestCode == REQUEST_CODE_EDIT_ZONE) {
                     dbAdapter.editZone(z);
                 } else {
@@ -402,7 +401,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         // Start a new session
         DatabaseAdapter dbAdapter;
         dbAdapter = new DatabaseAdapter(this); // Prepare the database
-        dbAdapter.open(); // Open it for writing (if this is the first time its called, ten
         dbAdapter.startNewSession(zoneID, startTime); // Start new session with this zone zone
         dbAdapter.close();
 
@@ -742,7 +740,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
         DatabaseAdapter dbAdapter;
         dbAdapter = new DatabaseAdapter(getApplicationContext()); // Open and prepare the database
-        dbAdapter.open();
         ArrayList<Zone> zones = dbAdapter.getAllZonesThatNeedToBeSynced();
         dbAdapter.close();
         Toast.makeText(getApplicationContext(), "Found " + zones.size() + " zones to sync!", Toast.LENGTH_SHORT).show();
@@ -751,8 +748,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
         // Send all the zones!
         for (Zone z : zones) {
-            Toast.makeText(getApplicationContext(), "Sending Zone " + z.name, Toast.LENGTH_SHORT).show();
-
             JSONObject payload = new JSONObject();
             payload.put("user_id", PROJECT_GLOBALS.getUniqueDeviceId(this));
             payload.put("id", z.zoneID);
@@ -784,7 +779,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 // Mark that zone as sync'd
                 DatabaseAdapter dbAdapter;
                 dbAdapter = new DatabaseAdapter(getApplicationContext()); // Open and prepare the database
-                dbAdapter.open();
                 dbAdapter.setZoneAsSynced(zone_id);
                 dbAdapter.close();
             }

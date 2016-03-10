@@ -46,13 +46,14 @@ public class StatFragment extends Fragment {
         final TextView tvBlockedAppsStats = (TextView) v.findViewById(R.id.tvBlockedAppsStats);
         final TextView tvKeywordsStats = (TextView) v.findViewById(R.id.tvKeywordsStats);
 
-
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        queue.add(makeJSONrequest(PROJECT_GLOBALS.base_url(getContext()) + "/apps/3" + PROJECT_GLOBALS.apiKey(getContext()), tvBlockedAppsStats));
-        queue.add(makeJSONrequest(PROJECT_GLOBALS.base_url(getContext()) + "/keywords/3" + PROJECT_GLOBALS.apiKey(getContext()), tvKeywordsStats));
+        queue.add(makeAPIRequest("/apps/3", tvBlockedAppsStats));
+        queue.add(makeAPIRequest("/keywords/3", tvKeywordsStats));
     }
 
-    private JsonObjectRequest makeJSONrequest(String url, final TextView tv) {
+    private JsonObjectRequest makeAPIRequest(String endpoint, final TextView tv) {
+
+        String url = PROJECT_GLOBALS.base_url(getContext()) + endpoint + PROJECT_GLOBALS.apiKey(getContext());
 
         return new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override

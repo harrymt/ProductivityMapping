@@ -71,18 +71,6 @@ public class AppUsagePoller extends AccessibilityService
         }
     }
 
-    public void postToastMessage(final String message) {
-        Handler handler = new Handler(Looper.getMainLooper());
-
-        handler.post(new Runnable() {
-
-            @Override
-            public void run() {
-                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
     /**
      * Callback for interrupting the accessibility feedback.
      */

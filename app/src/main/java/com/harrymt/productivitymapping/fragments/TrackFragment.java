@@ -24,6 +24,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.ui.IconGenerator;
+import com.harrymt.productivitymapping.MapUtil;
 import com.harrymt.productivitymapping.database.DatabaseAdapter;
 import com.harrymt.productivitymapping.R;
 import com.harrymt.productivitymapping.Zone;
@@ -32,7 +33,11 @@ import java.util.ArrayList;
 
 
 public class TrackFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+
     public GoogleMap mMap;
+
+    protected GoogleApiClient mGoogleApiClient;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -69,7 +74,6 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback, Googl
         mGoogleApiClient.disconnect(); super.onStop();
     }
 
-    protected GoogleApiClient mGoogleApiClient;
 
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(getContext())
@@ -115,7 +119,6 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback, Googl
      */
     private void drawExistingZonesToMap() {
         DatabaseAdapter dbAdapter = new DatabaseAdapter(getContext()); // Prepare the database
-        dbAdapter.open(); // Open it for writing
 
         ArrayList<Zone> zones = dbAdapter.getAllZones();
         // Move to first zone
@@ -124,30 +127,8 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback, Googl
         }
 
         for (Zone zone : zones) {
-            drawCircle(zone);
+            MapUtil.drawCircle(getContext(), mMap, zone);
         }
         dbAdapter.close();
-    }
-
-    private void drawCircle(Zone zone) {
-        int shadeColor = 0x44ff0000; //opaque red fill
-        int strokeColor = 0xffff0000; //red outline
-
-        CircleOptions circleOptions = new CircleOptions()
-                .center(new LatLng(zone.lat, zone.lng))
-                .radius(zone.radiusInMeters)
-                .fillColor(shadeColor)
-                .strokeColor(strokeColor)
-                .strokeWidth(8);
-        mMap.addCircle(circleOptions);
-
-        // Add icon with name
-        IconGenerator ic = new IconGenerator(getContext());
-        Marker m = mMap.addMarker(new MarkerOptions()
-                        .icon(BitmapDescriptorFactory.fromBitmap(ic.makeIcon(zone.name)))
-                        .position(new LatLng(zone.lat, zone.lng))
-        );
-
-        m.showInfoWindow();
     }
 }

@@ -12,15 +12,16 @@ import com.harrymt.productivitymapping.Zone;
 
 import java.util.ArrayList;
 
-// Import the database schema
 import static com.harrymt.productivitymapping.database.DatabaseSchema.*;
 
+/**
+ * The adapter to the database.
+ *
+ * TODO It would be good to move to a contract and implement the base columns class.
+ * https://developer.android.com/training/basics/data-storage/databases.html
+ */
 public class DatabaseAdapter
 {
-    private static final String TAG = "g53ids";
-
-    // https://developer.android.com/training/basics/data-storage/databases.html
-    // TODO move to a contract and add implement the BaseColumns class.
 
     private DatabaseHelper dbHelper;
     public SQLiteDatabase db;
@@ -28,9 +29,12 @@ public class DatabaseAdapter
 
     public DatabaseAdapter(Context context) {
         this.context = context;
+
+        // Open and prepare the database
+        this.open();
     }
 
-    public DatabaseAdapter open() throws SQLException {
+    private DatabaseAdapter open() throws SQLException {
         dbHelper = new DatabaseHelper(context);
         db = dbHelper.getWritableDatabase();
         return this;
@@ -44,8 +48,8 @@ public class DatabaseAdapter
 
 
     public void deleteZone(int id) {
-        db.execSQL("DELETE FROM " + ZONE_TABLE
-                + " WHERE " + ZONE_KEY_ID + "=" + id + ";");
+        db.execSQL("DELETE FROM " + ZONE.TABLE
+                + " WHERE " + ZONE.KEY.ID + "=" + id + ";");
     }
 
 
@@ -54,28 +58,28 @@ public class DatabaseAdapter
      */
     public ArrayList<Zone> getAllZonesThatNeedToBeSynced()
     {
-        Cursor c = db.query(ZONE_TABLE, new String[] {
-                ZONE_KEY_ID,
-                ZONE_KEY_NAME,
-                ZONE_KEY_RADIUS,
-                ZONE_KEY_LAT,
-                ZONE_KEY_LNG,
-                ZONE_KEY_HAS_SYNCED,
-                ZONE_KEY_BLOCKING_APPS,
-                ZONE_KEY_KEYWORDS
-        }, ZONE_KEY_HAS_SYNCED + "=0", null, null, null, null);
+        Cursor c = db.query(ZONE.TABLE, new String[] {
+                ZONE.KEY.ID,
+                ZONE.KEY.NAME,
+                ZONE.KEY.RADIUS,
+                ZONE.KEY.LAT,
+                ZONE.KEY.LNG,
+                ZONE.KEY.HAS_SYNCED,
+                ZONE.KEY.BLOCKING_APPS,
+                ZONE.KEY.KEYWORDS
+        }, ZONE.KEY.HAS_SYNCED + "=0", null, null, null, null);
 
         ArrayList<Zone> zones = new ArrayList<>();
         if(c.moveToFirst()) {
             while (c.moveToNext()) {
-                int id = c.getInt(c.getColumnIndex(ZONE_KEY_ID));
-                String name = c.getString(c.getColumnIndex(ZONE_KEY_NAME));
-                float radius = c.getFloat(c.getColumnIndex(ZONE_KEY_RADIUS));
-                double lat = c.getDouble(c.getColumnIndex(ZONE_KEY_LAT));
-                double lng = c.getDouble(c.getColumnIndex(ZONE_KEY_LNG));
-                int hasSynced = c.getInt(c.getColumnIndex(ZONE_KEY_HAS_SYNCED));
-                String[] blockingApps = Zone.stringToArray(c.getString(c.getColumnIndex(ZONE_KEY_BLOCKING_APPS)));
-                String[] keywords = Zone.stringToArray(c.getString(c.getColumnIndex(ZONE_KEY_KEYWORDS)));
+                int id = c.getInt(c.getColumnIndex(ZONE.KEY.ID));
+                String name = c.getString(c.getColumnIndex(ZONE.KEY.NAME));
+                float radius = c.getFloat(c.getColumnIndex(ZONE.KEY.RADIUS));
+                double lat = c.getDouble(c.getColumnIndex(ZONE.KEY.LAT));
+                double lng = c.getDouble(c.getColumnIndex(ZONE.KEY.LNG));
+                int hasSynced = c.getInt(c.getColumnIndex(ZONE.KEY.HAS_SYNCED));
+                String[] blockingApps = Zone.stringToArray(c.getString(c.getColumnIndex(ZONE.KEY.BLOCKING_APPS)));
+                String[] keywords = Zone.stringToArray(c.getString(c.getColumnIndex(ZONE.KEY.KEYWORDS)));
 
                 Zone z = new Zone(id, lat, lng, radius, name, -1, hasSynced, blockingApps, keywords);
                 zones.add(z);
@@ -91,31 +95,31 @@ public class DatabaseAdapter
      */
     public ArrayList<Zone> getAllZones()
     {
-        Cursor c = db.query(ZONE_TABLE, new String[] {
-                ZONE_KEY_ID,
-                ZONE_KEY_NAME,
-                ZONE_KEY_RADIUS,
-                ZONE_KEY_LAT,
-                ZONE_KEY_LNG,
-                ZONE_KEY_AUTO_START_STOP,
-                ZONE_KEY_HAS_SYNCED,
-                ZONE_KEY_BLOCKING_APPS,
-                ZONE_KEY_KEYWORDS
+        Cursor c = db.query(ZONE.TABLE, new String[] {
+                ZONE.KEY.ID,
+                ZONE.KEY.NAME,
+                ZONE.KEY.RADIUS,
+                ZONE.KEY.LAT,
+                ZONE.KEY.LNG,
+                ZONE.KEY.AUTO_START_STOP,
+                ZONE.KEY.HAS_SYNCED,
+                ZONE.KEY.BLOCKING_APPS,
+                ZONE.KEY.KEYWORDS
         }, null, null, null, null, null);
 
         ArrayList<Zone> zones = new ArrayList<>();
         if(c.moveToFirst()) {
             while (c.moveToNext()) {
-                int id = c.getInt(c.getColumnIndex(ZONE_KEY_ID));
+                int id = c.getInt(c.getColumnIndex(ZONE.KEY.ID));
 
-                String name = c.getString(c.getColumnIndex(ZONE_KEY_NAME));
-                float radius = c.getFloat(c.getColumnIndex(ZONE_KEY_RADIUS));
-                double lat = c.getDouble(c.getColumnIndex(ZONE_KEY_LAT));
-                double lng = c.getDouble(c.getColumnIndex(ZONE_KEY_LNG));
-                int autoStart = c.getInt(c.getColumnIndex(ZONE_KEY_AUTO_START_STOP));
-                int hasSynced = c.getInt(c.getColumnIndex(ZONE_KEY_HAS_SYNCED));
-                String[] blockingApps = Zone.stringToArray(c.getString(c.getColumnIndex(ZONE_KEY_BLOCKING_APPS)));
-                String[] keywords = Zone.stringToArray(c.getString(c.getColumnIndex(ZONE_KEY_KEYWORDS)));
+                String name = c.getString(c.getColumnIndex(ZONE.KEY.NAME));
+                float radius = c.getFloat(c.getColumnIndex(ZONE.KEY.RADIUS));
+                double lat = c.getDouble(c.getColumnIndex(ZONE.KEY.LAT));
+                double lng = c.getDouble(c.getColumnIndex(ZONE.KEY.LNG));
+                int autoStart = c.getInt(c.getColumnIndex(ZONE.KEY.AUTO_START_STOP));
+                int hasSynced = c.getInt(c.getColumnIndex(ZONE.KEY.HAS_SYNCED));
+                String[] blockingApps = Zone.stringToArray(c.getString(c.getColumnIndex(ZONE.KEY.BLOCKING_APPS)));
+                String[] keywords = Zone.stringToArray(c.getString(c.getColumnIndex(ZONE.KEY.KEYWORDS)));
 
                 Zone z = new Zone(id, lat, lng, radius, name, autoStart, hasSynced, blockingApps, keywords);
                 zones.add(z);
@@ -132,15 +136,15 @@ public class DatabaseAdapter
      */
     public void writeZone(Zone zone)
     {
-        db.execSQL("INSERT INTO " + ZONE_TABLE + " ("
-                + ZONE_KEY_NAME + ","
-                + ZONE_KEY_RADIUS + ","
-                + ZONE_KEY_LAT + ","
-                + ZONE_KEY_LNG + ","
-                + ZONE_KEY_AUTO_START_STOP + ","
-                + ZONE_KEY_HAS_SYNCED + ","
-                + ZONE_KEY_BLOCKING_APPS + ","
-                + ZONE_KEY_KEYWORDS
+        db.execSQL("INSERT INTO " + ZONE.TABLE + " ("
+                + ZONE.KEY.NAME + ","
+                + ZONE.KEY.RADIUS + ","
+                + ZONE.KEY.LAT + ","
+                + ZONE.KEY.LNG + ","
+                + ZONE.KEY.AUTO_START_STOP + ","
+                + ZONE.KEY.HAS_SYNCED + ","
+                + ZONE.KEY.BLOCKING_APPS + ","
+                + ZONE.KEY.KEYWORDS
                 + ") "
                 + "VALUES "
                 + "('"
@@ -161,18 +165,18 @@ public class DatabaseAdapter
      */
     public void editZone(Zone zone)
     {
-        db.execSQL("UPDATE " + ZONE_TABLE
+        db.execSQL("UPDATE " + ZONE.TABLE
                 + " SET "
-                + ZONE_KEY_NAME + "= '" + zone.name + "', "
-                + ZONE_KEY_RADIUS + "=" + zone.radiusInMeters + ", "
-                + ZONE_KEY_LAT + "=" + zone.lat + ", "
-                + ZONE_KEY_LNG + "=" + zone.lng + ", "
-                + ZONE_KEY_AUTO_START_STOP + "=" + zone.autoStartStop + ", "
-                + ZONE_KEY_HAS_SYNCED + "=" + zone.hasSynced + ", "
-                + ZONE_KEY_BLOCKING_APPS + "='" + zone.blockingAppsAsStr() + "', "
-                + ZONE_KEY_KEYWORDS + "='" + zone.keywordsAsStr() + "'"
+                + ZONE.KEY.NAME + "= '" + zone.name + "', "
+                + ZONE.KEY.RADIUS + "=" + zone.radiusInMeters + ", "
+                + ZONE.KEY.LAT + "=" + zone.lat + ", "
+                + ZONE.KEY.LNG + "=" + zone.lng + ", "
+                + ZONE.KEY.AUTO_START_STOP + "=" + zone.autoStartStop + ", "
+                + ZONE.KEY.HAS_SYNCED + "=" + zone.hasSynced + ", "
+                + ZONE.KEY.BLOCKING_APPS + "='" + zone.blockingAppsAsStr() + "', "
+                + ZONE.KEY.KEYWORDS + "='" + zone.keywordsAsStr() + "'"
                 + " WHERE "
-                + ZONE_KEY_ID + " = " + zone.zoneID
+                + ZONE.KEY.ID + " = " + zone.zoneID
                 + ";");
     }
 
@@ -183,11 +187,11 @@ public class DatabaseAdapter
      */
     public void setZoneAsSynced(int zone_id)
     {
-        db.execSQL("UPDATE " + ZONE_TABLE
+        db.execSQL("UPDATE " + ZONE.TABLE
                 + " SET "
-                + ZONE_KEY_HAS_SYNCED + "=" + 1
+                + ZONE.KEY.HAS_SYNCED + "=" + 1
                 + " WHERE "
-                + ZONE_KEY_ID + " = " + zone_id
+                + ZONE.KEY.ID + " = " + zone_id
                 + ";");
     }
 
@@ -201,9 +205,9 @@ public class DatabaseAdapter
     public void writeNotification(StatusBarNotification n)
     {
         // Save the notification based on the current session
-        db.execSQL("INSERT INTO " + NOTIFICATION_TABLE + " ("
-                + NOTIFICATION_KEY_PACKAGE + ","
-                + NOTIFICATION_KEY_SESSION_ID
+        db.execSQL("INSERT INTO " + NOTIFICATION.TABLE + " ("
+                + NOTIFICATION.KEY.PACKAGE + ","
+                + NOTIFICATION.KEY.SESSION_ID
                 + ") "
                 + "VALUES "
                 + "('" + n.getPackageName() + "', " + PROJECT_GLOBALS.SESSION_ID  + ");");
@@ -222,10 +226,10 @@ public class DatabaseAdapter
         Log.d("g53ids", "Writing app usage!");
 
         // Save the app usage based on the current session
-        db.execSQL("INSERT INTO " + APPUSAGE_TABLE + " ("
-                + APPUSAGE_KEY_APP_PACKAGE_NAME + ", "
-                + APPUSAGE_KEY_TIME_SPENT + ", "
-                + APPUSAGE_KEY_SESSION_ID
+        db.execSQL("INSERT INTO " + APPUSAGE.TABLE + " ("
+                + APPUSAGE.KEY.APP_PACKAGE_NAME + ", "
+                + APPUSAGE.KEY.TIME_SPENT + ", "
+                + APPUSAGE.KEY.SESSION_ID
                 + ") "
                 + "VALUES "
                 + "('" + packageName + "', " + timeSpentInSeconds + ", " + PROJECT_GLOBALS.SESSION_ID + ");");
@@ -238,9 +242,9 @@ public class DatabaseAdapter
     public void startNewSession(Integer zoneID, long startTime) {
 
         // Create a new Row in the Session Table
-        db.execSQL("INSERT INTO " + SESSION_TABLE + " ("
-                + SESSION_KEY_ZONE_ID + ","
-                + SESSION_KEY_START_TIME + ""
+        db.execSQL("INSERT INTO " + SESSION.TABLE + " ("
+                + SESSION.KEY.ZONE_ID + ","
+                + SESSION.KEY.START_TIME + ""
                 + ") "
                 + "VALUES "
                 + "(" + zoneID + ", " + startTime + ");");
@@ -251,7 +255,7 @@ public class DatabaseAdapter
 
     private Integer getLastSessionId()
     {
-        Cursor c = db.query(SESSION_TABLE, new String[] { SESSION_KEY_ID }, null, null, null, null, null);
+        Cursor c = db.query(SESSION.TABLE, new String[] { SESSION.KEY.ID }, null, null, null, null, null);
         c.moveToLast();
         Integer sessionId = c.getInt(0);
         c.close();

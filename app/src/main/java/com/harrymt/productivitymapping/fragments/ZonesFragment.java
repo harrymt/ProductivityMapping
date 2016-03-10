@@ -19,12 +19,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.maps.android.ui.IconGenerator;
+import com.harrymt.productivitymapping.MapUtil;
 import com.harrymt.productivitymapping.database.DatabaseAdapter;
 import com.harrymt.productivitymapping.R;
 import com.harrymt.productivitymapping.Zone;
@@ -171,7 +167,6 @@ public class ZonesFragment extends Fragment {
                                 case DialogInterface.BUTTON_POSITIVE:
                                     // Delete the zone
                                     DatabaseAdapter dbAdapter = new DatabaseAdapter(getContext());
-                                    dbAdapter.open(); // Open it for writing
                                     dbAdapter.deleteZone(z.zoneID);
                                     dbAdapter.close();
 
@@ -224,26 +219,7 @@ public class ZonesFragment extends Fragment {
         // Add a marker for this item and set the camera
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(zone.lat, zone.lng), 18.0f));
 
-        int shadeColor = 0x44ff0000; //opaque red fill
-        int strokeColor = 0xffff0000; //red outline
-
-        CircleOptions circleOptions = new CircleOptions()
-                .center(new LatLng(zone.lat, zone.lng))
-                .radius(zone.radiusInMeters)
-                .fillColor(shadeColor)
-                .strokeColor(strokeColor)
-                .strokeWidth(8);
-        map.addCircle(circleOptions);
-
-        // Add icon with percentage and name
-        IconGenerator ic = new IconGenerator(getContext());
-        Marker m = map.addMarker(new MarkerOptions()
-                        .icon(BitmapDescriptorFactory.fromBitmap(ic.makeIcon(zone.name)))
-                        .position(new LatLng(zone.lat, zone.lng))
-        );
-
-        m.showInfoWindow();
-
+        MapUtil.drawCircle(getContext(), map, zone);
 
         // Set the map type back to normal.
         map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
@@ -321,7 +297,6 @@ public class ZonesFragment extends Fragment {
      */
     private ArrayList<Zone> getZones() {
         DatabaseAdapter dbAdapter = new DatabaseAdapter(getContext());
-        dbAdapter.open(); // Open it for writing
         ArrayList<Zone> zones = dbAdapter.getAllZones();
         dbAdapter.close();
         return zones;
