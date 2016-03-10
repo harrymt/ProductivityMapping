@@ -4,9 +4,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.location.Location;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 
+import com.harrymt.productivitymapping.DraggableCircle;
 import com.harrymt.productivitymapping.PROJECT_GLOBALS;
 import com.harrymt.productivitymapping.Zone;
 
@@ -52,6 +54,47 @@ public class DatabaseAdapter
                 + " WHERE " + ZONE.KEY.ID + "=" + id + ";");
     }
 
+    /**
+     * Gets the first zone found that is in given location.
+     *
+     * Uses Haversine formula
+     * http://stackoverflow.com/a/123305/2235593
+     *
+     * @param loc Location to match with
+     * @return Zone object that radius is in the location.
+     */
+    public Zone getZoneInLocation(Location loc) {
+        ArrayList<Zone> zones = getAllZones();
+
+        for (Zone z: zones) {
+            double distance = distFrom(z.lat, z.lng, loc.getLatitude(), loc.getLongitude());
+            if(distance < 1) { // select the first zone
+                return z;
+            }
+        }
+        
+        return null;
+    }
+
+    /**
+     * Note: has the 100 * at end!
+     * @param lat1
+     * @param lng1
+     * @param lat2
+     * @param lng2
+     * @return
+     */
+    public static double distFrom(double lat1, double lng1, double lat2, double lng2) {
+        double earthRadius = 6371.0; // 3958.75 miles (or 6371.0 kilometers)
+        double dLat = Math.toRadians(lat2-lat1);
+        double dLng = Math.toRadians(lng2-lng1);
+        double sindLat = Math.sin(dLat / 2);
+        double sindLng = Math.sin(dLng / 2);
+        double a = Math.pow(sindLat, 2) + Math.pow(sindLng, 2)
+                * Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2));
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return earthRadius * c * 100;
+    }
 
     /**
      * Get all zones that have their synced flag as 0
@@ -116,8 +159,8 @@ public class DatabaseAdapter
                 float radius = c.getFloat(c.getColumnIndex(ZONE.KEY.RADIUS));
                 double lat = c.getDouble(c.getColumnIndex(ZONE.KEY.LAT));
                 double lng = c.getDouble(c.getColumnIndex(ZONE.KEY.LNG));
-                int autoStart = c.getInt(c.getColumnIndex(ZONE.KEY.AUTO_START_STOP));
                 int hasSynced = c.getInt(c.getColumnIndex(ZONE.KEY.HAS_SYNCED));
+                int autoStart = c.getInt(c.getColumnIndex(ZONE.KEY.AUTO_START_STOP));
                 String[] blockingApps = Zone.stringToArray(c.getString(c.getColumnIndex(ZONE.KEY.BLOCKING_APPS)));
                 String[] keywords = Zone.stringToArray(c.getString(c.getColumnIndex(ZONE.KEY.KEYWORDS)));
 
