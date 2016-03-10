@@ -75,7 +75,7 @@ public class BlockedAppsArrayAdapter extends ArrayAdapter<BlockedApps> {
         BlockedApps app = getItem( position );
 
         // Set holder
-        holder.name.setText(app.name + (app.isPopular ? " popular" : ""));
+        holder.name.setText(app.name + (app.isPopular ? " ★" : ""));
         holder.package_name.setText(app.package_name);
         holder.icon.setImageDrawable(app.icon);
 

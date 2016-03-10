@@ -4,14 +4,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
  * Created by harrymt on 09/03/16.
  */
-public class BlockedApps {
+public class BlockedApps implements Comparable<BlockedApps> {
     public String name;
     public String package_name;
     public Drawable icon;
@@ -49,9 +53,17 @@ public class BlockedApps {
             }
         }
 
+        // Sort the list
+        Collections.sort(o);
+
         // Put popular apps at the start
         o.addAll(0, popularApps);
 
         return o;
+    }
+
+    @Override
+    public int compareTo(@NonNull BlockedApps another) {
+        return this.name.compareTo(another.name);
     }
 }
