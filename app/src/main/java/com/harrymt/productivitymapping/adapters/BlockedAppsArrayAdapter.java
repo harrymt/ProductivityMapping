@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.harrymt.productivitymapping.BlockedApps;
@@ -28,6 +29,7 @@ public class BlockedAppsArrayAdapter extends ArrayAdapter<BlockedApps> {
         public TextView name;
         public TextView package_name;
         public CheckBox isSelected;
+        public ImageView icon;
     }
 
     ArrayList<Boolean> itemChecked = new ArrayList<>();
@@ -58,6 +60,7 @@ public class BlockedAppsArrayAdapter extends ArrayAdapter<BlockedApps> {
             holder.name = (TextView) row.findViewById(R.id.tvAppName);
             holder.package_name = (TextView) row.findViewById(R.id.tvPackageName);
             holder.isSelected = (CheckBox) row.findViewById(R.id.cbAppSelected);
+            holder.icon = (ImageView) row.findViewById(R.id.ivIcon);
 
             holder.isSelected.setTag(position);
 
@@ -74,6 +77,7 @@ public class BlockedAppsArrayAdapter extends ArrayAdapter<BlockedApps> {
         // Set holder
         holder.name.setText(app.name + (app.isPopular ? " popular" : ""));
         holder.package_name.setText(app.package_name);
+        holder.icon.setImageDrawable(app.icon);
 
         holder.isSelected.setOnClickListener(new View.OnClickListener() {
 
