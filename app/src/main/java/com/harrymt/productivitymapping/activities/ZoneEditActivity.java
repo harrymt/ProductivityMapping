@@ -120,7 +120,7 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
         LatLng pos = currentCircle.centerMarker.getPosition();
         zoneToEdit.lat = pos.latitude;
         zoneToEdit.lng = pos.longitude;
-        zoneToEdit.radiusInMeters = (float) currentCircle.radius;
+        zoneToEdit.radiusInMeters = (float) DraggableCircle.toRadiusMeters(currentCircle.centerMarker.getPosition(), currentCircle.radiusMarker.getPosition());
 
         zoneIntent.putExtra("zone", zoneToEdit);
         startActivityForResult(zoneIntent, REQUEST_CODE_SET_ZONE_PREFS);

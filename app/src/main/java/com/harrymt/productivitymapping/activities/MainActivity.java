@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.service.notification.StatusBarNotification;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -38,12 +39,12 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+import com.harrymt.productivitymapping.NotificationBuilderUtil;
 import com.harrymt.productivitymapping.fragments.AppSectionsPagerAdapter;
 import com.harrymt.productivitymapping.database.DatabaseAdapter;
 import com.harrymt.productivitymapping.PROJECT_GLOBALS;
 import com.harrymt.productivitymapping.R;
 import com.harrymt.productivitymapping.Zone;
-import com.harrymt.productivitymapping.services.NotificationHandlerService;
 
 
 import org.json.JSONArray;
@@ -60,6 +61,73 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
     private static final String TAG = "g53ids-MainActivity";
+
+// TODO delete me
+    public void sendNotification(View v) {
+        NotificationBuilderUtil b = new NotificationBuilderUtil(this);
+        b.postNewNotification(b.buildNotification("Main App", "Sent from the main app", "Some subtext..."));
+    }
+
+
+    public void startCurrentZone(View view) {
+        // Enable study state
+        PROJECT_GLOBALS.STUDYING = true;
+
+        // Get the current Zone ID we are in!
+        Integer zoneID = PROJECT_GLOBALS.CURRENT_ZONE.zoneID;
+        long startTime = System.currentTimeMillis() / 1000; // get current EPOCH time
+
+        // Start a new session
+        DatabaseAdapter dbAdapter;
+        dbAdapter = new DatabaseAdapter(this); // Prepare the database
+        dbAdapter.startNewSession(zoneID, startTime); // Start new session with this zone
+        dbAdapter.close();
+
+        // Reset service stored data e.g. app usage
+        // TODO dont do this
+        // binder.resetAppUsage();
+        // binder.resetBlockedNotifications();
+
+        // Set UI
+        TextView study = (TextView) findViewById(R.id.tvStudyStateText);
+        study.setText("Studying...");
+
+        Button createNewZone = (Button) findViewById(R.id.btnCreateNewZone);
+        createNewZone.setEnabled(false);
+        Button currentZone = (Button) findViewById(R.id.btnCurrentZone);
+        currentZone.setEnabled(false);
+
+        Button editZone = (Button) findViewById(R.id.btnEditZonePreferences);
+        editZone.setEnabled(true);
+        Button forceStopStudy = (Button) findViewById(R.id.btnForceStopStudy);
+        forceStopStudy.setEnabled(true);
+    }
+
+    public void forceStopStudy(View view) {
+        // Disable study state
+        PROJECT_GLOBALS.STUDYING = false;
+
+        // Save current end time to database
+        DatabaseAdapter dbAdapter;
+        dbAdapter = new DatabaseAdapter(getApplicationContext()); // Open and prepare the database
+        dbAdapter.finishSession(PROJECT_GLOBALS.SESSION_ID);
+        dbAdapter.close();
+
+        // Update UI
+        TextView study = (TextView) findViewById(R.id.tvStudyStateText);
+        study.setText("Start study with...");
+
+        Button createNewZone = (Button) findViewById(R.id.btnCreateNewZone);
+        createNewZone.setEnabled(true);
+        Button currentZone = (Button) findViewById(R.id.btnCurrentZone);
+        currentZone.setEnabled(true);
+
+        Button editZone = (Button) findViewById(R.id.btnEditZonePreferences);
+        editZone.setEnabled(false);
+        Button forceStopStudy = (Button) findViewById(R.id.btnForceStopStudy);
+        forceStopStudy.setEnabled(false);
+    }
+
 
 
     /**
@@ -150,13 +218,10 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
         // Cache the most commonly used keywords and packages blocked
 
-        RequestQueue queue = Volley.newRequestQueue(this);
-        queue.add(makeJSONrequest(PROJECT_GLOBALS.base_url(this) + "/apps/3" + PROJECT_GLOBALS.apiKey(this)));
-
-        // START SERVICES
-        intentNotificationHandlerService = new Intent(this, NotificationHandlerService.class);
-        startService(intentNotificationHandlerService);
-        bindService(intentNotificationHandlerService, notificationHandlerConnection, Context.BIND_AUTO_CREATE);
+        //RequestQueue queue = Volley.newRequestQueue(this);
+        //queue.add(makeJSONrequest(PROJECT_GLOBALS.base_url(this) + "/apps/3" + PROJECT_GLOBALS.apiKey(this)));
+        PROJECT_GLOBALS.TOP_APPS_BLOCKED = new ArrayList<>();
+        PROJECT_GLOBALS.TOP_APPS_BLOCKED.add("abc.app.todo.changeme");
     }
 
     private JsonObjectRequest makeJSONrequest(String url) {
@@ -194,41 +259,18 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         // Connect to an Instance of the Google API
         mGoogleApiClient.connect();
 
-
-
         // Show notification listener settings if not set
         if (Settings.Secure.getString(this.getContentResolver(), "enabled_notification_listeners") != null &&
                 Settings.Secure.getString(this.getContentResolver(), "enabled_notification_listeners").contains(getApplicationContext().getPackageName())) {
             //service is enabled do something
             if (PROJECT_GLOBALS.IS_DEBUG) Toast.makeText(MainActivity.this, "Can listen to notifications", Toast.LENGTH_SHORT).show();
         } else {
-            //service is not enabled try to enabled by calling...
+            // Accessibility service is not enabled, try to get the user to enable it by showing the settings
             startActivity(new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS));
         }
     }
 
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        // UNBIND SERVICE ON DESTROY
-        unbindService(this.notificationHandlerConnection);
-    }
-
-
-    // Notification Handler Service intent
-    private Intent intentNotificationHandlerService;
-    private NotificationHandlerService.NotificationBinder binder;
-
-
-    /* ---- NON-DESIGN CODE below ----- */
-
-    public void sendNotification(View v) {
-        Notification n = buildNotification("Main App", "Sent from the main app", "Some subtext...");
-        postNewNotification(n);
-        Log.d(TAG, "Notification sent.");
-    }
 
     private ListView lv;
 
@@ -251,63 +293,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 //        lv.setAdapter(arrayAdapter);
 //    }
 
-    public void sendBlockedNotifications(View v) {
-        ArrayList<StatusBarNotification> notifications = binder.getBlockedNotifications();
-        Toast.makeText(MainActivity.this, "Sending " + notifications.size() + " notifications...", Toast.LENGTH_SHORT).show();
-        for (StatusBarNotification sbn : notifications) {
-            Log.d(TAG, sbn.toString());
-            postStatusBarNotification(sbn);
-            // This breaks it // postNewNotification(sbn.getNotification());
-        }
-    }
-
-    // What we need todo, is copy over as much of the notification as we can, atm, we are only copying over title and content
-    // Cant just use notification e.g. postNewNotifiation because we get Bad notification poster .. couldnt create icon
-    private void postStatusBarNotification(StatusBarNotification sbn) {
-        Notification sbnNotification = sbn.getNotification();
-
-        Notification n = new Notification.Builder(MainActivity.this)
-                .setWhen(sbnNotification.when)
-                .setContentIntent(sbnNotification.contentIntent)
-                .setSubText(sbnNotification.extras.getCharSequence(Notification.EXTRA_SUB_TEXT))
-                .setContent(sbnNotification.contentView)
-                .setContentInfo(sbnNotification.extras.getCharSequence(Notification.EXTRA_INFO_TEXT))
-                .setContentTitle(sbn.getNotification().extras.getCharSequence(Notification.EXTRA_TITLE))
-                .setContentText(sbn.getNotification().extras.getCharSequence(Notification.EXTRA_TEXT))
-                .setSmallIcon(R.drawable.ic_standard_notification).build();
-
-        NotificationManager nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        nManager.notify((int) System.nanoTime(), n);
-    }
-
-    public Notification buildNotification(String title, String text, String subText) {
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this);
-        notificationBuilder.setContentTitle(title);
-        notificationBuilder.setContentText(text);
-        notificationBuilder.setSubText(subText);
-        notificationBuilder.setSmallIcon(R.drawable.ic_standard_notification);
-        notificationBuilder.setAutoCancel(true);
-        return notificationBuilder.build();
-    }
-
-    public void postNewNotification(Notification notification) {
-        NotificationManager nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        nManager.notify((int) System.currentTimeMillis(), notification);
-    }
-
-    private final ServiceConnection notificationHandlerConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            Log.d(TAG, "Service " + name + " connected");
-            binder = (NotificationHandlerService.NotificationBinder) service;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            Log.d(TAG, "Service " + name + " disconnected.");
-            binder = null;
-        }
-    };
 
 //
 //    public void showAppUsage(View view)
@@ -381,72 +366,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 if (PROJECT_GLOBALS.IS_DEBUG) Toast.makeText(MainActivity.this, "Zone data: packages(" + z.blockingApps.toString() + "), keywords(" + z.keywords.toString() + "), r(" + z.radiusInMeters + "), LatLng(" + z.lat + "," + z.lng + ")", Toast.LENGTH_SHORT).show();
             }
         }
-    }
-
-    // TODO get the current zone a user is in
-    private Zone getCurrentZone() {
-        return new Zone(52.9536037, -1.1890631);
-    }
-
-    public void startCurrentZone(View view) {
-        // Enable study state
-        PROJECT_GLOBALS.STUDYING = true;
-
-        PROJECT_GLOBALS.CURRENT_ZONE = getCurrentZone();
-
-        // Get the current Zone ID we are in!
-        Integer zoneID = PROJECT_GLOBALS.CURRENT_ZONE.zoneID;
-        long startTime = System.currentTimeMillis() / 1000; // get current EPOCH time
-
-        // Start a new session
-        DatabaseAdapter dbAdapter;
-        dbAdapter = new DatabaseAdapter(this); // Prepare the database
-        dbAdapter.startNewSession(zoneID, startTime); // Start new session with this zone zone
-        dbAdapter.close();
-
-        // Reset service stored data e.g. app usage
-        // TODO dont do this
-        binder.resetAppUsage();
-        binder.resetBlockedNotifications();
-
-        // Set UI
-        TextView study = (TextView) findViewById(R.id.tvStudyStateText);
-        study.setText("Studying...");
-
-        Button createNewZone = (Button) findViewById(R.id.btnCreateNewZone);
-        createNewZone.setEnabled(false);
-        Button currentZone = (Button) findViewById(R.id.btnCurrentZone);
-        currentZone.setEnabled(false);
-
-        Button editZone = (Button) findViewById(R.id.btnEditZonePreferences);
-        editZone.setEnabled(true);
-        Button forceStopStudy = (Button) findViewById(R.id.btnForceStopStudy);
-        forceStopStudy.setEnabled(true);
-    }
-
-    public void forceStopStudy(View view) {
-        // Disable study state
-        PROJECT_GLOBALS.STUDYING = false;
-
-        // Reset settings
-        PROJECT_GLOBALS.CURRENT_ZONE = null;
-
-        // Store these!! TODO store me
-        binder.getAllAppUsage();
-        binder.getBlockedNotifications();
-
-        TextView study = (TextView) findViewById(R.id.tvStudyStateText);
-        study.setText("Start study with...");
-
-        Button createNewZone = (Button) findViewById(R.id.btnCreateNewZone);
-        createNewZone.setEnabled(true);
-        Button currentZone = (Button) findViewById(R.id.btnCurrentZone);
-        currentZone.setEnabled(true);
-
-        Button editZone = (Button) findViewById(R.id.btnEditZonePreferences);
-        editZone.setEnabled(false);
-        Button forceStopStudy = (Button) findViewById(R.id.btnForceStopStudy);
-        forceStopStudy.setEnabled(false);
     }
 
 
@@ -607,6 +526,30 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     private void updateUI() {
         if (PROJECT_GLOBALS.IS_DEBUG)  Toast.makeText(this, mLastUpdateTime + ". " + mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
 
+       setUsersCurrentZone(mCurrentLocation);
+
+        if(!PROJECT_GLOBALS.STUDYING) {
+            Button currentZone = (Button) findViewById(R.id.btnCurrentZone);
+
+            // Set the current zone button to be enabled if we are in a current zone
+            currentZone.setEnabled(PROJECT_GLOBALS.CURRENT_ZONE != null);
+        }
+    }
+
+    /**
+     * Checks to see if a user is inside of a zone or not!
+     *
+     * @param loc users current location.
+     */
+    private void setUsersCurrentZone(Location loc) {
+
+        DatabaseAdapter dbAdapter;
+        dbAdapter = new DatabaseAdapter(getApplicationContext()); // Open and prepare the database
+        Zone zone = dbAdapter.getZoneInLocation(loc);
+        dbAdapter.close();
+
+        // Update current zone, could be null if no zone is found;
+        PROJECT_GLOBALS.CURRENT_ZONE = zone;
     }
 
     /**
@@ -694,7 +637,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         mCurrentLocation = location;
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
         updateUI();
-        if (PROJECT_GLOBALS.IS_DEBUG) Toast.makeText(this, getResources().getString(R.string.location_updated_message), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -706,7 +648,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     }
 
     @Override
-    public void onConnectionFailed(ConnectionResult result) {
+    public void onConnectionFailed(@NonNull ConnectionResult result) {
         // Refer to the javadoc for ConnectionResult to see what error codes might be returned in
         // onConnectionFailed.
         Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());

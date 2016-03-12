@@ -71,13 +71,17 @@ public class DraggableCircle {
     /**
      * Generate LatLng of radius marker
      */
-    private static LatLng toRadiusLatLng(LatLng center, double radius) {
+    public static LatLng toRadiusLatLng(LatLng center, double radius) {
         double radiusAngle = Math.toDegrees(radius / RADIUS_OF_EARTH_METERS) /
                 Math.cos(Math.toRadians(center.latitude));
         return new LatLng(center.latitude, center.longitude + radiusAngle);
     }
 
-    private static double toRadiusMeters(LatLng center, LatLng radius) {
+    /**
+     * Get distance between 2 points using an inverse formula, see docs.
+     *
+     */
+    public static double toRadiusMeters(LatLng center, LatLng radius) {
         float[] result = new float[1];
         Location.distanceBetween(center.latitude, center.longitude,
                 radius.latitude, radius.longitude, result);

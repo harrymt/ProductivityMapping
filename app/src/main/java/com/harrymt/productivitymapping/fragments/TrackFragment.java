@@ -18,12 +18,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.maps.android.ui.IconGenerator;
 import com.harrymt.productivitymapping.MapUtil;
 import com.harrymt.productivitymapping.database.DatabaseAdapter;
 import com.harrymt.productivitymapping.R;
@@ -94,7 +89,9 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback, Googl
         }
 
         Location loc = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(loc.getLatitude(), loc.getLongitude()), 18.0f));
+        if(loc != null) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(loc.getLatitude(), loc.getLongitude()), 18.0f));
+        }
         mMap.setMyLocationEnabled(true);
     }
 
@@ -121,7 +118,8 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback, Googl
         DatabaseAdapter dbAdapter = new DatabaseAdapter(getContext()); // Prepare the database
 
         ArrayList<Zone> zones = dbAdapter.getAllZones();
-        // Move to first zone
+
+        // Move to first zone, fallback - if we cant get current location
         if(zones.size() > 0) {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(zones.get(0).lat, zones.get(0).lng), 18.0f));
         }

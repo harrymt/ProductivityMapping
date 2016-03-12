@@ -38,6 +38,7 @@ public class ZonesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_map, container, false);
         loadZonesToListView();
+
         return v;
     }
 
@@ -53,11 +54,10 @@ public class ZonesFragment extends Fragment {
         // TODO add empty list item to zones that says no zones, go create one.
         // Set a custom list adapter for a list of locations
         ArrayList<Zone> zs = getZones();
-        Zone[] zones;
-        // Convert to array
-        zones = new Zone[zs.size()]; int i = 0;for (Zone z : zs) { zones[i] = z; i++;}
-
         mList = (ListFragment) getChildFragmentManager().findFragmentById(R.id.list);
+        // Convert to array
+        Zone[] zones = new Zone[zs.size()]; int i = 0;for (Zone z : zs) { zones[i] = z; i++;}
+
         mList.setListAdapter(new MapAdapter(getActivity(), zones));
         // Set a RecyclerListener to clean up MapView from ListView
         mList.getListView().setRecyclerListener(mRecycleListener);
@@ -76,7 +76,6 @@ public class ZonesFragment extends Fragment {
         public MapAdapter(Context context, Zone[] locations) {
             super(context, R.layout.list_map_row, R.id.tvZoneName, locations);
         }
-
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
@@ -195,8 +194,6 @@ public class ZonesFragment extends Fragment {
 
             return row;
         }
-
-
 
         /**
          * Retuns the set of all initialised {@link MapView} objects.
