@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class NotificationHandlerService extends Service {
+public class NotificationHandlerServiceUnused extends Service {
 
     private static String TAG = "NotificationHandlerService";
 
@@ -36,6 +36,8 @@ public class NotificationHandlerService extends Service {
         LocalBroadcastManager.getInstance(this).registerReceiver(notificationReceiver, notificationPostedIntentFilter);
         // Register app usage broadcast
         LocalBroadcastManager.getInstance(this).registerReceiver(appUsageReceiver, appUsageIntentFilter);
+
+        Log.d(TAG, "Registered the Notification posted and app usage broadcast recievers.");
 
         return super.onStartCommand(intent, flags, startId);
     }

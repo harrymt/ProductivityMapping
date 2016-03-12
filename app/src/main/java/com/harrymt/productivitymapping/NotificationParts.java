@@ -5,13 +5,20 @@ import android.os.Bundle;
 
 /**
  * The parts of the notification that we actually want to compare.
+ *
  */
 public class NotificationParts {
-    String title;
-    String text;
-    String bigText;
-    String subText;
-    String packageName;
+
+   public String title;
+   public String text;
+   public String bigText;
+   public String subText;
+   public String packageName;
+
+    public NotificationParts(String package_name) {
+        packageName = package_name;
+
+    }
 
     public NotificationParts(Notification n, String pack) {
         this.title = "";
