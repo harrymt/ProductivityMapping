@@ -8,8 +8,9 @@ import android.location.Location;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 
-import com.harrymt.productivitymapping.DraggableCircle;
+import com.harrymt.productivitymapping.NotificationParts;
 import com.harrymt.productivitymapping.PROJECT_GLOBALS;
+import com.harrymt.productivitymapping.Session;
 import com.harrymt.productivitymapping.Zone;
 
 import java.util.ArrayList;
@@ -296,6 +297,22 @@ public class DatabaseAdapter
         PROJECT_GLOBALS.SESSION_ID = getLastSessionId();
     }
 
+    /**
+     * Mark a session end time.
+     *
+     * @param session_id ID of the session to mark as ended.
+     */
+    public void finishSession(Integer session_id) {
+        long stop_time = System.currentTimeMillis() / 1000;
+
+        db.execSQL("UPDATE " + SESSION.TABLE
+                + " SET "
+                + SESSION.KEY.STOP_TIME + "=" + stop_time
+                + " WHERE "
+                + SESSION.KEY.ID + " = " + session_id
+                + ";");
+    }
+
     private Integer getLastSessionId()
     {
         Cursor c = db.query(SESSION.TABLE, new String[] { SESSION.KEY.ID }, null, null, null, null, null);
@@ -304,4 +321,48 @@ public class DatabaseAdapter
         c.close();
         return sessionId;
     }
+
+
+    public Session getLastSessionDetails() {
+        int session_id = getLastSessionId();
+        Session session = new Session();
+
+        Cursor c_session_details = db.query(SESSION.TABLE, new String[]{
+                SESSION.KEY.ZONE_ID,
+                SESSION.KEY.START_TIME,
+                SESSION.KEY.STOP_TIME,
+                SESSION.KEY.PRODUCTIVITY_PERCENTAGE
+        }, SESSION.KEY.ID + "=" + session_id, null, null, null, null);
+
+
+        if(c_session_details.moveToFirst()) {
+            int zone_id = c_session_details.getInt(c_session_details.getColumnIndex(SESSION.KEY.ZONE_ID));
+            int start_time = c_session_details.getInt(c_session_details.getColumnIndex(SESSION.KEY.START_TIME));
+            int stop_time = c_session_details.getInt(c_session_details.getColumnIndex(SESSION.KEY.STOP_TIME));
+            int productivity_percentage = c_session_details.getInt(c_session_details.getColumnIndex(SESSION.KEY.PRODUCTIVITY_PERCENTAGE));
+
+            session = new Session(zone_id, start_time, stop_time, productivity_percentage);
+        }
+        c_session_details.close();
+
+        return session;
+    }
+
+    public  ArrayList<NotificationParts> getLastSessionNotificationDetails() {
+        int session_id = getLastSessionId();
+        ArrayList<NotificationParts> notifications = new ArrayList<>();
+
+        Cursor c_session_notifications = db.query(NOTIFICATION.TABLE, new String[]{
+                NOTIFICATION.KEY.PACKAGE
+        }, NOTIFICATION.KEY.ID + "=" + session_id, null, null, null, null);
+
+        if(c_session_notifications.moveToFirst()) {
+            String package_name = c_session_notifications.getString(c_session_notifications.getColumnIndex(NOTIFICATION.KEY.PACKAGE));
+            notifications.add(new NotificationParts(package_name));
+        }
+        c_session_notifications.close();
+
+        return notifications;
+    }
+
 }

@@ -1,15 +1,34 @@
 package com.harrymt.productivitymapping.activities;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.os.Bundle;
+import android.service.notification.StatusBarNotification;
+import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.harrymt.productivitymapping.NotificationBuilderUtil;
+import com.harrymt.productivitymapping.NotificationParts;
+import com.harrymt.productivitymapping.PROJECT_GLOBALS;
 import com.harrymt.productivitymapping.R;
+import com.harrymt.productivitymapping.Session;
+import com.harrymt.productivitymapping.database.DatabaseAdapter;
+
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 public class LastSession extends Activity {
+
+    ArrayList<NotificationParts> ns;
+    Session s;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,15 +36,58 @@ public class LastSession extends Activity {
         setContentView(R.layout.activity_last_session);
         this.setTitle("Last Session");
 
-        TextView tvNotificationsBlocked = (TextView) findViewById(R.id.tvNotificationsBlocked);
-        tvNotificationsBlocked.setText("10 Facebook \n5 WhatsApp");
 
         TextView tvAppUsage = (TextView) findViewById(R.id.tvAppUsage);
-        tvAppUsage.setText("9 Minutes on Facebook\n15 Minutes on WhatsApp");
+        tvAppUsage.setText("App usage not available at this time");
+
+        displayStats();
     }
 
     public void sendAllBlockedNotifications(View view) {
-        Toast.makeText(this, "0 notifications to send", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, ns.size() + " notifications to send", Toast.LENGTH_SHORT).show();
+
+        NotificationBuilderUtil builder = new NotificationBuilderUtil(this);
+        for (NotificationParts sbn : ns) {
+            builder.postNotification(sbn);
+        }
+
+        // Wipe the notification array;
+        ns = null;
     }
 
+    public void displayStats() {
+        DatabaseAdapter dbAdapter = new DatabaseAdapter(this); // Open and prepare the database
+        s = dbAdapter.getLastSessionDetails();
+        ns = dbAdapter.getLastSessionNotificationDetails();
+        dbAdapter.close();
+
+        TextView tvAppUsage = (TextView) findViewById(R.id.tvSessionGeneral);
+        tvAppUsage.setText("Session lasted " + convertTimeToFriendlyString(s.stopTime - s.startTime) + ", blocking " + ns.size() + " notifications," +
+                "letting through notifications because of the following keywords. " + PROJECT_GLOBALS.CURRENT_ZONE.keywordsAsStr());
+
+        Map<String, Integer> notifications = new HashMap<>();
+
+        for(NotificationParts n : ns) {
+            if(notifications.containsKey(n.packageName)) {
+                Integer number = notifications.get(n.packageName);
+                number++;
+                notifications.remove(n.packageName);
+                notifications.put(n.packageName, number);
+            } else {
+                notifications.put(n.packageName, 1);
+            }
+        }
+        String appsStr = "";
+        for (Map.Entry<String, Integer> entry : notifications.entrySet()) {
+            appsStr += entry.getKey() + ": " + entry.getValue();
+        }
+
+        TextView tvNotificationsBlocked = (TextView) findViewById(R.id.tvNotificationsBlocked);
+        tvNotificationsBlocked.setText(appsStr);
+    }
+
+    private String convertTimeToFriendlyString(long epochTime) {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.UK);
+        return sdf.format(new Date(epochTime));
+    }
 }
