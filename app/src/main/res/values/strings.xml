@@ -3,4 +3,6 @@
 
     <string name="app_label_service_app_usage">Polls for app usage during study.</string>
     <string name="app_label_service_notifications">Blocks notifications during study</string>
+
+    <string name="stats_api_error">Connect to the internet for stats.</string>
 </resources>

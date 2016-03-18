@@ -2,6 +2,7 @@ package com.harrymt.productivitymapping.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,8 @@ import java.util.Iterator;
  * Created by harrymt on 06/02/16.
  */
 public class StatFragment extends Fragment {
+
+    public static String TAG = "StatFragment";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -72,14 +75,20 @@ public class StatFragment extends Fragment {
                             e.printStackTrace();
                             value = "error";
                         }
-                        statsString += element + ": " + value + "\n";
+                        statsString += element + ": " + value;
+
+                        if(iter.hasNext()) {
+                            statsString += "\n";
+                        }
+
                     }
                     tv.setText(statsString);
 
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    tv.setText(e.getMessage());
+                    Log.d(TAG, "JSON exception with stats: " + e.getMessage());
+                    tv.setText(R.string.stats_api_error);
                 }
 
 
@@ -89,8 +98,8 @@ public class StatFragment extends Fragment {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                // TODO Auto-generated method stub
-                tv.setText(" Can't get stats, please connect to the internet and try again later. " + error.getMessage()); // TODO remove this error.getMessage
+                Log.d(TAG, "Getting stats internet error: " + error.getMessage());
+                tv.setText(R.string.stats_api_error);
             }
         });
     }
