@@ -73,7 +73,10 @@ public class StatFragment extends Fragment {
                             value = response_value.get(element).toString();
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            value = "error";
+                            Log.d(TAG, "JSON exception with stats: " + e.getMessage());
+                            tv.setText(R.string.stats_api_error);
+                            statsString = "";
+                            break; // exit for
                         }
                         statsString += element + ": " + value;
 
@@ -82,7 +85,10 @@ public class StatFragment extends Fragment {
                         }
 
                     }
-                    tv.setText(statsString);
+
+                    if(!statsString.equals("")) {
+                        tv.setText(statsString);
+                    }
 
 
                 } catch (JSONException e) {
@@ -90,8 +96,6 @@ public class StatFragment extends Fragment {
                     Log.d(TAG, "JSON exception with stats: " + e.getMessage());
                     tv.setText(R.string.stats_api_error);
                 }
-
-
 
             }
         }, new Response.ErrorListener() {
