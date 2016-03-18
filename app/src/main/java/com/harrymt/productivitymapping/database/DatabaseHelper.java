@@ -11,7 +11,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
     private static String TAG = "g53ids";
 
     public DatabaseHelper(Context context) {
-        super(context, "userData", null, 14);
+        super(context, "userData", null, 15);
     }
 
     /**

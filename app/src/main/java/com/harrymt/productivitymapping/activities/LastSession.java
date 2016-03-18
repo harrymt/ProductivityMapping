@@ -45,25 +45,38 @@ public class LastSession extends Activity {
 
     public void sendAllBlockedNotifications(View view) {
         Toast.makeText(this, ns.size() + " notifications to send", Toast.LENGTH_SHORT).show();
-
         NotificationBuilderUtil builder = new NotificationBuilderUtil(this);
+
+        DatabaseAdapter dbAdapter = new DatabaseAdapter(this); // Open and prepare the database
+
         for (NotificationParts sbn : ns) {
+            dbAdapter.setNotificationHasBeenSentToUser(sbn.id);
             builder.postNotification(sbn);
         }
 
+        dbAdapter.close();
+
         // Wipe the notification array;
-        ns = null;
+        ns = new ArrayList<>();
     }
 
     public void displayStats() {
         DatabaseAdapter dbAdapter = new DatabaseAdapter(this); // Open and prepare the database
         s = dbAdapter.getLastSessionDetails();
         ns = dbAdapter.getLastSessionNotificationDetails();
+        Zone zone = dbAdapter.getZoneFromID(s.zoneId);
         dbAdapter.close();
 
         TextView tvAppUsage = (TextView) findViewById(R.id.tvSessionGeneral);
-        tvAppUsage.setText("Session lasted " + convertTimeToFriendlyString(s.stopTime - s.startTime) + ", blocking " + ns.size() + " notifications," +
-                "letting through notifications because of the following keywords. " + PROJECT_GLOBALS.CURRENT_ZONE.keywordsAsStr());
+
+        String sessionLength = convertTimeToFriendlyString(s.stopTime - s.startTime);
+        String numberOfNotificationsBlocked = ns.size() + "";
+        String zoneKeywords = (zone == null ? null : zone.keywordsAsStr());
+
+        String sessionStr = "Session lasted " + sessionLength + ",";
+        String notificationStr = " blocking " + numberOfNotificationsBlocked + " notification(s)";
+        String keywordsStr = (zoneKeywords == null ? "." : "letting through notification(s) because of the following keywords. " + zoneKeywords);
+        tvAppUsage.setText(sessionStr + notificationStr + keywordsStr);
 
         Map<String, Integer> notifications = new HashMap<>();
 

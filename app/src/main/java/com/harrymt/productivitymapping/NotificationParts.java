@@ -8,16 +8,20 @@ import android.os.Bundle;
  *
  */
 public class NotificationParts {
+    public int id;
+    public String title;
+    public String text;
+    public String bigText;
+    public String subText;
+    public String packageName;
 
-   public String title;
-   public String text;
-   public String bigText;
-   public String subText;
-   public String packageName;
+    public NotificationParts(int notificationID, String pack) {
+        this(pack);
+        id = notificationID;
+    }
 
     public NotificationParts(String package_name) {
         packageName = package_name;
-
     }
 
     public NotificationParts(Notification n, String pack) {

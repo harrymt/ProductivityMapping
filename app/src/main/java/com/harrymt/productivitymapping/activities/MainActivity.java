@@ -81,6 +81,10 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         DatabaseAdapter dbAdapter;
         dbAdapter = new DatabaseAdapter(this); // Prepare the database
         dbAdapter.startNewSession(zoneID, startTime); // Start new session with this zone
+
+        // Enable the Last Session Button
+        findViewById(R.id.btnLastSession).setEnabled(dbAdapter.hasASessionEverStartedYet());
+
         dbAdapter.close();
 
         // Reset service stored data e.g. app usage

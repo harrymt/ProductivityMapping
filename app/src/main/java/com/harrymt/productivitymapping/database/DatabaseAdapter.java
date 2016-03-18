@@ -251,10 +251,13 @@ public class DatabaseAdapter
         // Save the notification based on the current session
         db.execSQL("INSERT INTO " + NOTIFICATION.TABLE + " ("
                 + NOTIFICATION.KEY.PACKAGE + ","
+                + NOTIFICATION.KEY.SENT_TO_USER + ","
                 + NOTIFICATION.KEY.SESSION_ID
                 + ") "
                 + "VALUES "
-                + "('" + n.getPackageName() + "', " + PROJECT_GLOBALS.SESSION_ID  + ");");
+                + "('" + n.getPackageName() + "', "
+                + "0, "
+                + PROJECT_GLOBALS.SESSION_ID + ");");
     }
 
 
@@ -315,11 +318,25 @@ public class DatabaseAdapter
 
     private Integer getLastSessionId()
     {
-        Cursor c = db.query(SESSION.TABLE, new String[] { SESSION.KEY.ID }, null, null, null, null, null);
-        c.moveToLast();
-        Integer sessionId = c.getInt(0);
+        Integer sessionId = null;
+        Cursor c = db.query(SESSION.TABLE, new String[]{SESSION.KEY.ID}, null, null, null, null, null);
+        if(c.moveToLast()) {
+            sessionId = c.getInt(0);
+        }
         c.close();
         return sessionId;
+    }
+
+
+    public boolean hasASessionEverStartedYet()
+    {
+        boolean session_does_exist = false;
+        Cursor c = db.query(SESSION.TABLE, new String[]{SESSION.KEY.ID}, null, null, null, null, null);
+        if(c.moveToLast()) {
+            session_does_exist = true;
+        }
+        c.close();
+        return session_does_exist;
     }
 
 
@@ -348,21 +365,65 @@ public class DatabaseAdapter
         return session;
     }
 
-    public  ArrayList<NotificationParts> getLastSessionNotificationDetails() {
+    public void setNotificationHasBeenSentToUser(int notificationID) {
+        db.execSQL("UPDATE " + NOTIFICATION.TABLE
+                + " SET "
+                + NOTIFICATION.KEY.SENT_TO_USER + "=" + 1
+                + " WHERE "
+                + NOTIFICATION.KEY.ID + " = " + notificationID
+                + ";");
+    }
+
+    public ArrayList<NotificationParts> getLastSessionNotificationDetails() {
         int session_id = getLastSessionId();
         ArrayList<NotificationParts> notifications = new ArrayList<>();
 
         Cursor c_session_notifications = db.query(NOTIFICATION.TABLE, new String[]{
+                NOTIFICATION.KEY.ID,
                 NOTIFICATION.KEY.PACKAGE
-        }, NOTIFICATION.KEY.ID + "=" + session_id, null, null, null, null);
+        }, NOTIFICATION.KEY.ID + "=" + session_id + " AND " + NOTIFICATION.KEY.SENT_TO_USER + "=0", null, null, null, null);
 
         if(c_session_notifications.moveToFirst()) {
+            int notificationID = c_session_notifications.getInt(c_session_notifications.getColumnIndex(NOTIFICATION.KEY.ID));
             String package_name = c_session_notifications.getString(c_session_notifications.getColumnIndex(NOTIFICATION.KEY.PACKAGE));
-            notifications.add(new NotificationParts(package_name));
+            notifications.add(new NotificationParts(notificationID, package_name));
         }
         c_session_notifications.close();
 
         return notifications;
     }
 
+    public Zone getZoneFromID(int zoneId) {
+        Zone z = null;
+
+        Cursor c = db.query(ZONE.TABLE, new String[] {
+                ZONE.KEY.ID,
+                ZONE.KEY.NAME,
+                ZONE.KEY.RADIUS,
+                ZONE.KEY.LAT,
+                ZONE.KEY.LNG,
+                ZONE.KEY.AUTO_START_STOP,
+                ZONE.KEY.HAS_SYNCED,
+                ZONE.KEY.BLOCKING_APPS,
+                ZONE.KEY.KEYWORDS
+        }, ZONE.KEY.ID + "=" + zoneId, null, null, null, null);
+
+        if(c.moveToFirst()) {
+            int id = c.getInt(c.getColumnIndex(ZONE.KEY.ID));
+            String name = c.getString(c.getColumnIndex(ZONE.KEY.NAME));
+            float radius = c.getFloat(c.getColumnIndex(ZONE.KEY.RADIUS));
+            double lat = c.getDouble(c.getColumnIndex(ZONE.KEY.LAT));
+            double lng = c.getDouble(c.getColumnIndex(ZONE.KEY.LNG));
+            int hasSynced = c.getInt(c.getColumnIndex(ZONE.KEY.HAS_SYNCED));
+            int autoStart = c.getInt(c.getColumnIndex(ZONE.KEY.AUTO_START_STOP));
+            String[] blockingApps = Zone.stringToArray(c.getString(c.getColumnIndex(ZONE.KEY.BLOCKING_APPS)));
+            String[] keywords = Zone.stringToArray(c.getString(c.getColumnIndex(ZONE.KEY.KEYWORDS)));
+
+            z = new Zone(id, lat, lng, radius, name, autoStart, hasSynced, blockingApps, keywords);
+        }
+
+        c.close();
+
+        return z;
+    }
 }

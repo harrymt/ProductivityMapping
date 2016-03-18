@@ -4,6 +4,8 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -20,6 +22,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.harrymt.productivitymapping.MapUtil;
+import com.harrymt.productivitymapping.Session;
 import com.harrymt.productivitymapping.database.DatabaseAdapter;
 import com.harrymt.productivitymapping.R;
 import com.harrymt.productivitymapping.Zone;
@@ -41,6 +44,12 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback, Googl
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map_track);
         mapFragment.getMapAsync(this);
         buildGoogleApiClient();
+
+        // Check to see if there has been a session before
+        DatabaseAdapter dbAdapter = new DatabaseAdapter(getContext()); // Prepare the database
+        // If there hasn't been a session before, don't enable the button
+        v.findViewById(R.id.btnLastSession).setEnabled(dbAdapter.hasASessionEverStartedYet());
+        dbAdapter.close();
 
         return v;
     }
@@ -101,7 +110,7 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback, Googl
     }
 
     @Override
-    public void onConnectionFailed(ConnectionResult result) {
+    public void onConnectionFailed(@NonNull ConnectionResult result) {
         Log.i("g53ids", "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
     }
 

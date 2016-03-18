@@ -94,6 +94,7 @@ public class DatabaseSchema {
 
         static class KEY {
             static final String ID = "id";
+            static final String SENT_TO_USER = "sentToUser";
             static final String SESSION_ID = "sessionId";
             static final String PACKAGE = "package";
             // TODO add other notification characteristics
@@ -104,6 +105,7 @@ public class DatabaseSchema {
                 "CREATE TABLE if not exists " + TABLE + " (" +
                         KEY.ID + " INTEGER PRIMARY KEY autoincrement," +
                         KEY.SESSION_ID + " INTEGER, " +
+                        KEY.SENT_TO_USER + " INTEGER, " +
                         KEY.PACKAGE + " TEXT " +
                         ");";
     }
