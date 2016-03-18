@@ -1,21 +1,16 @@
 package com.harrymt.productivitymapping.activities;
 
 import android.app.Activity;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.os.Bundle;
-import android.service.notification.StatusBarNotification;
-import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.harrymt.productivitymapping.NotificationBuilderUtil;
 import com.harrymt.productivitymapping.NotificationParts;
-import com.harrymt.productivitymapping.PROJECT_GLOBALS;
 import com.harrymt.productivitymapping.R;
 import com.harrymt.productivitymapping.Session;
+import com.harrymt.productivitymapping.Zone;
 import com.harrymt.productivitymapping.database.DatabaseAdapter;
 
 import java.sql.Date;
@@ -34,11 +29,9 @@ public class LastSession extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_last_session);
-        this.setTitle("Last Session");
-
 
         TextView tvAppUsage = (TextView) findViewById(R.id.tvAppUsage);
-        tvAppUsage.setText("App usage not available at this time");
+        tvAppUsage.setText(R.string.last_session_app_usage_failed);
 
         displayStats();
     }

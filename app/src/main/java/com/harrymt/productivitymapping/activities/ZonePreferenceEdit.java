@@ -33,8 +33,6 @@ public class ZonePreferenceEdit extends Activity {
         etName = (EditText) findViewById(R.id.etZoneName);
         cbAutoStartStop = (CheckBox) findViewById(R.id.cbAutoStartStop);
 
-        this.setTitle("Set zone preferences");
-
         // Get Zone object being passed in.
         Zone z = getIntent().getParcelableExtra("zone");
 

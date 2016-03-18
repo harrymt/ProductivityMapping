@@ -5,7 +5,6 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -22,7 +21,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.harrymt.productivitymapping.MapUtil;
-import com.harrymt.productivitymapping.Session;
 import com.harrymt.productivitymapping.database.DatabaseAdapter;
 import com.harrymt.productivitymapping.R;
 import com.harrymt.productivitymapping.Zone;
@@ -93,7 +91,7 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback, Googl
     @Override
     public void onConnected(Bundle connectionHint) {
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Log.d("g53ids", "Permission ERROR");
+            Log.e("g53ids", "Permission ERROR");
             return;
         }
 
@@ -111,7 +109,7 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback, Googl
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult result) {
-        Log.i("g53ids", "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
+        Log.e("g53ids", "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
     }
 
     @Override

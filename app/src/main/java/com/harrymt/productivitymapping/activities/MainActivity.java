@@ -1,21 +1,13 @@
 package com.harrymt.productivitymapping.activities;
 
 import android.Manifest;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.provider.Settings;
-import android.service.notification.StatusBarNotification;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -94,7 +86,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
         // Set UI
         TextView study = (TextView) findViewById(R.id.tvStudyStateText);
-        study.setText("Studying...");
+        study.setText(R.string.track_study_state_studying);
 
         Button createNewZone = (Button) findViewById(R.id.btnCreateNewZone);
         createNewZone.setEnabled(false);
@@ -105,6 +97,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         editZone.setEnabled(true);
         Button forceStopStudy = (Button) findViewById(R.id.btnForceStopStudy);
         forceStopStudy.setEnabled(true);
+
     }
 
     public void forceStopStudy(View view) {
@@ -119,7 +112,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
         // Update UI
         TextView study = (TextView) findViewById(R.id.tvStudyStateText);
-        study.setText("Start study with...");
+        study.setText(R.string.track_study_state_not_studying);
 
         Button createNewZone = (Button) findViewById(R.id.btnCreateNewZone);
         createNewZone.setEnabled(true);
@@ -244,7 +237,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Log.d(TAG, "JSON exception with stats: " + e.getMessage());
+                    Log.e(TAG, "JSON exception with stats: " + e.getMessage());
                 }
 
             }
@@ -252,7 +245,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "Getting stats internet error: " + error.getMessage());
+                Log.e(TAG, "Getting stats internet error: " + error.getMessage());
             }
         });
     }
@@ -328,7 +321,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
     /**
      * On 'New Zone' click.
-     * @param view
      */
     public void createNewZone(View view) {
         // start set zone activity.
@@ -369,7 +361,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 }
                 dbAdapter.close();
 
-                if (PROJECT_GLOBALS.IS_DEBUG) Toast.makeText(MainActivity.this, "Zone data: packages(" + z.blockingApps.toString() + "), keywords(" + z.keywords.toString() + "), r(" + z.radiusInMeters + "), LatLng(" + z.lat + "," + z.lng + ")", Toast.LENGTH_SHORT).show();
+                if (PROJECT_GLOBALS.IS_DEBUG) Toast.makeText(MainActivity.this, "Zone data: packages(" + z.blockingAppsAsStr() + "), keywords(" + z.keywordsAsStr() + "), r(" + z.radiusInMeters + "), LatLng(" + z.lat + "," + z.lng + ")", Toast.LENGTH_SHORT).show();
             }
         }
     }

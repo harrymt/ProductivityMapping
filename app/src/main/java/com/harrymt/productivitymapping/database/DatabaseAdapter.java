@@ -78,12 +78,14 @@ public class DatabaseAdapter
     }
 
     /**
+     *
+     *
      * Note: has the 100 * at end!
-     * @param lat1
-     * @param lng1
-     * @param lat2
-     * @param lng2
-     * @return
+     * @param lat1 Lat of Point 1
+     * @param lng1 Lng of Point 1
+     * @param lat2 Lat of Point 2
+     * @param lng2 Lng of Point 2
+     * @return The distance from point 1 and point 2
      */
     public static double distFrom(double lat1, double lng1, double lat2, double lng2) {
         double earthRadius = 6371.0; // 3958.75 miles (or 6371.0 kilometers)

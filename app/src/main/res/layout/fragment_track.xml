@@ -23,8 +23,12 @@
         android:id="@+id/tvStudyStateText"
         android:gravity="center_horizontal" />
 
-
-
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Send test notification"
+        android:id="@+id/btnTESTSendNotification"
+        android:onClick="sendNotification"/>
 
     <Button
         android:layout_width="match_parent"

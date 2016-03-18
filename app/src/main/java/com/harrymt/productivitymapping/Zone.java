@@ -23,7 +23,7 @@ public class Zone implements Parcelable {
 
     /**
      * Utility function to convert a String separated by the unqiue delimited back into a String.
-     * @param str
+     * @param str String
      * @return String[]
      */
     public static String[] stringToArray(String str)

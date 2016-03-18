@@ -15,10 +15,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-/**
- * Created by harrymt on 10/03/16.
- */
-
 public class DraggableCircle {
 
     private static final double RADIUS_OF_EARTH_METERS = 6371009;

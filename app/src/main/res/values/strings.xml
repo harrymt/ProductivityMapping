@@ -1,8 +1,15 @@
 <resources>
     <string name="app_name">Study Mapper</string>
+    <string name="activity_last_session_name">Last Session</string>
+    <string name="activity_zone_preferences_edit">Set zone preferences</string>
+    <string name="activity_zone_edit">Edit Zone</string>
+    <string name="activity_zone_create">Create new Zone</string>
 
     <string name="app_label_service_app_usage">Polls for app usage during study.</string>
     <string name="app_label_service_notifications">Blocks notifications during study</string>
 
     <string name="stats_api_error">Connect to the internet for stats.</string>
+    <string name="track_study_state_studying">Studying…</string>
+    <string name="track_study_state_not_studying">Start study with…</string>
+    <string name="last_session_app_usage_failed">App usage not available at this time</string>
 </resources>

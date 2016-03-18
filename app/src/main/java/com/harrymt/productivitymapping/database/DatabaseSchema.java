@@ -1,10 +1,5 @@
 package com.harrymt.productivitymapping.database;
 
-/**
- * Created by harrymt on 09/03/16.
- */
-
-
 public class DatabaseSchema {
 
     static class ZONE {

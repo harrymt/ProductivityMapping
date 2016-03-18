@@ -55,9 +55,14 @@
         </activity>
 
 
-        <activity android:name=".activities.ZoneEditActivity" />
-        <activity android:name=".activities.ZonePreferenceEdit" />
-        <activity android:name=".activities.LastSession"/>
+        <activity android:name=".activities.ZoneEditActivity"
+            android:label="@string/activity_zone_edit"/>
+
+        <activity android:name=".activities.ZonePreferenceEdit"
+            android:label="@string/activity_zone_preferences_edit"/>
+
+        <activity android:name=".activities.LastSession"
+            android:label="@string/activity_last_session_name"/>
 
         <!-- Listens for app usage -->
         <service

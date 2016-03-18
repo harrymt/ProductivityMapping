@@ -22,9 +22,6 @@ import org.json.JSONObject;
 
 import java.util.Iterator;
 
-/**
- * Created by harrymt on 06/02/16.
- */
 public class StatFragment extends Fragment {
 
     public static String TAG = "StatFragment";
@@ -68,12 +65,12 @@ public class StatFragment extends Fragment {
                     String statsString = "";
                     for (Iterator<String> iter = response_value.keys(); iter.hasNext(); ) {
                         String element = iter.next();
-                        String value = "";
+                        String value;
                         try {
                             value = response_value.get(element).toString();
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            Log.d(TAG, "JSON exception with stats: " + e.getMessage());
+                            Log.e(TAG, "JSON exception with stats: " + e.getMessage());
                             tv.setText(R.string.stats_api_error);
                             statsString = "";
                             break; // exit for
@@ -83,26 +80,23 @@ public class StatFragment extends Fragment {
                         if(iter.hasNext()) {
                             statsString += "\n";
                         }
-
                     }
 
                     if(!statsString.equals("")) {
                         tv.setText(statsString);
                     }
 
-
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Log.d(TAG, "JSON exception with stats: " + e.getMessage());
+                    Log.e(TAG, "JSON exception with stats: " + e.getMessage());
                     tv.setText(R.string.stats_api_error);
                 }
-
             }
         }, new Response.ErrorListener() {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "Getting stats internet error: " + error.getMessage());
+                Log.e(TAG, "Getting stats internet error: " + error.getMessage());
                 tv.setText(R.string.stats_api_error);
             }
         });

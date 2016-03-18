@@ -50,12 +50,8 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
         zoneToEdit = getIntent().getExtras().getParcelable("zone");
 
         // If its a new zone
-        if(zoneToEdit != null) {
-            if (zoneToEdit.zoneID == -1) {
-                this.setTitle("Create new zone");
-            } else {
-                this.setTitle("Edit zone");
-            }
+        if (zoneToEdit != null && zoneToEdit.zoneID == -1) {
+            this.setTitle(R.string.activity_zone_create);
         }
     }
 

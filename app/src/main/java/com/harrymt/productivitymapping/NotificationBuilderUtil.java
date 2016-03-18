@@ -32,7 +32,7 @@ public class NotificationBuilderUtil {
                 .setContentText(sbn.getNotification().extras.getCharSequence(Notification.EXTRA_TEXT))
                 .setSmallIcon(R.drawable.ic_standard_notification).build();
 
-        NotificationManager nManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+        NotificationManager nManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         nManager.notify((int) System.nanoTime(), n);
     }
 
@@ -51,7 +51,7 @@ public class NotificationBuilderUtil {
     }
 
     public void postNewNotification(Notification notification) {
-        NotificationManager nManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+        NotificationManager nManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         nManager.notify((int) System.currentTimeMillis(), notification);
     }
 }

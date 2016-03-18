@@ -8,9 +8,6 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-/**
- * Created by harrymt on 23/11/15.
- */
 public class PROJECT_GLOBALS
 {
     public static boolean STUDYING = false;
@@ -31,6 +28,22 @@ public class PROJECT_GLOBALS
         return "?apikey=" + secret_key;
     }
 
+    public static String getUniqueDeviceId(Context c) {
+        return android.provider.Settings.Secure.getString(c.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+    }
+
+    public class Broadcasts
+    {
+        public static final String NOTIFICATION_POSTED = "NOTIFICATION_POSTED";
+        public static final String APP_USAGE = "APP_USAGE";
+    }
+
+    /**
+     * Gets variables from the XML Environment variables file
+     * @param context this.
+     * @param resourceID String of variable.
+     * @return The resource string if found, null if doesn't exist.
+     */
     private static String getEnvironmentVariableMetaData(Context context, String resourceID) {
         try {
             ApplicationInfo ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
@@ -44,13 +57,4 @@ public class PROJECT_GLOBALS
         return null;
     }
 
-    public static String getUniqueDeviceId(Context c) {
-        return android.provider.Settings.Secure.getString(c.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
-    }
-
-    public class Broadcasts
-    {
-        public static final String NOTIFICATION_POSTED = "NOTIFICATION_POSTED";
-        public static final String APP_USAGE = "APP_USAGE";
-    }
 }

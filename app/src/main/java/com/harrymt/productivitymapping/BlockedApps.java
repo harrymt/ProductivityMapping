@@ -7,14 +7,10 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
-/**
- * Created by harrymt on 09/03/16.
- */
+
 public class BlockedApps implements Comparable<BlockedApps> {
     public String name;
     public String package_name;
