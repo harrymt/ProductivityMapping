@@ -217,14 +217,14 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
 
         // Cache the most commonly used keywords and packages blocked
-
-        //RequestQueue queue = Volley.newRequestQueue(this);
-        //queue.add(makeJSONrequest(PROJECT_GLOBALS.base_url(this) + "/apps/3" + PROJECT_GLOBALS.apiKey(this)));
-        PROJECT_GLOBALS.TOP_APPS_BLOCKED = new ArrayList<>();
-        PROJECT_GLOBALS.TOP_APPS_BLOCKED.add("abc.app.todo.changeme");
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(makeAPIRequest("/apps/3"));
     }
 
-    private JsonObjectRequest makeJSONrequest(String url) {
+    private JsonObjectRequest makeAPIRequest(String endpoint) {
+
+        String url = PROJECT_GLOBALS.base_url(this) + endpoint + PROJECT_GLOBALS.apiKey(this);
+
         return new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -233,7 +233,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                     response_value = (JSONObject) response.get("response");
 
                     PROJECT_GLOBALS.TOP_APPS_BLOCKED = new ArrayList<>();
-
                     for (Iterator<String> iter = response_value.keys(); iter.hasNext(); ) {
                         // Get the name of the top apps blocked
                         PROJECT_GLOBALS.TOP_APPS_BLOCKED.add(iter.next());
@@ -241,16 +240,19 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    Log.d(TAG, "JSON exception with stats: " + e.getMessage());
                 }
 
             }
         }, new Response.ErrorListener() {
+
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("g53ids", " Can't get stats, please connect to the internet and try again later. " + error.getMessage());
+                Log.d(TAG, "Getting stats internet error: " + error.getMessage());
             }
         });
     }
+
 
     @Override
     protected void onStart() {
