@@ -2,6 +2,7 @@ package com.harrymt.productivitymapping.database;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
@@ -117,7 +118,7 @@ public class DatabaseAdapter
 
         ArrayList<Zone> zones = new ArrayList<>();
         if(c.moveToFirst()) {
-            while (c.moveToNext()) {
+            do {
                 int id = c.getInt(c.getColumnIndex(ZONE.KEY.ID));
                 String name = c.getString(c.getColumnIndex(ZONE.KEY.NAME));
                 float radius = c.getFloat(c.getColumnIndex(ZONE.KEY.RADIUS));
@@ -129,7 +130,7 @@ public class DatabaseAdapter
 
                 Zone z = new Zone(id, lat, lng, radius, name, -1, hasSynced, blockingApps, keywords);
                 zones.add(z);
-            }
+            } while (c.moveToNext());
         }
         c.close();
 
@@ -155,7 +156,7 @@ public class DatabaseAdapter
 
         ArrayList<Zone> zones = new ArrayList<>();
         if(c.moveToFirst()) {
-            while (c.moveToNext()) {
+           do {
                 int id = c.getInt(c.getColumnIndex(ZONE.KEY.ID));
 
                 String name = c.getString(c.getColumnIndex(ZONE.KEY.NAME));
@@ -169,7 +170,7 @@ public class DatabaseAdapter
 
                 Zone z = new Zone(id, lat, lng, radius, name, autoStart, hasSynced, blockingApps, keywords);
                 zones.add(z);
-            }
+            } while (c.moveToNext());
         }
         c.close();
 
@@ -427,5 +428,27 @@ public class DatabaseAdapter
         c.close();
 
         return z;
+    }
+
+
+    /** --- STATS --- **/
+    public int getUniqueNumberOfBlockingApps() {
+        return 0;
+    }
+
+    public int getUniqueNumberOfKeywords() {
+        return 0;
+    }
+
+    public long getNumberOfZones() {
+        return  DatabaseUtils.queryNumEntries(db, ZONE.TABLE);
+    }
+
+    public String getMostPopularKeyword() {
+        return "Harry";
+    }
+
+    public String getMostBlockedApp() {
+        return "Facebook";
     }
 }

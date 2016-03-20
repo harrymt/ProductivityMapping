@@ -2,6 +2,7 @@ package com.harrymt.productivitymapping.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,9 +44,10 @@ public class ZonesFragment extends Fragment {
         // TODO add empty list item to zones that says no zones, go create one.
         // Set a custom list adapter for a list of locations
         ArrayList<Zone> zs = getZones();
+        Log.e("g53ids", zs.size()+ "");
         mList = (ListFragment) getChildFragmentManager().findFragmentById(R.id.list);
         // Convert to array
-        Zone[] zones = new Zone[zs.size()]; int i = 0;for (Zone z : zs) { zones[i] = z; i++;}
+        Zone[] zones = new Zone[zs.size()]; int i = 0; for (Zone z : zs) { zones[i] = z; i++;}
 
         mList.setListAdapter(new MapAdapter(this, getActivity(), zones));
         // Set a RecyclerListener to clean up MapView from ListView
@@ -59,6 +61,7 @@ public class ZonesFragment extends Fragment {
      * Adds a marker and centers the camera on the NamedLocation with the normal map type.
      */
     public void setMapLocation(GoogleMap map, Zone zone) {
+
         // Add a marker for this item and set the camera
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(zone.lat, zone.lng), 18.0f));
 
@@ -85,7 +88,6 @@ public class ZonesFragment extends Fragment {
                 holder.map.clear();
                 holder.map.setMapType(GoogleMap.MAP_TYPE_NONE);
             }
-
         }
     };
 
