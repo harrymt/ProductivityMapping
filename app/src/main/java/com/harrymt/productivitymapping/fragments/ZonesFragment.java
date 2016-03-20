@@ -10,7 +10,7 @@ import android.widget.AbsListView;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
-import com.harrymt.productivitymapping.MapUtil;
+import com.harrymt.productivitymapping.utility.MapUtil;
 import com.harrymt.productivitymapping.ViewHolder;
 import com.harrymt.productivitymapping.adapters.MapAdapter;
 import com.harrymt.productivitymapping.database.DatabaseAdapter;

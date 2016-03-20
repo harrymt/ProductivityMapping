@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.harrymt.productivitymapping.NotificationBuilderUtil;
+import com.harrymt.productivitymapping.utility.NotificationBuilderUtil;
 import com.harrymt.productivitymapping.NotificationParts;
 import com.harrymt.productivitymapping.R;
 import com.harrymt.productivitymapping.Session;

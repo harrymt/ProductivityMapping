@@ -20,7 +20,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.harrymt.productivitymapping.MapUtil;
+import com.harrymt.productivitymapping.utility.MapUtil;
 import com.harrymt.productivitymapping.database.DatabaseAdapter;
 import com.harrymt.productivitymapping.R;
 import com.harrymt.productivitymapping.Zone;
