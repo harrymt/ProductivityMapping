@@ -1,7 +1,17 @@
 package com.harrymt.productivitymapping;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.google.android.gms.maps.model.LatLng;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by harrymt on 15/02/16
@@ -57,6 +67,10 @@ public class Zone implements Parcelable {
 
     public String blockingAppsAsStr() {
         return arrayToString(blockingApps);
+    }
+
+    public Zone(LatLng latLng) {
+        this(latLng.latitude, latLng.longitude, 5.0f);
     }
 
     public Zone(double lt, double lg) {
@@ -126,4 +140,18 @@ public class Zone implements Parcelable {
             return new Zone[size];
         }
     };
+
+    public JSONObject getJSONObject(Context c) throws JSONException {
+        JSONObject p = new JSONObject();
+        p.put("user_id", PROJECT_GLOBALS.getUniqueDeviceId(c));
+        p.put("id", this.zoneID);
+        p.put("name", this.name);
+        p.put("lat", this.lat);
+        p.put("lng", this.lng);
+        p.put("radius", this.radiusInMeters);
+        p.put("blockingApps", new JSONArray(new ArrayList<>(Arrays.asList(this.blockingApps))));
+        p.put("keywords", new JSONArray(new ArrayList<>(Arrays.asList(this.keywords))));
+
+        return p;
+    }
 }
