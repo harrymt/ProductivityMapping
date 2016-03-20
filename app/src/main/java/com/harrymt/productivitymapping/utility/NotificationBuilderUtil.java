@@ -1,10 +1,13 @@
-package com.harrymt.productivitymapping;
+package com.harrymt.productivitymapping.utility;
 
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.service.notification.StatusBarNotification;
 import android.support.v4.app.NotificationCompat;
+
+import com.harrymt.productivitymapping.NotificationParts;
+import com.harrymt.productivitymapping.R;
 
 /**
  * Created by harrymt on 10/03/16

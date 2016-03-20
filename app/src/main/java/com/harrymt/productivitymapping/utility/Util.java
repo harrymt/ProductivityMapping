@@ -1,4 +1,4 @@
-package com.harrymt.productivitymapping;
+package com.harrymt.productivitymapping.utility;
 
 import android.content.Context;
 import android.provider.Settings;
