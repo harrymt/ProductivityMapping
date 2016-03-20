@@ -67,7 +67,6 @@ public class MainActivity extends FragmentActivity {
 
         locationPoller.mGoogleApiClient.connect();
 
-
         // Show notification listener settings if not set
         if (Util.weCanListenToNotifications(this)) {
             // Service is enabled do something
@@ -99,32 +98,27 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        // Check which request we're responding to
-        if (requestCode == REQUEST_CODE_SET_ZONE || requestCode == REQUEST_CODE_EDIT_ZONE) {
-            // Make sure the request was successful
-            if (resultCode == RESULT_OK) {
-                Bundle b = data.getExtras();
-                Zone z = b.getParcelable("zone");
+        // Check which request we're responding to && successful
+        if ((requestCode == REQUEST_CODE_SET_ZONE || requestCode == REQUEST_CODE_EDIT_ZONE) && resultCode == RESULT_OK) {
+            Zone z = data.getExtras().getParcelable("zone");
 
-                // Add the zone to a database.
-                DatabaseAdapter dbAdapter;
-                dbAdapter = new DatabaseAdapter(this); // Open and prepare the database
-                if (requestCode == REQUEST_CODE_EDIT_ZONE) {
-                    dbAdapter.editZone(z);
-                } else {
-                    dbAdapter.writeZone(z);
-                }
-                dbAdapter.close();
+            // Add the zone to a database.
+            DatabaseAdapter dbAdapter = new DatabaseAdapter(this); // Open and prepare the database
+            if (requestCode == REQUEST_CODE_EDIT_ZONE) {
+                dbAdapter.editZone(z);
+            } else {
+                dbAdapter.writeZone(z);
+            }
+            dbAdapter.close();
 
-                if (PROJECT_GLOBALS.IS_DEBUG)  {
-                    Toast.makeText(MainActivity.this,
-                            "Zone data: packages(" + z.blockingAppsAsStr()
-                                    + "), keywords(" + z.keywordsAsStr()
-                                    + "), r(" + z.radiusInMeters
-                                    + "), LatLng(" + z.lat
-                                    + "," + z.lng
-                                    + ")", Toast.LENGTH_SHORT).show();
-                }
+            if (PROJECT_GLOBALS.IS_DEBUG)  {
+                Toast.makeText(MainActivity.this,
+                        "Zone data: packages(" + z.blockingAppsAsStr()
+                                + "), keywords(" + z.keywordsAsStr()
+                                + "), r(" + z.radiusInMeters
+                                + "), LatLng(" + z.lat
+                                + "," + z.lng
+                                + ")", Toast.LENGTH_SHORT).show();
             }
         }
     }
