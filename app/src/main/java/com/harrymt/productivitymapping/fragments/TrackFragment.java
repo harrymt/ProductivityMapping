@@ -126,11 +126,6 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback, Googl
 
         ArrayList<Zone> zones = dbAdapter.getAllZones();
 
-        // Move to first zone, fallback - if we cant get current location
-        if(zones.size() > 0) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(zones.get(0).lat, zones.get(0).lng), 18.0f));
-        }
-
         for (Zone zone : zones) {
             MapUtil.drawCircle(getContext(), mMap, zone);
         }
