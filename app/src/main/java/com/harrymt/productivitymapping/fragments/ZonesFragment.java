@@ -96,6 +96,7 @@ public class ZonesFragment extends Fragment {
                 holder.editZone = (Button) row.findViewById(R.id.btnEditZone);
                 holder.deleteZone = (Button) row.findViewById(R.id.btnDeleteZone);
 
+                holder.mapView.setClickable(false);
 
                 // Set holder as tag for row for more efficient access.
                 row.setTag(holder);

@@ -30,6 +30,7 @@ import java.util.ArrayList;
 
 public class TrackFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
+    private static final String TAG = "TrackFragment";
     public GoogleMap mMap;
 
     protected GoogleApiClient mGoogleApiClient;
@@ -41,6 +42,11 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback, Googl
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map_track);
         mapFragment.getMapAsync(this);
+
+        // Remove the map popup that occurs on map click
+        View view = mapFragment.getView();
+        if(view != null) { view.setClickable(false); }
+
         buildGoogleApiClient();
 
         // Check to see if there has been a session before
