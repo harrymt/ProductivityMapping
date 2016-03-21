@@ -126,10 +126,10 @@ public class DatabaseAdapter
                 double lat = c.getDouble(c.getColumnIndex(ZONE.KEY.LAT));
                 double lng = c.getDouble(c.getColumnIndex(ZONE.KEY.LNG));
                 int hasSynced = c.getInt(c.getColumnIndex(ZONE.KEY.HAS_SYNCED));
-                String[] blockingApps = Zone.stringToArray(c.getString(c.getColumnIndex(ZONE.KEY.BLOCKING_APPS)));
-                String[] keywords = Zone.stringToArray(c.getString(c.getColumnIndex(ZONE.KEY.KEYWORDS)));
+                String[] blockingApps = Util.stringToArray(c.getString(c.getColumnIndex(ZONE.KEY.BLOCKING_APPS)));
+                String[] keywords = Util.stringToArray(c.getString(c.getColumnIndex(ZONE.KEY.KEYWORDS)));
 
-                Zone z = new Zone(id, lat, lng, radius, name, -1, hasSynced, blockingApps, keywords);
+                Zone z = new Zone(id, lat, lng, radius, name, hasSynced, blockingApps, keywords);
                 zones.add(z);
             } while (c.moveToNext());
         }
@@ -151,7 +151,6 @@ public class DatabaseAdapter
                 ZONE.KEY.RADIUS,
                 ZONE.KEY.LAT,
                 ZONE.KEY.LNG,
-                ZONE.KEY.AUTO_START_STOP,
                 ZONE.KEY.HAS_SYNCED,
                 ZONE.KEY.BLOCKING_APPS,
                 ZONE.KEY.KEYWORDS
@@ -167,11 +166,10 @@ public class DatabaseAdapter
                 double lat = c.getDouble(c.getColumnIndex(ZONE.KEY.LAT));
                 double lng = c.getDouble(c.getColumnIndex(ZONE.KEY.LNG));
                 int hasSynced = c.getInt(c.getColumnIndex(ZONE.KEY.HAS_SYNCED));
-                int autoStart = c.getInt(c.getColumnIndex(ZONE.KEY.AUTO_START_STOP));
-                String[] blockingApps = Zone.stringToArray(c.getString(c.getColumnIndex(ZONE.KEY.BLOCKING_APPS)));
-                String[] keywords = Zone.stringToArray(c.getString(c.getColumnIndex(ZONE.KEY.KEYWORDS)));
+                String[] blockingApps = Util.stringToArray(c.getString(c.getColumnIndex(ZONE.KEY.BLOCKING_APPS)));
+                String[] keywords = Util.stringToArray(c.getString(c.getColumnIndex(ZONE.KEY.KEYWORDS)));
 
-                Zone z = new Zone(id, lat, lng, radius, name, autoStart, hasSynced, blockingApps, keywords);
+                Zone z = new Zone(id, lat, lng, radius, name, hasSynced, blockingApps, keywords);
                 zones.add(z);
             } while (c.moveToNext());
         }
@@ -194,7 +192,7 @@ public class DatabaseAdapter
         ArrayList<String[]> array_of_keywords = new ArrayList<>();
         if(c.moveToFirst()) {
             do {
-                String[] keywords = Zone.stringToArray(c.getString(c.getColumnIndex(ZONE.KEY.KEYWORDS)));
+                String[] keywords = Util.stringToArray(c.getString(c.getColumnIndex(ZONE.KEY.KEYWORDS)));
                 array_of_keywords.add(keywords);
             } while (c.moveToNext());
         }
@@ -218,7 +216,7 @@ public class DatabaseAdapter
         ArrayList<String[]> array_of_apps = new ArrayList<>();
         if(c.moveToFirst()) {
             do {
-                String[] apps = Zone.stringToArray(c.getString(c.getColumnIndex(ZONE.KEY.BLOCKING_APPS)));
+                String[] apps = Util.stringToArray(c.getString(c.getColumnIndex(ZONE.KEY.BLOCKING_APPS)));
                 array_of_apps.add(apps);
             } while (c.moveToNext());
         }
@@ -331,7 +329,6 @@ public class DatabaseAdapter
                 ZONE.KEY.RADIUS,
                 ZONE.KEY.LAT,
                 ZONE.KEY.LNG,
-                ZONE.KEY.AUTO_START_STOP,
                 ZONE.KEY.HAS_SYNCED,
                 ZONE.KEY.BLOCKING_APPS,
                 ZONE.KEY.KEYWORDS
@@ -344,11 +341,10 @@ public class DatabaseAdapter
             double lat = c.getDouble(c.getColumnIndex(ZONE.KEY.LAT));
             double lng = c.getDouble(c.getColumnIndex(ZONE.KEY.LNG));
             int hasSynced = c.getInt(c.getColumnIndex(ZONE.KEY.HAS_SYNCED));
-            int autoStart = c.getInt(c.getColumnIndex(ZONE.KEY.AUTO_START_STOP));
-            String[] blockingApps = Zone.stringToArray(c.getString(c.getColumnIndex(ZONE.KEY.BLOCKING_APPS)));
-            String[] keywords = Zone.stringToArray(c.getString(c.getColumnIndex(ZONE.KEY.KEYWORDS)));
+            String[] blockingApps = Util.stringToArray(c.getString(c.getColumnIndex(ZONE.KEY.BLOCKING_APPS)));
+            String[] keywords = Util.stringToArray(c.getString(c.getColumnIndex(ZONE.KEY.KEYWORDS)));
 
-            z = new Zone(id, lat, lng, radius, name, autoStart, hasSynced, blockingApps, keywords);
+            z = new Zone(id, lat, lng, radius, name, hasSynced, blockingApps, keywords);
         }
 
         c.close();
@@ -406,7 +402,6 @@ public class DatabaseAdapter
                 + ZONE.KEY.RADIUS + "=" + zone.radiusInMeters + ", "
                 + ZONE.KEY.LAT + "=" + zone.lat + ", "
                 + ZONE.KEY.LNG + "=" + zone.lng + ", "
-                + ZONE.KEY.AUTO_START_STOP + "=" + zone.autoStartStop + ", "
                 + ZONE.KEY.HAS_SYNCED + "=" + zone.hasSynced + ", "
                 + ZONE.KEY.BLOCKING_APPS + "='" + zone.blockingAppsAsStr() + "', "
                 + ZONE.KEY.KEYWORDS + "='" + zone.keywordsAsStr() + "'"
@@ -501,7 +496,6 @@ public class DatabaseAdapter
                 + ZONE.KEY.RADIUS + ","
                 + ZONE.KEY.LAT + ","
                 + ZONE.KEY.LNG + ","
-                + ZONE.KEY.AUTO_START_STOP + ","
                 + ZONE.KEY.HAS_SYNCED + ","
                 + ZONE.KEY.BLOCKING_APPS + ","
                 + ZONE.KEY.KEYWORDS
@@ -512,7 +506,6 @@ public class DatabaseAdapter
                 + zone.radiusInMeters + ", "
                 + zone.lat + ", "
                 + zone.lng + ", "
-                + zone.autoStartStop + ", "
                 + zone.hasSynced + ", "
                 + "'" + zone.blockingAppsAsStr() + "', "
                 + "'" + zone.keywordsAsStr()

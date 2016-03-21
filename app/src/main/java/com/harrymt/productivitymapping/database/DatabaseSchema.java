@@ -17,7 +17,6 @@ public class DatabaseSchema {
             static final String LNG = "lng";
             static final String RADIUS = "radius";
             static final String NAME = "name";
-            static final String AUTO_START_STOP = "autoStartStop";
             static final String HAS_SYNCED = "hasSynced"; // 1 it has, 0 is hasn't
 
             static final String BLOCKING_APPS = "blockingApps";
@@ -31,7 +30,6 @@ public class DatabaseSchema {
                         KEY.LNG + " REAL, " +
                         KEY.RADIUS + " REAL, " +
                         KEY.NAME + " TEXT, " +
-                        KEY.AUTO_START_STOP + " INTEGER, " +
                         KEY.HAS_SYNCED + " INTEGER, " +
                         KEY.BLOCKING_APPS + " TEXT, " +
                         KEY.KEYWORDS + " TEXT " +

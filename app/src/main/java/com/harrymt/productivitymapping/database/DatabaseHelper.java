@@ -19,7 +19,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
      * @param context of App.
      */
     public DatabaseHelper(Context context) {
-        super(context, "userData", null, 15);
+        super(context, "userData", null, 16);
     }
 
     /**

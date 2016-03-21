@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import com.harrymt.productivitymapping.coredata.BlockedApps;
@@ -32,7 +31,6 @@ public class ZonePreferenceEditActivity extends Activity {
     // Zone information.
     EditText etKeywords;
     EditText etName;
-    CheckBox cbAutoStartStop;
 
     /**
      * OnCreate of ZonePreferenceEditActivity, setup the existing zone information
@@ -47,7 +45,6 @@ public class ZonePreferenceEditActivity extends Activity {
 
         etKeywords = (EditText) findViewById(R.id.etKeywords);
         etName = (EditText) findViewById(R.id.etZoneName);
-        cbAutoStartStop = (CheckBox) findViewById(R.id.cbAutoStartStop);
 
         // Get Zone object being passed in.
         Zone z = getIntent().getParcelableExtra("zone");
@@ -55,7 +52,6 @@ public class ZonePreferenceEditActivity extends Activity {
         // Set previous items
         etKeywords.setText(z.keywordsAsStr());
         etName.setText(z.name);
-        cbAutoStartStop.setChecked(z.autoStartStop == 1);
 
         // Get the previous list of selected items as a boolean array
         ArrayList<BlockedApps> values = BlockedApps.getListOfApps(getBaseContext());
@@ -91,7 +87,6 @@ public class ZonePreferenceEditActivity extends Activity {
         data.putExtra("keywords", Util.splitCSVStringToArray(etKeywords.getText().toString()));
         data.putExtra("packages", packages);
         data.putExtra("name", etName.getText().toString());
-        data.putExtra("autoStartStop", cbAutoStartStop.isChecked());
 
         setResult(RESULT_OK, data);
         finish(); // Leave

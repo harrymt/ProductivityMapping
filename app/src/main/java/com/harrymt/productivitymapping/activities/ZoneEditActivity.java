@@ -78,7 +78,6 @@ public class ZoneEditActivity extends FragmentActivity implements GoogleMap.OnMa
             zoneToEdit.keywords = data.getStringArrayExtra("keywords");
             zoneToEdit.blockingApps = data.getStringArrayExtra("packages");
             zoneToEdit.name = data.getStringExtra("name");
-            zoneToEdit.autoStartStop = data.getBooleanExtra("autoStartStop", false) ? 1 : 0;
 
             Intent newZoneDetails = new Intent(); newZoneDetails.putExtra("zone", zoneToEdit);
             setResult(RESULT_OK, newZoneDetails);

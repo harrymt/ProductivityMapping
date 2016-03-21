@@ -24,7 +24,6 @@ public class Zone implements Parcelable {
     public double lng;
     public float radiusInMeters;
     public String name;
-    public int autoStartStop; // 0: false, 1: true
     public String[] blockingApps = new String[] {};
     public String[] keywords = new String[] {};
 
@@ -55,7 +54,7 @@ public class Zone implements Parcelable {
      * @param r Radius.
      */
     public Zone(double lt, double lg, float r) {
-        this(-1, lt, lg, r, "default zone", 0, 0, new String[] {}, new String[] {});
+        this(-1, lt, lg, r, "default zone", 0, new String[] {}, new String[] {});
     }
 
     /**
@@ -66,18 +65,16 @@ public class Zone implements Parcelable {
      * @param lg Latitude of center.
      * @param r Radius of zone.
      * @param nm Name of zone.
-     * @param auto Auto start.
      * @param synced Has Synched.
      * @param appsToBlock List of apps to block.
      * @param words List of keywords to let through.
      */
-    public Zone(int id, double lt, double lg, float r, String nm, int auto, int synced, String[] appsToBlock, String[] words) {
+    public Zone(int id, double lt, double lg, float r, String nm, int synced, String[] appsToBlock, String[] words) {
         zoneID = id;
         lat = lt;
         lng = lg;
         radiusInMeters = r;
         name = nm;
-        autoStartStop = auto;
         hasSynced = synced;
         blockingApps = appsToBlock;
         keywords = words;
@@ -96,7 +93,6 @@ public class Zone implements Parcelable {
         radiusInMeters = in.readFloat();
 
         name = in.readString();
-        autoStartStop = in.readInt();
         hasSynced = in.readInt();
 
         blockingApps = in.createStringArray();
@@ -125,7 +121,6 @@ public class Zone implements Parcelable {
         out.writeDouble(lng);
         out.writeFloat(radiusInMeters);
         out.writeString(name);
-        out.writeInt(autoStartStop);
         out.writeInt(hasSynced);
         out.writeStringArray(blockingApps);
         out.writeStringArray(keywords);
