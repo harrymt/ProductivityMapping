@@ -3,6 +3,7 @@ package com.harrymt.productivitymapping.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -16,6 +17,9 @@ import com.android.volley.toolbox.Volley;
 import com.harrymt.productivitymapping.API;
 import com.harrymt.productivitymapping.ActionBarHandler;
 import com.harrymt.productivitymapping.LocationPoller;
+import com.harrymt.productivitymapping.fragments.StatFragment;
+import com.harrymt.productivitymapping.fragments.TrackFragment;
+import com.harrymt.productivitymapping.fragments.ZonesFragment;
 import com.harrymt.productivitymapping.utility.NotificationBuilderUtil;
 import com.harrymt.productivitymapping.utility.Util;
 import com.harrymt.productivitymapping.database.DatabaseAdapter;
@@ -34,6 +38,8 @@ public class MainActivity extends FragmentActivity {
 
     // Polls for the users location
     private LocationPoller locationPoller;
+    // Access fragments TODO delete this? Make it local in oncreate
+    public ActionBarHandler tabFragments;
 
     int REQUEST_CODE_SET_ZONE = 4;
     int REQUEST_CODE_EDIT_ZONE = 3;
@@ -51,7 +57,8 @@ public class MainActivity extends FragmentActivity {
         setContentView(R.layout.activity_main);
 
         // Setup Action Bar
-        new ActionBarHandler().setup(this);
+        tabFragments = new ActionBarHandler();
+        tabFragments.setup(this);
 
         // Setup Location Polling
         locationPoller = new LocationPoller(this, savedInstanceState);
@@ -120,6 +127,14 @@ public class MainActivity extends FragmentActivity {
                                 + "," + z.lng
                                 + ")", Toast.LENGTH_SHORT).show();
             }
+
+            // Update all fragments
+            TrackFragment tf = (TrackFragment) ActionBarHandler.pagerAdapter.getItem(0);
+            ZonesFragment zf = (ZonesFragment) ActionBarHandler.pagerAdapter.getItem(1);
+            StatFragment sf = (StatFragment) ActionBarHandler.pagerAdapter.getItem(2);
+            tf.refresh();
+            sf.refresh();
+            zf.refresh();
         }
     }
 

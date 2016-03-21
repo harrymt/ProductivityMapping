@@ -21,7 +21,7 @@ public class ActionBarHandler implements ActionBar.TabListener {
      * derivative, which will keep every loaded fragment in memory. If this becomes too memory
      * intensive, it may be best to switch to a {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
-    static AppSectionsPagerAdapter pagerAdapter;
+    public static AppSectionsPagerAdapter pagerAdapter;
 
     /**
      * The {@link ViewPager} that will display the three primary sections of the app, one at a
