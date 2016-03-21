@@ -57,5 +57,8 @@ public class StatFragment extends Fragment {
     }
     private String getNumberOfZones() {
         return "5";
+
+    public void refresh() {
+        tvStats.setText(getYourStatsString());
     }
 }

@@ -32,10 +32,13 @@ public class ZonesFragment extends Fragment {
         return v;
     }
 
+    public void refresh() {
+        loadZonesToListView();
+    }
+
     @Override
     public void onResume() {
         super.onResume();
-        loadZonesToListView();
     }
 
     // Reload all zones from the DB again
@@ -44,7 +47,6 @@ public class ZonesFragment extends Fragment {
         // TODO add empty list item to zones that says no zones, go create one.
         // Set a custom list adapter for a list of locations
         ArrayList<Zone> zs = getZones();
-        Log.e("g53ids", zs.size()+ "");
         mList = (ListFragment) getChildFragmentManager().findFragmentById(R.id.list);
         // Convert to array
         Zone[] zones = new Zone[zs.size()]; int i = 0; for (Zone z : zs) { zones[i] = z; i++;}

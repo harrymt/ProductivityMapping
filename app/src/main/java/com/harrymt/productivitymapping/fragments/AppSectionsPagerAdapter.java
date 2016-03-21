@@ -9,8 +9,15 @@ import android.support.v4.app.FragmentPagerAdapter;
  */
 public class AppSectionsPagerAdapter extends FragmentPagerAdapter {
 
+    TrackFragment t;
+    ZonesFragment z;
+    StatFragment s;
+
     public AppSectionsPagerAdapter(FragmentManager fm) {
         super(fm);
+        t = new TrackFragment();
+        z = new ZonesFragment();
+        s = new StatFragment();
     }
 
     /**
@@ -23,11 +30,11 @@ public class AppSectionsPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return new TrackFragment();
+                return t;
             case 1:
-                return new ZonesFragment();
+                return z;
             case 2:
-                return new StatFragment();
+                return s;
         }
         return null;
     }
