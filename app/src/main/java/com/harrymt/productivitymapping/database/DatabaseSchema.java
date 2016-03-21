@@ -57,28 +57,6 @@ public class DatabaseSchema {
     }
 
 
-    static class APPUSAGE {
-        static final String TABLE = "appUsageTbl";
-
-        static class KEY {
-            static final String ID = "id";
-            static final String SESSION_ID = "sessionId";
-            static final String APP_PACKAGE_NAME = "packageName";
-            static final String TIME_SPENT = "timeSpent"; // in seconds
-            static final String CATEGORY = "category";
-        }
-
-        static final String SQL_CREATE_TABLE =
-                "CREATE TABLE if not exists " + TABLE + " (" +
-                        KEY.ID + " INTEGER PRIMARY KEY autoincrement," +
-                        KEY.SESSION_ID + " INTEGER, " +
-                        KEY.APP_PACKAGE_NAME + " TEXT, " +
-                        KEY.TIME_SPENT + " INTEGER, " +
-                        KEY.CATEGORY + " TEXT " +
-                        ");";
-    }
-
-
     static class NOTIFICATION {
         static final String TABLE = "notificationTbl";
 

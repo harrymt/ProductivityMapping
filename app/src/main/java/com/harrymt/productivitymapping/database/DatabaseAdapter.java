@@ -7,7 +7,6 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.service.notification.StatusBarNotification;
-import android.util.Log;
 import com.harrymt.productivitymapping.coredata.NotificationParts;
 import com.harrymt.productivitymapping.PROJECT_GLOBALS;
 import com.harrymt.productivitymapping.coredata.Session;
@@ -550,26 +549,4 @@ public class DatabaseAdapter
         // Set the project state session ID
         PROJECT_GLOBALS.SESSION_ID = getLastSessionId();
     }
-
-    /**
-     * Track the app usage by writing a new row to
-     * the Notification Table based on the session id.
-     *
-     * @param packageName Name of app's package.
-     * @param timeSpentInSeconds Length of time spent in app.
-     */
-    public void writeAppUsage(String packageName, long timeSpentInSeconds)
-    {
-        Log.d("g53ids", "Writing app usage!");
-
-        // Save the app usage based on the current session
-        db.execSQL("INSERT INTO " + APPUSAGE.TABLE + " ("
-                + APPUSAGE.KEY.APP_PACKAGE_NAME + ", "
-                + APPUSAGE.KEY.TIME_SPENT + ", "
-                + APPUSAGE.KEY.SESSION_ID
-                + ") "
-                + "VALUES "
-                + "('" + packageName + "', " + timeSpentInSeconds + ", " + PROJECT_GLOBALS.SESSION_ID + ");");
-    }
-
 }

@@ -39,9 +39,6 @@ public class LastSession extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_last_session);
 
-        TextView tvAppUsage = (TextView) findViewById(R.id.tvAppUsage);
-        tvAppUsage.setText(R.string.last_session_app_usage_failed);
-
         displayStats();
     }
 
@@ -128,27 +125,4 @@ public class LastSession extends Activity {
 
         return notifications;
     }
-
-
-//    private ListView lv;
-
-//    public void listBlockedNotifications(View v)
-//    {
-//        ArrayList<StatusBarNotification> notifications = binder.getBlockedNotifications();
-//
-//        // Should use a custom adapter, but we are just gonna make another array for now
-//        ArrayList<String> notificationDescriptions = new ArrayList<>();
-//        for (StatusBarNotification n : notifications) {
-//            notificationDescriptions.add(n.getNotification().extras.getString("android.title") + " - " + n.getPackageName());
-//        }
-//
-//        lv = (ListView) findViewById(R.id.listView);
-//        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
-//                this,
-//                android.R.layout.simple_list_item_1,
-//                notificationDescriptions );
-//
-//        lv.setAdapter(arrayAdapter);
-//    }
-
 }

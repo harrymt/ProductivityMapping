@@ -5,9 +5,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
-
 import com.harrymt.productivitymapping.coredata.Zone;
-
 import java.util.ArrayList;
 
 /**
@@ -31,12 +29,6 @@ public class PROJECT_GLOBALS {
     public static boolean IS_DEBUG = false;
     public static Zone CURRENT_ZONE;
     public static ArrayList<String> TOP_APPS_BLOCKED = new ArrayList<>();
-
-    // Broadcast codes for the receivers.
-    public class Broadcasts {
-        public static final String NOTIFICATION_POSTED = "NOTIFICATION_POSTED";
-        public static final String APP_USAGE = "APP_USAGE";
-    }
 
     /**
      * Get the API key for our API calls.

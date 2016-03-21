@@ -19,7 +19,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
      * @param context of App.
      */
     public DatabaseHelper(Context context) {
-        super(context, "userData", null, 16);
+        super(context, "userData", null, 17);
     }
 
     /**
@@ -34,7 +34,6 @@ class DatabaseHelper extends SQLiteOpenHelper {
 
         db.execSQL(ZONE.SQL_CREATE_TABLE);
         db.execSQL(SESSION.SQL_CREATE_TABLE);
-        db.execSQL(APPUSAGE.SQL_CREATE_TABLE);
         db.execSQL(NOTIFICATION.SQL_CREATE_TABLE);
     }
 
@@ -51,7 +50,6 @@ class DatabaseHelper extends SQLiteOpenHelper {
 
         db.execSQL("DROP TABLE IF EXISTS " + ZONE.TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + SESSION.TABLE);
-        db.execSQL("DROP TABLE IF EXISTS " + APPUSAGE.TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + NOTIFICATION.TABLE);
         onCreate(db);
     }

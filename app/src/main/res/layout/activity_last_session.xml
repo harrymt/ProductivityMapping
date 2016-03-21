@@ -16,19 +16,6 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="App usage"
-        android:layout_marginTop="20dp"
-        android:textAppearance="?android:attr/textAppearanceLarge"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvAppUsage"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:text="Notifications blocked"
         android:layout_marginTop="20dp"
         android:textAppearance="?android:attr/textAppearanceLarge"/>

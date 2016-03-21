@@ -187,13 +187,7 @@ public class MainActivity extends FragmentActivity {
 
         // Enable the Last Session Button
         findViewById(R.id.btnLastSession).setEnabled(dbAdapter.hasASessionEverStartedYet());
-
         dbAdapter.close();
-
-        // Reset service stored data e.g. app usage
-        // TODO dont do this
-        // binder.resetAppUsage();
-        // binder.resetBlockedNotifications();
 
         changeUI(PROJECT_GLOBALS.STUDYING);
     }
