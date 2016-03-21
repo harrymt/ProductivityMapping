@@ -62,7 +62,6 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback, Googl
     public void setMenuVisibility(final boolean visible) {
         super.setMenuVisibility(visible);
         if (visible && mMap != null) {
-            mMap.clear();
             drawExistingZonesToMap();
         }
     }
@@ -72,7 +71,6 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback, Googl
         super.onStart(); mGoogleApiClient.connect();
 
         if (mMap != null) {
-            mMap.clear();
             drawExistingZonesToMap();
         }
     }
@@ -128,6 +126,8 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback, Googl
      * Draw all the existing zones to the map.
      */
     private void drawExistingZonesToMap() {
+        mMap.clear();
+
         DatabaseAdapter dbAdapter = new DatabaseAdapter(getContext()); // Prepare the database
 
         ArrayList<Zone> zones = dbAdapter.getAllZones();
@@ -136,5 +136,9 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback, Googl
             MapUtil.drawCircle(getContext(), mMap, zone);
         }
         dbAdapter.close();
+    }
+
+    public void refresh() {
+        drawExistingZonesToMap();
     }
 }
