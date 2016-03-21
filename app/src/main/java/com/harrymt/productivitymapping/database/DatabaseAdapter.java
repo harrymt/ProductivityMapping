@@ -15,6 +15,8 @@ import com.harrymt.productivitymapping.Session;
 import com.harrymt.productivitymapping.Zone;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.harrymt.productivitymapping.database.DatabaseSchema.*;
 
@@ -175,6 +177,49 @@ public class DatabaseAdapter
         c.close();
 
         return zones;
+    }
+
+    /**
+     *
+     */
+    public ArrayList<String[]> getAllKeywords()
+    {
+        Cursor c = db.query(ZONE.TABLE, new String[] {
+                ZONE.KEY.KEYWORDS
+        }, null, null, null, null, null);
+
+        ArrayList<String[]> array_of_keywords = new ArrayList<>();
+        if(c.moveToFirst()) {
+            do {
+                String[] keywords = Zone.stringToArray(c.getString(c.getColumnIndex(ZONE.KEY.KEYWORDS)));
+                array_of_keywords.add(keywords);
+            } while (c.moveToNext());
+        }
+        c.close();
+
+        return array_of_keywords;
+    }
+
+
+    /**
+     *
+     */
+    public ArrayList<String[]> getAllBlockingApps()
+    {
+        Cursor c = db.query(ZONE.TABLE, new String[] {
+                ZONE.KEY.BLOCKING_APPS
+        }, null, null, null, null, null);
+
+        ArrayList<String[]> array_of_apps = new ArrayList<>();
+        if(c.moveToFirst()) {
+            do {
+                String[] apps = Zone.stringToArray(c.getString(c.getColumnIndex(ZONE.KEY.BLOCKING_APPS)));
+                array_of_apps.add(apps);
+            } while (c.moveToNext());
+        }
+        c.close();
+
+        return array_of_apps;
     }
 
     /**
@@ -432,23 +477,68 @@ public class DatabaseAdapter
 
 
     /** --- STATS --- **/
+
+    public long getNumberOfZones() {
+        return DatabaseUtils.queryNumEntries(db, ZONE.TABLE);
+    }
+
+
+
     public int getUniqueNumberOfBlockingApps() {
-        return 0;
+        Map<String, Integer> apps = getDBArrayListOccurrences(getAllBlockingApps());
+        return apps.size();
     }
 
     public int getUniqueNumberOfKeywords() {
-        return 0;
+        Map<String, Integer> words = getDBArrayListOccurrences(getAllKeywords());
+        return words.size();
     }
 
-    public long getNumberOfZones() {
-        return  DatabaseUtils.queryNumEntries(db, ZONE.TABLE);
+    public class StatsTuple {
+        public String word;
+        public Integer occurrences;
     }
 
-    public String getMostPopularKeyword() {
-        return "Harry";
+
+    private Map<String, Integer> getDBArrayListOccurrences(ArrayList<String[]> array) {
+        Map<String, Integer> word_occurrences = new HashMap<>();
+
+        for (String[] words : array) {
+            for (String word : words) {
+                if (word_occurrences.containsKey(word)) {
+                    Integer number = word_occurrences.get(word);
+                    number++;
+                    word_occurrences.remove(word);
+                    word_occurrences.put(word, number);
+                } else {
+                    word_occurrences.put(word, 1);
+                }
+
+            }
+        }
+        // Issue with output here
+        return word_occurrences;
     }
 
-    public String getMostBlockedApp() {
-        return "Facebook";
+    public StatsTuple getMostPopularSetFromMap(ArrayList<String[]> map) {
+        Map<String, Integer> words = getDBArrayListOccurrences(map);
+
+        StatsTuple highest_keyword_pair = null;
+        boolean start = true;
+        for (Map.Entry<String, Integer> entry : words.entrySet()) {
+            if(start) {
+                highest_keyword_pair = new StatsTuple();
+                highest_keyword_pair.word = entry.getKey();
+                highest_keyword_pair.occurrences = entry.getValue();
+                start = false;
+            }
+            if(highest_keyword_pair.occurrences < entry.getValue()) {
+                highest_keyword_pair.word = entry.getKey();
+                highest_keyword_pair.occurrences = entry.getValue();
+            }
+        }
+
+        return highest_keyword_pair;
     }
+
 }

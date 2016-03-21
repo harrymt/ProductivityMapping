@@ -11,10 +11,13 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.harrymt.productivitymapping.API;
 import com.harrymt.productivitymapping.R;
+import com.harrymt.productivitymapping.database.DatabaseAdapter;
 
 public class StatFragment extends Fragment {
 
     public static String TAG = "StatFragment";
+
+    TextView tvStats;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -22,7 +25,7 @@ public class StatFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_stat, container, false);
 
-        TextView tvStats = (TextView) v.findViewById(R.id.tvStats);
+        tvStats = (TextView) v.findViewById(R.id.tvStats);
         tvStats.setText(getYourStatsString());
 
         // TODO move this to a poller that does it every 5 seconds? until it gets the stats
@@ -42,21 +45,43 @@ public class StatFragment extends Fragment {
     }
 
     private String getYourStatsString() {
-        return "You have created " +
-                getNumberOfZones() + " zones, with " +
-                getUniqueNumberOfKeywords() + " different keywords and " +
-                getUniqueNumberOfBlockingApps() + " unqiue apps."
-                + "\n'Harry' is your most popular keyword and Facebook is your most blocked app";
-    }
+        String statsString;
 
-    private String getUniqueNumberOfKeywords() {
-        return "12";
+        DatabaseAdapter dbAdapter = new DatabaseAdapter(getContext()); // Prepare the database
+        if(dbAdapter.hasASessionEverStartedYet()) {
+
+            DatabaseAdapter.StatsTuple most_popular_keyword = dbAdapter.getMostPopularSetFromMap(dbAdapter.getAllKeywords());
+            DatabaseAdapter.StatsTuple most_popular_blocked_app = dbAdapter.getMostPopularSetFromMap(dbAdapter.getAllBlockingApps());
+
+            String popular_keywords_str = "";
+            if(most_popular_keyword != null) {
+                popular_keywords_str = "'" + most_popular_keyword.word + "' is your most popular keyword with "
+                        + most_popular_keyword.occurrences + " occurrence(s)";
+            }
+
+            String popular_app_str = "";
+            if(most_popular_blocked_app != null) {
+                popular_app_str = "'" + most_popular_blocked_app.word + "' is your most blocked app with "
+                        + most_popular_blocked_app.occurrences + " occurrence(s).";
+            }
+
+            if(!popular_app_str.equals("") && !popular_keywords_str.equals("")) {
+                popular_app_str = ", and " + popular_app_str;
+            }
+
+            statsString = "You have created " +
+                    dbAdapter.getNumberOfZones() + " zones with " +
+                    dbAdapter.getUniqueNumberOfKeywords() + " different keywords and " +
+                    dbAdapter.getUniqueNumberOfBlockingApps() + " unique apps."
+                    + "\n" + popular_keywords_str + popular_app_str;
+
+        } else {
+            statsString = "Start a study session to see personal stats.";
+        }
+        dbAdapter.close();
+
+        return statsString;
     }
-    private String getUniqueNumberOfBlockingApps() {
-        return "35";
-    }
-    private String getNumberOfZones() {
-        return "5";
 
     public void refresh() {
         tvStats.setText(getYourStatsString());

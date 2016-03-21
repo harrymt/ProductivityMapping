@@ -21,7 +21,7 @@ public class PROJECT_GLOBALS
 
     public static Zone CURRENT_ZONE;
 
-    public static ArrayList<String> TOP_APPS_BLOCKED;
+    public static ArrayList<String> TOP_APPS_BLOCKED = new ArrayList<>();
 
     public static String apiKey(Context c) {
         String secret_key = getEnvironmentVariableMetaData(c, "api_key");
