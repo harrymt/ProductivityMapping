@@ -18,7 +18,6 @@ public class DatabaseSchema {
             static final String RADIUS = "radius";
             static final String NAME = "name";
             static final String HAS_SYNCED = "hasSynced"; // 1 it has, 0 is hasn't
-
             static final String BLOCKING_APPS = "blockingApps";
             static final String KEYWORDS = "keywords";
         }
@@ -45,7 +44,6 @@ public class DatabaseSchema {
             static final String ZONE_ID = "zoneId";
             static final String START_TIME = "startTime";
             static final String STOP_TIME = "stopTime";
-            static final String PRODUCTIVITY_PERCENTAGE = "productivityPercentage";
         }
 
         static final String SQL_CREATE_TABLE =
@@ -53,8 +51,7 @@ public class DatabaseSchema {
                         KEY.ID + " INTEGER PRIMARY KEY autoincrement," +
                         KEY.ZONE_ID + " INTEGER, " +
                         KEY.START_TIME + " INTEGER, " +
-                        KEY.STOP_TIME + " INTEGER, " +
-                        KEY.PRODUCTIVITY_PERCENTAGE + " REAL " +
+                        KEY.STOP_TIME + " INTEGER " +
                         ");";
 
     }

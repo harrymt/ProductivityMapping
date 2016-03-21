@@ -272,8 +272,7 @@ public class DatabaseAdapter
         Cursor c_session_details = db.query(SESSION.TABLE, new String[]{
                 SESSION.KEY.ZONE_ID,
                 SESSION.KEY.START_TIME,
-                SESSION.KEY.STOP_TIME,
-                SESSION.KEY.PRODUCTIVITY_PERCENTAGE
+                SESSION.KEY.STOP_TIME
         }, SESSION.KEY.ID + "=" + session_id, null, null, null, null);
 
 
@@ -281,9 +280,8 @@ public class DatabaseAdapter
             int zone_id = c_session_details.getInt(c_session_details.getColumnIndex(SESSION.KEY.ZONE_ID));
             int start_time = c_session_details.getInt(c_session_details.getColumnIndex(SESSION.KEY.START_TIME));
             int stop_time = c_session_details.getInt(c_session_details.getColumnIndex(SESSION.KEY.STOP_TIME));
-            int productivity_percentage = c_session_details.getInt(c_session_details.getColumnIndex(SESSION.KEY.PRODUCTIVITY_PERCENTAGE));
 
-            session = new Session(zone_id, start_time, stop_time, productivity_percentage);
+            session = new Session(zone_id, start_time, stop_time);
         }
         c_session_details.close();
 
