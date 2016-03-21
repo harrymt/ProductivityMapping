@@ -1,4 +1,4 @@
-package com.harrymt.productivitymapping.adapters;
+package com.harrymt.productivitymapping.listviews;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
@@ -9,33 +9,24 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.harrymt.productivitymapping.BlockedApps;
+import com.harrymt.productivitymapping.coredata.BlockedApps;
+import com.harrymt.productivitymapping.PROJECT_GLOBALS;
 import com.harrymt.productivitymapping.R;
-
 import java.util.ArrayList;
 
 
 /**
- *
- * Array Adapter for a listview with a checkbox in its row.
- *
- * Aimed at the list of blocked apps.
- *
+ * Array Adapter for a list view that displays an image, text view and a checkbox for each item.
+ * Aimed to be the list of blocked apps.
  */
 public class BlockedAppsArrayAdapter extends ArrayAdapter<BlockedApps> {
+    private static final String TAG = PROJECT_GLOBALS.LOG_NAME + "BAppsAAdapter";
 
-    public static class BlockedAppsViewHolder {
-        public TextView name;
-        public TextView package_name;
-        public CheckBox isSelected;
-        public ImageView icon;
-    }
-
+    // Array of boolean values to denote which have been selected.
     ArrayList<Boolean> itemChecked = new ArrayList<>();
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param context The current context.
      * @param resource The resource ID for a layout file containing a TextView to use when
@@ -46,6 +37,15 @@ public class BlockedAppsArrayAdapter extends ArrayAdapter<BlockedApps> {
         itemChecked = checkedItems;
     }
 
+    /**
+     * Gets the view at the current position. Recycle the view if its already
+     * been created, if not, create it.
+     *
+     * @param position row position.
+     * @param convertView View of current item.
+     * @param parent Parent view (list view).
+     * @return The view at the position.
+     */
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         View row = convertView;

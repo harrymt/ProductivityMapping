@@ -58,7 +58,7 @@
         <activity android:name=".activities.ZoneEditActivity"
             android:label="@string/activity_zone_edit"/>
 
-        <activity android:name=".activities.ZonePreferenceEdit"
+        <activity android:name=".activities.ZonePreferenceEditActivity"
             android:label="@string/activity_zone_preferences_edit"/>
 
         <activity android:name=".activities.LastSession"
@@ -80,7 +80,7 @@
 
         <!-- Listens for notifications -->
         <service
-            android:name=".services.CustomNotificationListener"
+            android:name=".services.NotificationListener"
             android:label="@string/app_label_service_notifications"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
             <intent-filter>

@@ -1,13 +1,17 @@
-package com.harrymt.productivitymapping;
+package com.harrymt.productivitymapping.coredata;
 
 import android.app.Notification;
 import android.os.Bundle;
 
+import com.harrymt.productivitymapping.PROJECT_GLOBALS;
+
 /**
- * The parts of the notification that we actually want to compare.
- *
+ * Data object that describes all the parts of a notification we want to store.
  */
 public class NotificationParts {
+    private static final String TAG = PROJECT_GLOBALS.LOG_NAME + "NotificationParts";
+
+    // Notification parts to store.
     public int id;
     public String title;
     public String text;
@@ -15,15 +19,32 @@ public class NotificationParts {
     public String subText;
     public String packageName;
 
+    /**
+     * Constructor.
+     *
+     * @param notificationID Id of notification.
+     * @param pack Package name of notification.
+     */
     public NotificationParts(int notificationID, String pack) {
         this(pack);
         id = notificationID;
     }
 
-    public NotificationParts(String package_name) {
-        packageName = package_name;
+    /**
+     * Constructor.
+     *
+     * @param pack Package name of notification
+     */
+    public NotificationParts(String pack) {
+        packageName = pack;
     }
 
+    /**
+     * Constructor.
+     *
+     * @param n Notification.
+     * @param pack Package name of notification.
+     */
     public NotificationParts(Notification n, String pack) {
         this.title = "";
         this.text = "";

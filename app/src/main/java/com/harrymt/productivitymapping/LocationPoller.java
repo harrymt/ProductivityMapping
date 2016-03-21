@@ -9,56 +9,42 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.widget.Button;
-
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+import com.harrymt.productivitymapping.coredata.Zone;
 import com.harrymt.productivitymapping.database.DatabaseAdapter;
-
-import java.text.DateFormat;
-import java.util.Date;
 
 /**
  * Handles the polling for the users current location using the Google API.
+ *
+ * Based on the google demo class:
+ * https://github.com/googlesamples/android-play-location/blob/master/LocationUpdates/app/src/main/java/com/google/android/gms/location/sample/locationupdates/MainActivity.java
  */
-public class LocationPoller implements GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,
-        com.google.android.gms.location.LocationListener{
+public class LocationPoller implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
+    private static final String TAG = PROJECT_GLOBALS.LOG_NAME + "LocationPoller";
 
-    private static final String TAG = "g53ids-LocationPoller";
-
-    /**
-     * The desired interval for location updates. Inexact. Updates may be more or less frequent.
-     */
+    // The desired interval for location updates. Inexact. Updates may be more or less frequent.
     public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
 
-    /**
-     * The fastest rate for active location updates. Exact. Updates will never be more frequent
-     * than this value.
-     */
+
+    // The fastest rate for active location updates. Exact. Updates will never be more frequent than this value.
     public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
             UPDATE_INTERVAL_IN_MILLISECONDS / 2;
 
     // Keys for storing activity state in the Bundle.
     protected final static String REQUESTING_LOCATION_UPDATES_KEY = "requesting-location-updates-key";
     protected final static String LOCATION_KEY = "location-key";
-    protected final static String LAST_UPDATED_TIME_STRING_KEY = "last-updated-time-string-key";
 
-    /**
-     * Provides the entry point to Google Play services.
-     */
+    // Provides the entry point to Google Play services.
     public GoogleApiClient mGoogleApiClient;
 
-    /**
-     * Stores parameters for requests to the FusedLocationProviderApi.
-     */
+    // Stores parameters for requests to the FusedLocationProviderApi.
     protected LocationRequest mLocationRequest;
 
-    /**
-     * Represents a geographical location.
-     */
+    // Represents the users current location.
     public Location mCurrentLocation;
 
     /**
@@ -67,53 +53,44 @@ public class LocationPoller implements GoogleApiClient.ConnectionCallbacks,
      */
     protected Boolean mRequestingLocationUpdates = true;
 
-    /**
-     * Time when the location was updated represented as a String.
-     */
-    protected String mLastUpdateTime;
-
-
+    // Reference to the activity.
     private FragmentActivity activityReference;
 
+    /**
+     * Constructor.
+     *
+     * @param ref Activity reference.
+     * @param state Saved state.
+     */
     public LocationPoller(FragmentActivity ref, Bundle state) {
         activityReference = ref;
 
         mRequestingLocationUpdates = false;
-        mLastUpdateTime = "";
 
         // Update values using data stored in the Bundle.
         updateValuesFromBundle(state);
 
-        // Kick off the process of building a GoogleApiClient and requesting the LocationServices
-        // API.
+        // Building a GoogleApiClient and requesting the LocationServices API
         buildGoogleApiClient();
     }
 
     /**
-     * Runs when a GoogleApiClient object successfully connects.
+     * Runs when Google API client successfully connects.
+     * Start polling for location.
+     *
+     * @param connectionHint Description of connection.
      */
     @Override
     public void onConnected(Bundle connectionHint) {
         Log.i(TAG, "Connected to GoogleApiClient");
 
-        // If the initial location was never previously requested, we use
-        // FusedLocationApi.getLastLocation() to get it. If it was previously requested, we store
-        // its value in the Bundle and check for it in onCreate(). We
-        // do not request it again unless the user specifically requests location updates by pressing
-        // the Start Updates button.
-        //
-        // Because we cache the value of the initial location in the Bundle, it means that if the
-        // user launches the activity,
-        // moves to a new location, and then changes the device orientation, the original location
-        // is displayed as the activity is re-created.
         if (mCurrentLocation == null) {
             if (ActivityCompat.checkSelfPermission(activityReference, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                     && ActivityCompat.checkSelfPermission(activityReference, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                Log.d(TAG, "Permission ERROR");
+                    Log.d(TAG, "Permission ERROR");
                 return;
             }
             mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
             updateUI();
         }
 
@@ -121,30 +98,36 @@ public class LocationPoller implements GoogleApiClient.ConnectionCallbacks,
     }
 
     /**
-     * Callback that fires when the location changes.
+     * Callback that fires when location changes.
+     * @param location New location.
      */
     @Override
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
-        mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
         updateUI();
     }
 
+    /**
+     * Callback is called when connection is suspended.
+     * Try to connect again.
+     *
+     * @param cause Cause of suspension.
+     */
     @Override
     public void onConnectionSuspended(int cause) {
-        // The connection to Google Play services was lost for some reason. We call connect() to
-        // attempt to re-establish the connection.
-        Log.i(TAG, "Connection suspended");
+        Log.i(TAG, "onConnectionSuspended, cause: " + cause);
         mGoogleApiClient.connect();
     }
 
+    /**
+     * When connection fails.
+     *
+     * @param result Result of failure.
+     */
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult result) {
-        // Refer to the javadoc for ConnectionResult to see what error codes might be returned in
-        // onConnectionFailed.
         Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
     }
-
 
     /**
      * Builds a GoogleApiClient. Uses the {@code #addApi} method to request the
@@ -159,8 +142,6 @@ public class LocationPoller implements GoogleApiClient.ConnectionCallbacks,
                 .build();
         createLocationRequest();
     }
-
-
 
     /**
      * Updates fields based on data stored in the bundle.
@@ -186,10 +167,6 @@ public class LocationPoller implements GoogleApiClient.ConnectionCallbacks,
                 mCurrentLocation = savedInstanceState.getParcelable(LOCATION_KEY);
             }
 
-            // Update the value of mLastUpdateTime from the Bundle and update the ActionBarHandler.
-            if (savedInstanceState.keySet().contains(LAST_UPDATED_TIME_STRING_KEY)) {
-                mLastUpdateTime = savedInstanceState.getString(LAST_UPDATED_TIME_STRING_KEY);
-            }
             updateUI();
         }
     }
@@ -223,7 +200,6 @@ public class LocationPoller implements GoogleApiClient.ConnectionCallbacks,
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
-
     /**
      * Requests location updates from the FusedLocationApi.
      */
@@ -242,21 +218,21 @@ public class LocationPoller implements GoogleApiClient.ConnectionCallbacks,
      * Removes location updates from the FusedLocationApi.
      */
     protected void stopLocationUpdates() {
-        // It is a good practice to remove location requests when the activity is in a paused or
-        // stopped state. Doing so helps battery performance and is especially
-        // recommended in applications that request frequent location updates.
-
-        // The final argument to {@code requestLocationUpdates()} is a LocationListener
-        // (http://developer.android.com/reference/com/google/android/gms/location/LocationListener.html).
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
     }
 
+    /**
+     * Starts polling for location updates.
+     */
     public void startPolling() {
         if (mGoogleApiClient.isConnected() && mRequestingLocationUpdates) {
             startLocationUpdates();
         }
     }
 
+    /**
+     * Stop polling for location updates.
+     */
     public void stopPolling() {
         // Stop location updates to save battery, but don't disconnect the GoogleApiClient object.
         if (mGoogleApiClient.isConnected()) {
@@ -264,24 +240,28 @@ public class LocationPoller implements GoogleApiClient.ConnectionCallbacks,
         }
     }
 
+    /**
+     * Get the users current location.
+     *
+     * @return Users location in lat lng.
+     */
     public LatLng getCurrLocation() {
         if (mCurrentLocation != null) {
             return new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
         } else {
-            // TODO change this fallback
+            // Return a random fallback as a location
             return new LatLng(52.9532976, -1.187156);
-
         }
     }
-
 
     /**
      * Checks to see if a user is inside of a zone or not!
      *
+     * TODO see if this gets used.. current zone button?
+     *
      * @param loc users current location.
      */
     private void setUsersCurrentZone(Location loc) {
-
         DatabaseAdapter dbAdapter;
         dbAdapter = new DatabaseAdapter(activityReference); // Open and prepare the database
         Zone zone = dbAdapter.getZoneInLocation(mCurrentLocation);
@@ -302,11 +282,15 @@ public class LocationPoller implements GoogleApiClient.ConnectionCallbacks,
         }
     }
 
+    /**
+     * Create a bundle for saved state.
+     *
+     * @return Bundle with info needing to be saved.
+     */
     public Bundle getBundleForSavedState() {
         Bundle state = new Bundle();
         state.putBoolean(REQUESTING_LOCATION_UPDATES_KEY, mRequestingLocationUpdates);
         state.putParcelable(LOCATION_KEY, mCurrentLocation);
-        state.putString(LAST_UPDATED_TIME_STRING_KEY, mLastUpdateTime);
         return state;
     }
 }

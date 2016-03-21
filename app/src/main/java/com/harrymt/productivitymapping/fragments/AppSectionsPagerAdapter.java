@@ -3,16 +3,29 @@ package com.harrymt.productivitymapping.fragments;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+
+import com.harrymt.productivitymapping.PROJECT_GLOBALS;
+
+import java.util.Map;
+import java.util.TreeMap;
+
 /**
- * A {@link FragmentPagerAdapter} that returns a fragment corresponding to one of the primary
+ * A FragmentPagerAdapter that returns a fragment corresponding to one of the primary
  * sections of the app.
  */
 public class AppSectionsPagerAdapter extends FragmentPagerAdapter {
+    private static final String TAG = PROJECT_GLOBALS.LOG_NAME + "AppSectionsPA";
 
+    // All the fragments of the pager.
     TrackFragment t;
     ZonesFragment z;
     StatFragment s;
 
+    /**
+     * Constructor.
+     *
+     * @param fm Fragment manager.
+     */
     public AppSectionsPagerAdapter(FragmentManager fm) {
         super(fm);
         t = new TrackFragment();
@@ -39,11 +52,22 @@ public class AppSectionsPagerAdapter extends FragmentPagerAdapter {
         return null;
     }
 
+    /**
+     * Gets the number of fragments in the pager.
+     *
+     * @return number of fragments.
+     */
     @Override
     public int getCount() {
         return 3;
     }
 
+    /**
+     * Get the title of each fragment.
+     *
+     * @param position Position of the fragment.
+     * @return The title of the fragment.
+     */
     @Override
     public CharSequence getPageTitle(int position) {
         switch (position) {

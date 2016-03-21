@@ -15,7 +15,7 @@ import com.harrymt.productivitymapping.PROJECT_GLOBALS;
  */
 public class AppUsagePoller extends AccessibilityService
 {
-    public static String TAG = "g53ids";
+    private static final String TAG = PROJECT_GLOBALS.LOG_NAME + "AppUsageP";
 
     private String packageLastOpened = "";
     private long timeLastOpened = 0;
@@ -77,12 +77,5 @@ public class AppUsagePoller extends AccessibilityService
     {
         Log.d(TAG, "onInterrupt()");
         Toast.makeText(getApplicationContext(), "onInterrupt", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public boolean onUnbind(Intent intent)
-    {
-        Log.d(TAG, "onUnbind() of service");
-        return super.onUnbind(intent);
     }
 }

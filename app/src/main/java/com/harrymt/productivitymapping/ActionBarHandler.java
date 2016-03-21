@@ -5,38 +5,34 @@ import android.app.FragmentTransaction;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-
 import com.harrymt.productivitymapping.fragments.AppSectionsPagerAdapter;
 
 /**
- * Created by harrymt on 20/03/16
+ * Handles the setup of the action bar and listeners.
  */
 public class ActionBarHandler implements ActionBar.TabListener {
+    private static final String TAG = PROJECT_GLOBALS.LOG_NAME + "ActionBarHandler";
 
-    private static final String TAG = "g53ids-ActionBarHandler";
-
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide fragments for each of the
-     * three primary sections of the app. We use a {@link android.support.v4.app.FragmentPagerAdapter}
-     * derivative, which will keep every loaded fragment in memory. If this becomes too memory
-     * intensive, it may be best to switch to a {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
+    // Page adapter that provides fragments for each 3 sections.
     public static AppSectionsPagerAdapter pagerAdapter;
 
-    /**
-     * The {@link ViewPager} that will display the three primary sections of the app, one at a
-     * time.
-     */
+    // The view pager that displays the 3 parts of the app.
     static ViewPager mViewPager;
 
-    public void setup(FragmentActivity a) {
+    /**
+     * Setup the actionbar by populating the given FragmentActivity with the fragments
+     * from the page adapter.
+     *
+     * @param base Base fragment.
+     */
+    public void setup(FragmentActivity base) {
 
         // Create the adapter that will return a fragment for each of the three primary sections
         // of the app.
-        pagerAdapter = new AppSectionsPagerAdapter(a.getSupportFragmentManager());
+        pagerAdapter = new AppSectionsPagerAdapter(base.getSupportFragmentManager());
 
         // Set up the action bar.
-        final ActionBar actionBar = a.getActionBar();
+        final ActionBar actionBar = base.getActionBar();
 
         if(actionBar == null) {
             Log.e(TAG, "Action bar setup failed!");
@@ -52,7 +48,7 @@ public class ActionBarHandler implements ActionBar.TabListener {
 
         // Set up the ViewPager, attaching the adapter and setting up a listener for when the
         // user swipes between sections.
-        mViewPager = (ViewPager) a.findViewById(R.id.pager);
+        mViewPager = (ViewPager) base.findViewById(R.id.pager);
         mViewPager.setAdapter(pagerAdapter);
         mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
@@ -79,19 +75,22 @@ public class ActionBarHandler implements ActionBar.TabListener {
 
     }
 
-
-    @Override
-    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-    }
-
+    /**
+     * When the given tab is selected, switch to the corresponding page in the ViewPager.
+     *
+     * @param tab The tab.
+     * @param fragmentTransaction What happened to the fragment.
+     */
     @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-        // When the given tab is selected, switch to the corresponding page in the ViewPager.
         mViewPager.setCurrentItem(tab.getPosition());
     }
 
+    /**
+     * Do nothing with these callbacks.
+     */
     @Override
-    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-    }
-
+    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {}
+    @Override
+    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {}
 }

@@ -1,41 +1,54 @@
-package com.harrymt.productivitymapping;
+package com.harrymt.productivitymapping.listviews;
 
 import android.widget.Button;
 import android.widget.TextView;
-
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.harrymt.productivitymapping.PROJECT_GLOBALS;
+import com.harrymt.productivitymapping.coredata.Zone;
 import com.harrymt.productivitymapping.fragments.ZonesFragment;
 
 /**
- * Holder for Views used in the
- * Once the  the <code>map</code> field is set, otherwise it is null.
- * When the {@link #onMapReady(com.google.android.gms.maps.GoogleMap)} callback is received and
- * the {@link com.google.android.gms.maps.GoogleMap} is ready, it stored in the {@link #map}
- * field. The map is then initialised with the NamedLocation that is stored as the tag of the
- * MapView. This ensures that the map is initialised with the latest data that it should
- * display.
+ * View holder for the zones list of zones. Holds a Google map, and information about a
+ * zone.
  */
-public class ViewHolder implements OnMapReadyCallback {
+public class MapViewHolder implements OnMapReadyCallback {
+    private static final String TAG = PROJECT_GLOBALS.LOG_NAME + "MapViewHolder";
 
+    // Reference to the parent fragment.
     private ZonesFragment zonesFragment;
+
+    // Map view around the google map
     public MapView mapView;
 
+    // Information about the zone.
     public TextView name;
     public TextView appsToBlock;
     public TextView keywords;
 
+    // Interact with zone.
     public Button editZone;
     public Button deleteZone;
 
+    // The Google map
     public GoogleMap map;
 
-    public ViewHolder(ZonesFragment zonesFragment) {
+    /**
+     * Constructor.
+     *
+     * @param zonesFragment Parent fragment.
+     */
+    public MapViewHolder(ZonesFragment zonesFragment) {
         this.zonesFragment = zonesFragment;
     }
 
+    /**
+     * When the google map is ready to be displayed.
+     *
+     * @param googleMap map reference.
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         MapsInitializer.initialize(zonesFragment.getContext());
@@ -47,15 +60,12 @@ public class ViewHolder implements OnMapReadyCallback {
     }
 
     /**
-     * Initialises the MapView by calling its lifecycle methods.
+     * Setup the map view.
      */
     public void initializeMapView() {
         if (mapView != null) {
-            // Initialise the MapView
             mapView.onCreate(null);
-            // Set the map ready callback to receive the GoogleMap object
             mapView.getMapAsync(this);
         }
     }
-
 }

@@ -26,13 +26,6 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Send test notification"
-        android:id="@+id/btnTESTSendNotification"
-        android:onClick="sendNotification"/>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:text="Create Zone"
         android:id="@+id/btnCreateNewZone"
         android:onClick="createNewZone"/>

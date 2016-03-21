@@ -10,16 +10,13 @@ import android.os.IBinder;
 import android.service.notification.StatusBarNotification;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-
 import com.harrymt.productivitymapping.PROJECT_GLOBALS;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class NotificationHandlerServiceUnused extends Service {
-
-    private static String TAG = "NotificationHandlerService";
+    private static final String TAG = PROJECT_GLOBALS.LOG_NAME + "NHServiceUnused";
 
     // Setup broadcasters
     private IntentFilter notificationPostedIntentFilter = new IntentFilter(PROJECT_GLOBALS.Broadcasts.NOTIFICATION_POSTED);

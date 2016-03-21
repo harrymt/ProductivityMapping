@@ -1,35 +1,55 @@
-package com.harrymt.productivitymapping;
+package com.harrymt.productivitymapping.coredata;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 
+import com.harrymt.productivitymapping.PROJECT_GLOBALS;
+import com.harrymt.productivitymapping.utility.Util;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
+/**
+ * Wrapper for an app that will be used in the List View to display
+ * blocked apps for a zone.
+ */
 public class BlockedApps implements Comparable<BlockedApps> {
+    private static final String TAG = PROJECT_GLOBALS.LOG_NAME + "BlockedApps";
+
+    // Details about the app.
     public String name;
     public String package_name;
     public Drawable icon;
+    // If the app is popular
     public boolean isPopular;
 
+    /**
+     * Constructor for a Blocked App.
+     * @param n Name of app.
+     * @param pn Package Name of app.
+     * @param i Icon of app.
+     * @param p Is the app a popular app.
+     */
     public BlockedApps(String n, String pn, Drawable i, boolean p) {
         name = n; package_name = pn; icon = i; isPopular = p;
     }
 
+    /**
+     * Gets a list of apps on the phone, sorted by package name,
+     * with the popular apps (from the Global object) at the front.
+     *
+     * @param c Context of app.
+     * @return List of apps, popular ones at the front of the list.
+     */
     static public ArrayList<BlockedApps> getListOfApps(Context c) {
-        final Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
-        mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-        final List<ResolveInfo> pkgAppsList = c.getPackageManager().queryIntentActivities( mainIntent, 0);
+        final List<ResolveInfo> pkgAppsList = Util.getListOfAppsOnPhone(c);
+
+        // Strip the information from the ResolveInfo object putting the popular apps at the top.
         ArrayList<BlockedApps> o = new ArrayList<>();
         boolean popularApp;
-
         ArrayList<BlockedApps> popularApps = new ArrayList<>();
-
         for (ResolveInfo info: pkgAppsList) {
             popularApp = false;
 
@@ -58,6 +78,12 @@ public class BlockedApps implements Comparable<BlockedApps> {
         return o;
     }
 
+    /**
+     * Compare the name of a blocked app with another.
+     *
+     * @param another The other blocked app.
+     * @return True if name is same.
+     */
     @Override
     public int compareTo(@NonNull BlockedApps another) {
         return this.name.compareTo(another.name);

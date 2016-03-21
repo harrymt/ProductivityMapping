@@ -8,11 +8,12 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    tools:context=".activities.ZonePreferenceEdit"
+    tools:context=".activities.ZonePreferenceEditActivity"
     android:focusableInTouchMode="true">
 
     <Button
         android:text="Set"
+        android:id="@+id/btnSetZonePreferences"
         android:onClick="setZonePreferences"
         android:layout_width="match_parent"
         android:layout_height="50dp" />

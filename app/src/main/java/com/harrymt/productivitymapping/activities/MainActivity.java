@@ -3,15 +3,11 @@ package com.harrymt.productivitymapping.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import android.support.v4.app.FragmentActivity;
-
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.harrymt.productivitymapping.API;
@@ -20,37 +16,35 @@ import com.harrymt.productivitymapping.LocationPoller;
 import com.harrymt.productivitymapping.fragments.StatFragment;
 import com.harrymt.productivitymapping.fragments.TrackFragment;
 import com.harrymt.productivitymapping.fragments.ZonesFragment;
-import com.harrymt.productivitymapping.utility.NotificationBuilderUtil;
 import com.harrymt.productivitymapping.utility.Util;
 import com.harrymt.productivitymapping.database.DatabaseAdapter;
 import com.harrymt.productivitymapping.PROJECT_GLOBALS;
 import com.harrymt.productivitymapping.R;
-import com.harrymt.productivitymapping.Zone;
-
+import com.harrymt.productivitymapping.coredata.Zone;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 
+/**
+ * Entry point to app.
+ * Contains an app pager made up of 3 fragments.
+ * Click handlers to fragments appear here.
+ */
 public class MainActivity extends FragmentActivity {
-
-    private static final String TAG = "g53ids-MainActivity";
+    private static final String TAG = PROJECT_GLOBALS.LOG_NAME + "MainActivity";
 
     // Polls for the users location
     private LocationPoller locationPoller;
+
     // Access fragments TODO delete this? Make it local in oncreate
     public ActionBarHandler tabFragments;
 
-    int REQUEST_CODE_SET_ZONE = 4;
-    int REQUEST_CODE_EDIT_ZONE = 3;
-
-
-// TODO delete me
-    public void sendNotification(View v) {
-        NotificationBuilderUtil b = new NotificationBuilderUtil(this);
-        b.postNewNotification(b.buildNotification("Main App", "Sent from the main app", "Some subtext..."));
-    }
-
+    /**
+     * Activity lifecycle create.
+     * Setup the fragments and start location polling and request the blocked apps.
+     *
+     * @param savedInstanceState state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,9 +59,14 @@ public class MainActivity extends FragmentActivity {
 
         // Cache the most commonly used keywords and packages blocked
         RequestQueue queue = Volley.newRequestQueue(this);
-        queue.add(API.makeRequest(this, "/apps/3"));
+        queue.add(API.makeRequestApps(this, "/apps/3"));
     }
 
+    /**
+     * Activity lifecycle start.
+     * Connect to the Google API and see if we can listen for notifications,
+     * if we cannot, then show the settings panel for it.
+     */
     @Override
     protected void onStart() {
         super.onStart();
@@ -84,34 +83,53 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
+    /**
+     * Activity lifecycle resume.
+     * Start polling again for locations.
+     */
     @Override
     public void onResume() {
         super.onResume();
         locationPoller.startPolling();
     }
 
+    /**
+     * Activity lifecycle pause.
+     * Stop polling for locations.
+     */
     @Override
     protected void onPause() {
         super.onPause();
         locationPoller.stopPolling();
     }
 
+    /**
+     * Activity lifecycle stop.
+     * Disconnect from google API.
+     */
     @Override
     protected void onStop() {
         locationPoller.mGoogleApiClient.disconnect();
         super.onStop();
     }
 
+    /**
+     * When a zone has been created or edited.
+     *
+     * @param requestCode New zone or exising zone.
+     * @param resultCode Success or failure
+     * @param data Zone data.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         // Check which request we're responding to && successful
-        if ((requestCode == REQUEST_CODE_SET_ZONE || requestCode == REQUEST_CODE_EDIT_ZONE) && resultCode == RESULT_OK) {
+        if ((requestCode == PROJECT_GLOBALS.REQUEST_CODE_SET_ZONE || requestCode == PROJECT_GLOBALS.REQUEST_CODE_EDIT_ZONE) && resultCode == RESULT_OK) {
             Zone z = data.getExtras().getParcelable("zone");
 
             // Add the zone to a database.
             DatabaseAdapter dbAdapter = new DatabaseAdapter(this); // Open and prepare the database
-            if (requestCode == REQUEST_CODE_EDIT_ZONE) {
+            if (requestCode == PROJECT_GLOBALS.REQUEST_CODE_EDIT_ZONE) {
                 dbAdapter.editZone(z);
             } else {
                 dbAdapter.writeZone(z);
@@ -213,7 +231,7 @@ public class MainActivity extends FragmentActivity {
         Intent editZoneActivityIntent = new Intent(this, ZoneEditActivity.class);
         // Create a new Zone with default parameters
         editZoneActivityIntent.putExtra("zone", new Zone(locationPoller.getCurrLocation()));
-        startActivityForResult(editZoneActivityIntent, REQUEST_CODE_SET_ZONE);
+        startActivityForResult(editZoneActivityIntent, PROJECT_GLOBALS.REQUEST_CODE_SET_ZONE);
     }
 
     /**
@@ -228,7 +246,7 @@ public class MainActivity extends FragmentActivity {
         // TODO get the current zone we are in and set it here
         Intent editZoneActivityIntent = new Intent(this, ZoneEditActivity.class);
         editZoneActivityIntent.putExtra("zone", new Zone(locationPoller.getCurrLocation().latitude, locationPoller.getCurrLocation().longitude));
-        startActivityForResult(editZoneActivityIntent, REQUEST_CODE_SET_ZONE);
+        startActivityForResult(editZoneActivityIntent, PROJECT_GLOBALS.REQUEST_CODE_SET_ZONE);
     }
 
     /**
@@ -290,51 +308,4 @@ public class MainActivity extends FragmentActivity {
         editZone.setEnabled(studying);
         forceStopStudy.setEnabled(studying);
     }
-
-
-
-
-    private ListView lv;
-
-//    public void listBlockedNotifications(View v)
-//    {
-//        ArrayList<StatusBarNotification> notifications = binder.getBlockedNotifications();
-//
-//        // Should use a custom adapter, but we are just gonna make another array for now
-//        ArrayList<String> notificationDescriptions = new ArrayList<>();
-//        for (StatusBarNotification n : notifications) {
-//            notificationDescriptions.add(n.getNotification().extras.getString("android.title") + " - " + n.getPackageName());
-//        }
-//
-//        lv = (ListView) findViewById(R.id.listView);
-//        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
-//                this,
-//                android.R.layout.simple_list_item_1,
-//                notificationDescriptions );
-//
-//        lv.setAdapter(arrayAdapter);
-//    }
-
-
-//
-//    public void showAppUsage(View view)
-//    {
-//
-//        ArrayList<String> appDescriptions = new ArrayList<>();
-//        Map<String, Long> apps = binder.getAllAppUsage();
-//        apps = MapUtil.sortByValue(apps);
-//        for (Map.Entry<String, Long> entry : apps.entrySet()) {
-//            appDescriptions.add(entry.getKey() + " - " + entry.getValue() + "s");
-//        }
-//
-//        lv = (ListView) findViewById(R.id.listView);
-//        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
-//                this,
-//                android.R.layout.simple_list_item_1,
-//                appDescriptions );
-//
-//        lv.setAdapter(arrayAdapter);
-//
-//        Log.d(TAG, "Showing app usage for " + apps.size());
-//    }
 }

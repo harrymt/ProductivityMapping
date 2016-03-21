@@ -3,22 +3,26 @@ package com.harrymt.productivitymapping.services;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
-
-import com.harrymt.productivitymapping.NotificationParts;
+import com.harrymt.productivitymapping.coredata.NotificationParts;
 import com.harrymt.productivitymapping.database.DatabaseAdapter;
 import com.harrymt.productivitymapping.PROJECT_GLOBALS;
 
 /**
- *
  * Listens for notifications using the notification service.
- *
  */
-public class CustomNotificationListener extends NotificationListenerService {
-    private static final String TAG = "NotificationListener";
+public class NotificationListener extends NotificationListenerService {
+    private static final String TAG = PROJECT_GLOBALS.LOG_NAME + "NotiListener";
 
+    /**
+     * Callback when a notification is posted.
+     * We decide if we want to block it and save it, or not.
+     *
+     * @param notification Notification that has been posted.
+     */
     @Override
     public void onNotificationPosted(StatusBarNotification notification) {
-        Log.d(TAG, "Notification Found: " + notification.getNotification().extras.getString("android.title"));
+        String title = notification.getNotification().extras.getString("android.title");
+        Log.d(TAG, "Notification Found: " + title);
 
         if (shouldWeBlockThisNotification(notification)) {
 
@@ -28,7 +32,9 @@ public class CustomNotificationListener extends NotificationListenerService {
             // Save notification
             saveNotification(notification);
 
-            Log.d(TAG, "Blocked notification " + notification.getNotification().extras.getString("android.title"));
+            Log.d(TAG, "Blocked notification: " + title);
+        } else {
+            if(PROJECT_GLOBALS.IS_DEBUG) Log.d(TAG, "Didn't block notification: " + title);
         }
     }
 

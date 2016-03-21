@@ -1,9 +1,14 @@
 package com.harrymt.productivitymapping.database;
 
+import com.harrymt.productivitymapping.PROJECT_GLOBALS;
+
+/**
+ * Defines the database layout.
+ */
 public class DatabaseSchema {
+    private static final String TAG = PROJECT_GLOBALS.LOG_NAME + "DatabaseSchema";
 
     static class ZONE {
-
         static final String TABLE = "zoneTbl";
 
         static class KEY {
@@ -13,9 +18,8 @@ public class DatabaseSchema {
             static final String RADIUS = "radius";
             static final String NAME = "name";
             static final String AUTO_START_STOP = "autoStartStop";
-            static final String HAS_SYNCED = "hasSynced"; // 1 it has, 0 is hasnt
+            static final String HAS_SYNCED = "hasSynced"; // 1 it has, 0 is hasn't
 
-            // TODO possibly want to extract these 2 into another table..?
             static final String BLOCKING_APPS = "blockingApps";
             static final String KEYWORDS = "keywords";
         }
@@ -36,7 +40,6 @@ public class DatabaseSchema {
 
 
     static class SESSION {
-
         static final String TABLE = "sessionTbl";
 
         static class KEY {
@@ -60,7 +63,6 @@ public class DatabaseSchema {
 
 
     static class APPUSAGE {
-
         static final String TABLE = "appUsageTbl";
 
         static class KEY {
@@ -69,8 +71,6 @@ public class DatabaseSchema {
             static final String APP_PACKAGE_NAME = "packageName";
             static final String TIME_SPENT = "timeSpent"; // in seconds
             static final String CATEGORY = "category";
-
-            // TODO add other appCharacteristics
         }
 
         static final String SQL_CREATE_TABLE =

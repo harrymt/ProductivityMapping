@@ -7,23 +7,39 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
-
-import com.harrymt.productivitymapping.BlockedApps;
+import com.harrymt.productivitymapping.coredata.BlockedApps;
+import com.harrymt.productivitymapping.PROJECT_GLOBALS;
 import com.harrymt.productivitymapping.R;
-import com.harrymt.productivitymapping.Zone;
-import com.harrymt.productivitymapping.adapters.BlockedAppsArrayAdapter;
-
+import com.harrymt.productivitymapping.coredata.Zone;
+import com.harrymt.productivitymapping.listviews.BlockedAppsArrayAdapter;
+import com.harrymt.productivitymapping.utility.Util;
 import java.util.ArrayList;
 
-public class ZonePreferenceEdit extends Activity {
+/**
+ * Displays information about a zone to the user, including a list of apps
+ * to block, the name of the zone, keywords and if they can auto-start-stop
+ * when entering/exiting a geofence.
+ */
+public class ZonePreferenceEditActivity extends Activity {
+    private static final String TAG = PROJECT_GLOBALS.LOG_NAME + "ZonePreferenceEditActivity";
 
+    // List of apps a user can choose to block.
     ListView blockedAppsList;
+
+    // Adapter that links the infor about each app to block.
     BlockedAppsArrayAdapter adapter;
 
+    // Zone information.
     EditText etKeywords;
     EditText etName;
     CheckBox cbAutoStartStop;
 
+    /**
+     * OnCreate of ZonePreferenceEditActivity, setup the existing zone information
+     * and load the list of blocked apps.
+     *
+     * @param savedInstanceState saved state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,24 +69,26 @@ public class ZonePreferenceEdit extends Activity {
             }
         }
 
-        // Setup the list view
+        // Setup the list view.
         adapter = new BlockedAppsArrayAdapter(this, R.layout.list_apps_row, values, itemChecked);
         blockedAppsList = (ListView) findViewById(R.id.lvAppsToBlock);
         blockedAppsList.setAdapter(adapter);
         blockedAppsList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
     }
 
-
     /**
-     * On set preferences click.
+     * OnClick btnSetZonePreferences
      *
-     * @param view Set Zone preferences button.
+     * When a user clicks on the set preferences button, save the zone and
+     * bring the user back to the MainActivity via the ZoneEditActivity.
+     *
+     * @param view Button: btnSetZonePreferences
      */
     public void setZonePreferences(View view) {
         String[] packages = adapter.getSelectedItemsPackageNames();
 
         Intent data = new Intent();
-        data.putExtra("keywords", getKeywords());
+        data.putExtra("keywords", Util.splitCSVStringToArray(etKeywords.getText().toString()));
         data.putExtra("packages", packages);
         data.putExtra("name", etName.getText().toString());
         data.putExtra("autoStartStop", cbAutoStartStop.isChecked());
@@ -78,16 +96,4 @@ public class ZonePreferenceEdit extends Activity {
         setResult(RESULT_OK, data);
         finish(); // Leave
     }
-
-    /**
-     * Get the keywords from the textbox.
-     *
-     * @return Keywords array.
-     */
-    private String[] getKeywords() {
-        String keywords = etKeywords.getText().toString();
-        if (keywords.length() == 0) return new String[] {};
-        return keywords.split(",", -1);
-    }
-
 }

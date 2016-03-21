@@ -4,19 +4,27 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-
+import com.harrymt.productivitymapping.PROJECT_GLOBALS;
 import static com.harrymt.productivitymapping.database.DatabaseSchema.*;
 
+/**
+ * Helper class for database setup and upgrade.
+ */
 class DatabaseHelper extends SQLiteOpenHelper {
-    private static String TAG = "g53ids";
+    private static final String TAG = PROJECT_GLOBALS.LOG_NAME + "DatabaseHelper";
 
+    /**
+     * Constructor.
+     *
+     * @param context of App.
+     */
     public DatabaseHelper(Context context) {
         super(context, "userData", null, 15);
     }
 
     /**
      * When the database is created, will be called on the constructor
-     * if the database isnt created.
+     * if the database isn't created.
      *
      * @param db Database to create.
      */
@@ -32,9 +40,10 @@ class DatabaseHelper extends SQLiteOpenHelper {
 
     /**
      * When the database version number has been increased.
-     * @param db Database
-     * @param oldVersion Old integer
-     * @param newVersion New integer
+     *
+     * @param db Database.
+     * @param oldVersion Old integer version number.
+     * @param newVersion New integer version number.
      */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
