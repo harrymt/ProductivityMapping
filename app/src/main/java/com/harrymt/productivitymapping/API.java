@@ -47,7 +47,7 @@ public class API {
                 }
 
             }
-        }, getVolleyErrorListener(c));
+        }, getVolleyErrorListener(c, volley_error_type.apps));
 
     }
 
@@ -73,22 +73,51 @@ public class API {
                 dbAdapter.setZoneAsSynced(zoneID);
                 dbAdapter.close();
             }
-        }, getVolleyErrorListener(c));
+        }, getVolleyErrorListener(c, volley_error_type.zone ));
 
     }
 
-    private static Response.ErrorListener getVolleyErrorListener(final Context c) {
+    enum volley_error_type {
+        zone,
+        apps, stat
+    }
+
+    private static Response.ErrorListener getVolleyErrorListener(final Context c, final volley_error_type type) {
         return new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                showVolleyError(c, "Failed to sync to server", error);
+                showVolleyError(c, type, error);
             }
         };
     }
 
-    private static void showVolleyError(Context c, String msg, VolleyError e) {
-        Toast.makeText(c, msg + ": " + e.networkResponse.statusCode , Toast.LENGTH_SHORT).show();
+    private static void showVolleyError(Context c, volley_error_type type, VolleyError e) {
         logError(e);
+        String msg = "API error";
+
+        switch(type) {
+            case zone:
+                Toast.makeText(c, "Cannot sync zones.", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Cannot sync zones!");
+                return;
+            case stat:
+                if(PROJECT_GLOBALS.IS_DEBUG) Toast.makeText(c, "Can't get stats.", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "Cannot get stats. Not connected to internet.");
+                return;
+            case apps:
+                if(PROJECT_GLOBALS.IS_DEBUG) Toast.makeText(c, "Can't get popular apps.", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "Cannot get popular apps. Not connected to internet.");
+                return;
+        }
+
+
+        if(e == null) {
+            Toast.makeText(c, msg, Toast.LENGTH_SHORT).show();
+        } else if(e.networkResponse == null) {
+            Toast.makeText(c, msg + ": " + e.getMessage() , Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(c, msg + ": " + e.networkResponse.statusCode , Toast.LENGTH_SHORT).show();
+        }
     }
 
     private static void logError(Exception e) {
@@ -135,7 +164,7 @@ public class API {
                     tv.setText(R.string.stats_api_error);
                 }
             }
-        }, getVolleyErrorListener(c));
+        }, getVolleyErrorListener(c, volley_error_type.stat));
 
 
     }
