@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 22
     buildToolsVersion "23.0.2"
 
     defaultConfig {
         applicationId "com.harrymt.productivitymapping"
         minSdkVersion 22
-        targetSdkVersion 23
+        targetSdkVersion 22
         versionCode 1
         versionName "1.0"
     }
@@ -22,7 +22,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12' // For tests
-    compile 'com.android.support:appcompat-v7:23.2.0' // Android design
+    compile 'com.android.support:appcompat-v7:22.+' // Android design
     compile 'com.google.android.gms:play-services-maps:8.4.0' // Google Maps API
     compile 'com.google.android.gms:play-services-location:8.4.0' // Google Location API
     compile 'com.google.maps.android:android-maps-utils:0.4' // Android Google maps Utils library
