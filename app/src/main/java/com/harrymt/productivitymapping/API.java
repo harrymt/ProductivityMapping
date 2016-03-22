@@ -81,9 +81,10 @@ public class API {
                     e.printStackTrace();
                 }
 
-                Toast.makeText(c, "Sync successful " + friendlyResponse, Toast.LENGTH_SHORT).show();
+                // Tell the user that it worked
+                Toast.makeText(c, friendlyResponse, Toast.LENGTH_SHORT).show();
 
-                // Mark that zone as sync'd
+                // Mark that zone as synced
                 DatabaseAdapter dbAdapter;
                 dbAdapter = new DatabaseAdapter(c); // Open and prepare the database
                 dbAdapter.setZoneAsSynced(zoneID);
