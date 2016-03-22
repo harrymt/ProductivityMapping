@@ -22,6 +22,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@string/activity_session_tv_notifications_that_we_blocked"
             android:id="@+id/tvNotificationsBlocked"
             android:textAppearance="?android:attr/textAppearanceMedium"/>
 

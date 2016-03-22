@@ -3,6 +3,7 @@ package com.harrymt.productivitymapping.activities;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.harrymt.productivitymapping.PROJECT_GLOBALS;
@@ -29,6 +30,9 @@ public class LastSession extends Activity {
     // Session information.
     Session s;
 
+    // Current zone in the session
+    Zone zone;
+
     /**
      * On Activity create, display stats to the user.
      *
@@ -39,7 +43,22 @@ public class LastSession extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_last_session);
 
-        displayStats();
+        // Load information from database.
+        DatabaseAdapter dbAdapter = new DatabaseAdapter(this); // Open and prepare the database
+        s = dbAdapter.getLastSessionDetails();
+        ns = dbAdapter.getLastSessionNotificationDetails();
+        zone = dbAdapter.getZoneFromID(s.zoneId);
+        dbAdapter.close();
+
+        // Disable the send notifications button if there are none to send
+        if(ns.size() == 0) {
+            Button btn = (Button) findViewById(R.id.btnSendAllNotifications);
+            btn.setEnabled(false);
+        } else {
+            displayBlockedNotifications();
+        }
+
+        setZoneDetails();
     }
 
     /**
@@ -63,14 +82,16 @@ public class LastSession extends Activity {
 
         // Wipe the notification array;
         ns = new ArrayList<>();
+
+        // Disable the send notifications button as we have sent them all
+        Button btn = (Button) findViewById(R.id.btnSendAllNotifications);
+        btn.setEnabled(false);
     }
 
     /**
      * Display details about the last session zone.
-     *
-     * @param zone Zone object from last session.
      */
-    private void setZoneDetails(Zone zone) {
+    private void setZoneDetails() {
         String sessionLength = Util.convertTimeToFriendlyString(s.stopTime - s.startTime);
         String numberOfNotificationsBlocked = ns.size() + "";
         String zoneKeywords = (zone == null ? null : zone.keywordsAsStr());
@@ -84,17 +105,9 @@ public class LastSession extends Activity {
     }
 
     /**
-     * Display last session stats to user.
+     * Display last session blocked notifications to user.
      */
-    public void displayStats() {
-        // Load information from database.
-        DatabaseAdapter dbAdapter = new DatabaseAdapter(this); // Open and prepare the database
-        s = dbAdapter.getLastSessionDetails();
-        ns = dbAdapter.getLastSessionNotificationDetails();
-        Zone zone = dbAdapter.getZoneFromID(s.zoneId);
-        setZoneDetails(zone);
-        dbAdapter.close();
-
+    public void displayBlockedNotifications() {
         Map<String, Integer> notifications = sortNotificationPartsToMap();
         String appsStr = "";
         for (Map.Entry<String, Integer> entry : notifications.entrySet()) {

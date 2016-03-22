@@ -22,7 +22,7 @@
 
     <!-- UI components -->
     <string name="activity_session_tv_notifications_blocked">Notifications blocked</string>
-    <string name="activity_session_btn_send_notifications">Send blocked notifications</string>
+    <string name="activity_session_btn_send_notifications">Receive blocked notifications</string>
     <string name="activity_zone_preference_btn_set_zone">Set</string>
     <string name="activity_zone_preference_et_hint_zone_name">Zone name</string>
     <string name="activity_zone_preference_et_hint_keywords">Keywords</string>
@@ -41,5 +41,6 @@
     <string name="list_blocked_apps_icon_description">icon</string>
     <string name="list_zones_row_btn_edit">Edit</string>
     <string name="list_zones_row_btn_delete">Delete</string>
+    <string name="activity_session_tv_notifications_that_we_blocked">None blocked</string>
 
 </resources>
