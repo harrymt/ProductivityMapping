@@ -52,7 +52,7 @@ public class API {
                 }
 
             }
-        }, getVolleyErrorListener(c, volley_error_type.apps));
+        }, getVolleyErrorListener(c, volley_error_type.apps, null));
 
     }
 
@@ -89,7 +89,7 @@ public class API {
                 dbAdapter.setZoneAsSynced(zoneID);
                 dbAdapter.close();
             }
-        }, getVolleyErrorListener(c, volley_error_type.zone ));
+        }, getVolleyErrorListener(c, volley_error_type.zone, null));
 
     }
 
@@ -141,7 +141,7 @@ public class API {
                     tv.setText(R.string.stats_api_error);
                 }
             }
-        }, getVolleyErrorListener(c, volley_error_type.stat));
+        }, getVolleyErrorListener(c, volley_error_type.stat, tv));
 
 
     }
@@ -154,11 +154,14 @@ public class API {
      * @param type Type of error.
      * @return Error listener that handles the error.
      */
-    private static Response.ErrorListener getVolleyErrorListener(final Context c, final volley_error_type type) {
+    private static Response.ErrorListener getVolleyErrorListener(final Context c, final volley_error_type type, final TextView output) {
         return new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                showVolleyError(c, type, error);
+                String outputMsg = showVolleyError(c, type, error);
+                if(output != null) {
+                    output.setText(outputMsg);
+                }
             }
         };
     }
@@ -170,23 +173,27 @@ public class API {
      * @param type Type of error.
      * @param e Error.
      */
-    private static void showVolleyError(Context c, volley_error_type type, VolleyError e) {
+    private static String showVolleyError(Context c, volley_error_type type, VolleyError e) {
         Util.logError(e);
         String msg = "API error";
+        String user_friendly_msg = "";
 
         switch(type) {
             case zone:
-                Toast.makeText(c, "Cannot sync zones.", Toast.LENGTH_SHORT).show();
-                Log.e(TAG, "Cannot sync zones!");
-                return;
+                user_friendly_msg = "Cannot sync zones.";
+                Toast.makeText(c, user_friendly_msg, Toast.LENGTH_SHORT).show();
+                Log.e(TAG, user_friendly_msg);
+                return user_friendly_msg;
             case stat:
-                if(PROJECT_GLOBALS.IS_DEBUG) Toast.makeText(c, "Can't get stats.", Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "Cannot get stats. Not connected to internet.");
-                return;
+                user_friendly_msg = "Connect to the internet to get stats.";
+                if(PROJECT_GLOBALS.IS_DEBUG) Toast.makeText(c, user_friendly_msg, Toast.LENGTH_SHORT).show();
+                Log.d(TAG, user_friendly_msg);
+                return user_friendly_msg;
             case apps:
-                if(PROJECT_GLOBALS.IS_DEBUG) Toast.makeText(c, "Can't get popular apps.", Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "Cannot get popular apps. Not connected to internet.");
-                return;
+                user_friendly_msg = "Connect to the internet to get popular apps.";
+                if(PROJECT_GLOBALS.IS_DEBUG) Toast.makeText(c, user_friendly_msg, Toast.LENGTH_SHORT).show();
+                Log.d(TAG, user_friendly_msg);
+                return user_friendly_msg;
         }
 
 
@@ -197,6 +204,8 @@ public class API {
         } else {
             Toast.makeText(c, msg + ": " + e.networkResponse.statusCode , Toast.LENGTH_SHORT).show();
         }
+
+        return msg;
     }
 
     /**
