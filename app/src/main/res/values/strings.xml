@@ -42,5 +42,6 @@
     <string name="list_zones_row_btn_edit">Edit</string>
     <string name="list_zones_row_btn_delete">Delete</string>
     <string name="activity_session_tv_notifications_that_we_blocked">None blocked</string>
+    <string name="activity_session_tv_general_stats">Session statistics</string>
 
 </resources>

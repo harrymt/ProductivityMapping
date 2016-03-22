@@ -49,14 +49,17 @@ public class Util {
     }
 
     /**
-     * Convert an epoch time to a friendly string.
+     * Convert seconds to a friendly string.
      *
-     * @param epochTime Time since epoch.
+     * @param timeInSeconds Number of seconds
      * @return Time in a formatted string.
      */
-    public static String convertTimeToFriendlyString(long epochTime) {
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.UK);
-        return sdf.format(new Date(epochTime));
+    public static String convertSecondsToFriendlyString(int timeInSeconds) {
+        int hours = timeInSeconds / 3600;
+        int minutes = (timeInSeconds % 3600) / 60;
+        int seconds = timeInSeconds % 60;
+
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 
 

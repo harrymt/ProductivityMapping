@@ -86,19 +86,21 @@ public class LastSession extends Activity {
         // Disable the send notifications button as we have sent them all
         Button btn = (Button) findViewById(R.id.btnSendAllNotifications);
         btn.setEnabled(false);
+
+        Toast.makeText(this, "All notifications sent.", Toast.LENGTH_SHORT).show();
     }
 
     /**
      * Display details about the last session zone.
      */
     private void setZoneDetails() {
-        String sessionLength = Util.convertTimeToFriendlyString(s.stopTime - s.startTime);
+        String sessionLength = Util.convertSecondsToFriendlyString(s.stopTime - s.startTime);
         String numberOfNotificationsBlocked = ns.size() + "";
-        String zoneKeywords = (zone == null ? null : zone.keywordsAsStr());
+        String zoneKeywords = (zone != null && zone.keywords.length != 0 ? zone.keywordsAsStr() : null);
 
         String sessionStr = "Session lasted " + sessionLength + ",";
         String notificationStr = " blocking " + numberOfNotificationsBlocked + " notification(s)";
-        String keywordsStr = (zoneKeywords == null ? "." : "letting through notification(s) because of the following keywords. " + zoneKeywords);
+        String keywordsStr = (zoneKeywords == null ? "." : " using the keywords: " + zoneKeywords);
 
         TextView tvSessionGeneral = (TextView) findViewById(R.id.tvSessionGeneral);
         tvSessionGeneral.setText(sessionStr + notificationStr + keywordsStr);
