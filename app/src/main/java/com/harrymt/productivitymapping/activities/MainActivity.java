@@ -146,13 +146,8 @@ public class MainActivity extends FragmentActivity {
                                 + ")", Toast.LENGTH_SHORT).show();
             }
 
-            // Update all fragments
-            TrackFragment tf = (TrackFragment) ActionBarHandler.pagerAdapter.getItem(0);
-            ZonesFragment zf = (ZonesFragment) ActionBarHandler.pagerAdapter.getItem(1);
-            StatFragment sf = (StatFragment) ActionBarHandler.pagerAdapter.getItem(2);
-            tf.refresh();
-            sf.refresh();
-            zf.refresh();
+            // Refresh data
+            refreshAllFragmentDatasources();
         }
     }
 
@@ -301,5 +296,19 @@ public class MainActivity extends FragmentActivity {
         currentZone.setEnabled(!studying);
         editZone.setEnabled(studying);
         forceStopStudy.setEnabled(studying);
+    }
+
+
+    /**
+     * Refreshes all datasources in each fragment.
+     */
+    public void refreshAllFragmentDatasources() {
+        // Update all fragments
+        TrackFragment tf = (TrackFragment) ActionBarHandler.pagerAdapter.getItem(0);
+        ZonesFragment zf = (ZonesFragment) ActionBarHandler.pagerAdapter.getItem(1);
+        StatFragment sf = (StatFragment) ActionBarHandler.pagerAdapter.getItem(2);
+        tf.refresh();
+        sf.refresh();
+        zf.refresh();
     }
 }

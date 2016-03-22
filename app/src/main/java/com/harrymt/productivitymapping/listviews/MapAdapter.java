@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.google.android.gms.maps.MapView;
 import com.harrymt.productivitymapping.PROJECT_GLOBALS;
 import com.harrymt.productivitymapping.R;
+import com.harrymt.productivitymapping.activities.MainActivity;
 import com.harrymt.productivitymapping.coredata.Zone;
 import com.harrymt.productivitymapping.activities.ZoneEditActivity;
 import com.harrymt.productivitymapping.database.DatabaseAdapter;
@@ -23,6 +24,9 @@ import java.util.HashSet;
  */
 public class MapAdapter extends ArrayAdapter<Zone> implements View.OnClickListener {
     private static final String TAG = PROJECT_GLOBALS.LOG_NAME + "MapAdapter";
+
+    // Context back to MainActivity
+    private final MainActivity mainActivity;
 
     // Reference to the parent fragment
     private ZonesFragment zonesFragment;
@@ -37,9 +41,10 @@ public class MapAdapter extends ArrayAdapter<Zone> implements View.OnClickListen
      * @param context Context of app.
      * @param locations List of information (zones) for each item.
      */
-    public MapAdapter(ZonesFragment zonesFragment, Context context, Zone[] locations) {
+    public MapAdapter(ZonesFragment zonesFragment, Context context, MainActivity activity, Zone[] locations) {
         super(context, R.layout.list_map_row, R.id.tvZoneName, locations);
         this.zonesFragment = zonesFragment;
+        this.mainActivity = activity;
     }
 
     /**
@@ -159,8 +164,8 @@ public class MapAdapter extends ArrayAdapter<Zone> implements View.OnClickListen
                         dbAdapter.deleteZone(z.zoneID);
                         dbAdapter.close();
 
-                        // Reload the list view
-                        zonesFragment.refresh();
+                        // Reload all data sources
+                        mainActivity.refreshAllFragmentDatasources();
 
                         dialog.dismiss();
                         break;

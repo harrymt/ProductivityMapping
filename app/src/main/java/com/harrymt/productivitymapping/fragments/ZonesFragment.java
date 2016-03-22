@@ -10,6 +10,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.harrymt.productivitymapping.PROJECT_GLOBALS;
+import com.harrymt.productivitymapping.activities.MainActivity;
 import com.harrymt.productivitymapping.utility.MapUtil;
 import com.harrymt.productivitymapping.listviews.MapViewHolder;
 import com.harrymt.productivitymapping.listviews.MapAdapter;
@@ -53,7 +54,7 @@ public class ZonesFragment extends Fragment {
         Zone[] zones = new Zone[zs.size()]; int i = 0; for (Zone z : zs) { zones[i] = z; i++;}
 
         // Set the adapater.
-        mList.setListAdapter(new MapAdapter(this, getActivity(), zones));
+        mList.setListAdapter(new MapAdapter(this, getActivity(), (MainActivity) this.getActivity(), zones));
 
         // Set a RecyclerListener to clean up MapView from ListView
         mList.getListView().setRecyclerListener(mRecycleListener);
