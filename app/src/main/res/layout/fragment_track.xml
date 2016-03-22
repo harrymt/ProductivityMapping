@@ -30,13 +30,6 @@
         android:id="@+id/btnCreateNewZone"
         android:onClick="createNewZone"/>
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Current Zone"
-        android:id="@+id/btnCurrentZone"
-        android:onClick="startCurrentZone"
-        android:enabled="true"/>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:map="http://schemas.android.com/apk/res-auto"
@@ -48,10 +41,10 @@
         <Button
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:text="Edit Current Zone"
-            android:id="@+id/btnEditZonePreferences"
-            android:onClick="editCurrentZone"
-            android:enabled="false"/>
+            android:text="Start in Zone"
+            android:id="@+id/btnCurrentZone"
+            android:onClick="startCurrentZone"
+            android:enabled="true"/>
 
         <Button
             android:layout_width="match_parent"

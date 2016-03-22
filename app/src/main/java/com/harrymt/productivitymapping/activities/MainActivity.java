@@ -224,21 +224,6 @@ public class MainActivity extends FragmentActivity {
     }
 
     /**
-     * OnClick btnEditZonePreferences
-     *
-     * Edit the current zone that the user is on.
-     *
-     * @param view Button: btnEditZonePreferences
-     */
-    public void editCurrentZone(View view) {
-        // start edit zone activity.
-        // TODO get the current zone we are in and set it here
-        Intent editZoneActivityIntent = new Intent(this, ZoneEditActivity.class);
-        editZoneActivityIntent.putExtra("zone", new Zone(locationPoller.getCurrLocation().latitude, locationPoller.getCurrLocation().longitude));
-        startActivityForResult(editZoneActivityIntent, PROJECT_GLOBALS.REQUEST_CODE_SET_ZONE);
-    }
-
-    /**
      * OnClick btnLastSession
      *
      * Show user their latest session by opening up the Activity.
@@ -289,12 +274,10 @@ public class MainActivity extends FragmentActivity {
 
         Button createNewZone = (Button) findViewById(R.id.btnCreateNewZone);
         Button currentZone = (Button) findViewById(R.id.btnCurrentZone);
-        Button editZone = (Button) findViewById(R.id.btnEditZonePreferences);
         Button forceStopStudy = (Button) findViewById(R.id.btnForceStopStudy);
 
         createNewZone.setEnabled(!studying);
         currentZone.setEnabled(!studying);
-        editZone.setEnabled(studying);
         forceStopStudy.setEnabled(studying);
     }
 
