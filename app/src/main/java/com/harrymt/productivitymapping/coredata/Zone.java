@@ -54,7 +54,7 @@ public class Zone implements Parcelable {
      * @param r Radius.
      */
     public Zone(double lt, double lg, float r) {
-        this(-1, lt, lg, r, "default zone", 0, new String[] {}, new String[] {});
+        this(-1, lt, lg, r, "", 0, new String[] {}, new String[] {});
     }
 
     /**

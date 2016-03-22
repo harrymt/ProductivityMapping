@@ -86,7 +86,8 @@ public class ZonePreferenceEditActivity extends Activity {
         Intent data = new Intent();
         data.putExtra("keywords", Util.splitCSVStringToArray(etKeywords.getText().toString()));
         data.putExtra("packages", packages);
-        data.putExtra("name", etName.getText().toString());
+        String nm = etName.getText().toString();
+        data.putExtra("name", (nm.equals("") ? "no name" : nm));
 
         setResult(RESULT_OK, data);
         finish(); // Leave
