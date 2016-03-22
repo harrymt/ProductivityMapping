@@ -46,14 +46,13 @@ public class ZonesFragment extends Fragment {
      * Reload all the zones from the database back to the list view.
      */
     public void loadZonesToListView() {
-        // TODO add empty list item to zones that says no zones, go create one.
-        // Set a custom list adapter for a list of locations
-        ArrayList<Zone> zs = getZones();
         ListFragment mList = (ListFragment) getChildFragmentManager().findFragmentById(R.id.list);
-        // Convert to array
-        Zone[] zones = new Zone[zs.size()]; int i = 0; for (Zone z : zs) { zones[i] = z; i++;}
 
-        // Set the adapater.
+        mList.setEmptyText("No zones found.");
+
+        Zone[] zones = getZones();
+
+        // Set the adapter.
         mList.setListAdapter(new MapAdapter(this, getActivity(), (MainActivity) this.getActivity(), zones));
 
         // Set a RecyclerListener to clean up MapView from ListView
@@ -101,13 +100,17 @@ public class ZonesFragment extends Fragment {
     };
 
     /**
-     * A list of locations to show in this ListView.
-     * @return List of zones.
+     * A list of zones to show in this List View.
+     *
+     * @return Array of zones.
      */
-    private ArrayList<Zone> getZones() {
+    private Zone[] getZones() {
         DatabaseAdapter dbAdapter = new DatabaseAdapter(getContext());
-        ArrayList<Zone> zones = dbAdapter.getAllZones();
+        ArrayList<Zone> zs = dbAdapter.getAllZones();
         dbAdapter.close();
+
+        // Convert to array
+        Zone[] zones = new Zone[zs.size()]; int i = 0; for (Zone z : zs) { zones[i] = z; i++;}
         return zones;
     }
 
