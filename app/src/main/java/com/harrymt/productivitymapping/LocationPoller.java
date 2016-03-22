@@ -256,12 +256,8 @@ public class LocationPoller implements GoogleApiClient.ConnectionCallbacks, Goog
 
     /**
      * Checks to see if a user is inside of a zone or not!
-     *
-     * TODO see if this gets used.. current zone button?
-     *
-     * @param loc users current location.
      */
-    private void setUsersCurrentZone(Location loc) {
+    private void setUsersCurrentZone() {
         DatabaseAdapter dbAdapter;
         dbAdapter = new DatabaseAdapter(activityReference); // Open and prepare the database
         Zone zone = dbAdapter.getZoneInLocation(mCurrentLocation);
@@ -276,7 +272,10 @@ public class LocationPoller implements GoogleApiClient.ConnectionCallbacks, Goog
      */
     private void updateUI() {
         if(!PROJECT_GLOBALS.STUDYING) {
+            setUsersCurrentZone();
+
             Button currentZone = (Button) activityReference.findViewById(R.id.btnCurrentZone);
+
             // Set the current zone button to be enabled if we are in a current zone
             currentZone.setEnabled(PROJECT_GLOBALS.CURRENT_ZONE != null);
         }
