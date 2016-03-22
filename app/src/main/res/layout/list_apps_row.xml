@@ -10,7 +10,8 @@
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
         android:layout_weight=".45"
-        android:id="@+id/ivIcon" />
+        android:id="@+id/ivIcon"
+        android:contentDescription="@string/list_blocked_apps_icon_description" />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
@@ -25,13 +26,11 @@
             android:id="@+id/tvAppName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Name of App"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
             android:id="@+id/tvPackageName"
             android:layout_width="match_parent"
-            android:text="package.of.app"
             android:layout_height="wrap_content"
             android:maxLength="50" />
 

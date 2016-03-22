@@ -8,7 +8,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Statistics about you"
+        android:text="@string/fragment_stat_tv_your_stats"
         android:textAppearance="?android:attr/textAppearanceLarge"/>
 
     <TextView
@@ -21,7 +21,7 @@
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Popular blocked apps"
+        android:text="@string/fragment_stat_tv_others_apps"
         android:textAppearance="?android:attr/textAppearanceLarge"/>
 
         <TextView
@@ -34,7 +34,7 @@
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Popular keywords used"
+        android:text="@string/fragment_stat_tv_others_keywords"
         android:textAppearance="?android:attr/textAppearanceLarge"/>
 
         <TextView
@@ -47,7 +47,7 @@
         android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="POST data"
+        android:text="@string/fragment_stat_btn_post_data"
         android:id="@+id/btnSync"
         android:onClick="syncWithServer"
         android:enabled="true"/>

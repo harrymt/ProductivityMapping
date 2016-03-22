@@ -1,15 +1,45 @@
 <resources>
     <string name="app_name">Study Mapper</string>
+
+    <!-- Activity Labels -->
     <string name="activity_last_session_name">Last Session</string>
     <string name="activity_zone_preferences_edit">Set zone preferences</string>
     <string name="activity_zone_edit">Edit Zone</string>
     <string name="activity_zone_create">Create new Zone</string>
 
+    <!-- Accessibility Service labels -->
     <string name="app_label_service_app_usage">Polls for app usage during study.</string>
     <string name="app_label_service_notifications">Blocks notifications during study</string>
 
+
+    <!-- User friendly messages -->
     <string name="stats_api_error">Connect to the internet for stats.</string>
+    <string name="last_session_app_usage_failed">App usage not available at this time</string>
+
+    <!-- Labels -->
     <string name="track_study_state_studying">Studying…</string>
     <string name="track_study_state_not_studying">Start study with…</string>
-    <string name="last_session_app_usage_failed">App usage not available at this time</string>
+
+    <!-- UI components -->
+    <string name="activity_session_tv_notifications_blocked">Notifications blocked</string>
+    <string name="activity_session_btn_send_notifications">Send blocked notifications</string>
+    <string name="activity_zone_preference_btn_set_zone">Set</string>
+    <string name="activity_zone_preference_et_hint_zone_name">Zone name</string>
+    <string name="activity_zone_preference_et_hint_keywords">Keywords</string>
+    <string name="activity_zone_preference_tv_block_notifications">Notifications to Block</string>
+
+    <string name="fragment_stat_tv_your_stats">Statistics about you</string>
+    <string name="fragment_stat_tv_others_apps">Popular blocked apps</string>
+    <string name="fragment_stat_tv_others_keywords">Popular keywords used</string>
+    <string name="fragment_stat_btn_post_data">POST data</string>
+    <string name="fragment_track_tv_start_study">Start study with…</string>
+    <string name="fragment_track_btn_create_zone">Create Zone</string>
+    <string name="fragment_track_btn_start_study">Start in Zone</string>
+    <string name="fragment_track_btn_stop_study">Stop</string>
+    <string name="fragment_track_btn_show_last_session">Last Session</string>
+
+    <string name="list_blocked_apps_icon_description">icon</string>
+    <string name="list_zones_row_btn_edit">Edit</string>
+    <string name="list_zones_row_btn_delete">Delete</string>
+
 </resources>

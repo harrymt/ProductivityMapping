@@ -43,14 +43,14 @@
         <Button
             android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:text="Edit"
+            android:text="@string/list_zones_row_btn_edit"
             android:id="@+id/btnEditZone"/>
 
         <Button
-            android:text="Delete"
+            android:text="@string/list_zones_row_btn_delete"
             android:id="@+id/btnDeleteZone"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"/>
 
         </LinearLayout>
 </LinearLayout>

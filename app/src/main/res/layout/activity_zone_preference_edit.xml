@@ -12,7 +12,7 @@
     android:focusableInTouchMode="true">
 
     <Button
-        android:text="Set"
+        android:text="@string/activity_zone_preference_btn_set_zone"
         android:id="@+id/btnSetZonePreferences"
         android:onClick="setZonePreferences"
         android:layout_width="match_parent"
@@ -20,22 +20,21 @@
 
     <EditText
         android:text=""
-        android:hint="Zone name"
+        android:hint="@string/activity_zone_preference_et_hint_zone_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/etZoneName"
         android:inputType="text"/>
 
     <EditText
-        android:text="IMPORTANT"
-        android:hint="Keywords"
+        android:hint="@string/activity_zone_preference_et_hint_keywords"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/etKeywords"
         android:inputType="text"/>
 
     <TextView
-        android:text="Block"
+        android:text="@string/activity_zone_preference_tv_block_notifications"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -47,6 +46,5 @@
         android:layout_height="wrap_content"
         android:id="@+id/lvAppsToBlock"
         android:layout_gravity="center_horizontal" />
-
 
 </LinearLayout>
