@@ -3,10 +3,14 @@ package com.harrymt.productivitymapping.utility;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.provider.Settings;
 import android.util.Log;
 
 import com.harrymt.productivitymapping.PROJECT_GLOBALS;
+
+import java.io.ByteArrayOutputStream;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -171,4 +175,30 @@ public class Util {
         return sb.toString();
     }
 
+
+    /**
+     * Convert bitmap to byte array.
+     *
+     * @param icon bitmap to convert.
+     * @return Byte array of icon.
+     */
+    public static byte[] convertBitmapToBinary(Bitmap icon) {
+        if(icon == null) { return new byte[] {}; }
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        icon.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        return stream.toByteArray();
+    }
+
+    /**
+     * Converts a byte array to a Bitmap object.
+     * @param array Array of bytes.
+     * @return Bitmap.
+     */
+    public static Bitmap convertBinaryToBitmap(byte[] array)
+    {
+        if(array == null) { return null; }
+        return BitmapFactory.decodeByteArray(
+                array, 0,
+                array.length);
+    }
 }

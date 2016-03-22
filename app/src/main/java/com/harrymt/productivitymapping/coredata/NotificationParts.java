@@ -1,6 +1,7 @@
 package com.harrymt.productivitymapping.coredata;
 
 import android.app.Notification;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import com.harrymt.productivitymapping.PROJECT_GLOBALS;
@@ -15,28 +16,34 @@ public class NotificationParts {
     public int id;
     public String title;
     public String text;
-    public String bigText;
     public String subText;
     public String packageName;
+    public String contentInfo;
+
+    public int icon;
+    public Bitmap largeIcon;
 
     /**
      * Constructor.
      *
      * @param notificationID Id of notification.
      * @param pack Package name of notification.
+     * @param title Title of notification.
+     * @param text Text of notification.
+     * @param subText Any subtext of notification.
+     * @param contentInfo Any content info about the notification.
+     * @param lIcon Bitmap image of the icon
+     * @param icon Smaller icon
      */
-    public NotificationParts(int notificationID, String pack) {
-        this(pack);
-        id = notificationID;
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param pack Package name of notification
-     */
-    public NotificationParts(String pack) {
-        packageName = pack;
+    public NotificationParts(int notificationID, String pack, String title, String text, String subText, String contentInfo, Bitmap lIcon, int icon) {
+        this.packageName = pack;
+        this.title = title;
+        this.text = text;
+        this.subText = subText;
+        this.contentInfo = contentInfo;
+        this.largeIcon = lIcon;
+        this.icon = icon;
+        this.id = notificationID;
     }
 
     /**
@@ -48,18 +55,17 @@ public class NotificationParts {
     public NotificationParts(Notification n, String pack) {
         this.title = "";
         this.text = "";
-        this.bigText = "";
         this.subText = "";
         this.packageName = "";
+        this.largeIcon = null;
+
         Bundle b = n.extras;
         CharSequence titleCS = b.getCharSequence(Notification.EXTRA_TITLE); // e.g. Name of sender
         CharSequence textCS = b.getCharSequence(Notification.EXTRA_TEXT);
-        CharSequence bigTextCS = b.getCharSequence(Notification.EXTRA_BIG_TEXT); // Content of email
         CharSequence subTextCS = b.getCharSequence(Notification.EXTRA_SUB_TEXT); // Email address
 
         if (titleCS != null) this.title = titleCS.toString();
         if (textCS != null) this.text = textCS.toString();
-        if (bigTextCS != null) this.bigText = bigTextCS.toString();
         if (subTextCS != null) this.subText = subTextCS.toString();
 
         this.packageName = pack;
@@ -90,7 +96,6 @@ public class NotificationParts {
     public boolean containsKeywords(String[] keywordsToBlock) {
         for (String aKeywordsToBlock : keywordsToBlock) {
             if (this.title.contains(aKeywordsToBlock) ||
-                    this.bigText.contains(aKeywordsToBlock) ||
                     this.subText.contains(aKeywordsToBlock) ||
                     this.text.contains(aKeywordsToBlock)) {
                 return true;

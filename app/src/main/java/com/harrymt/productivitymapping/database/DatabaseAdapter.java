@@ -1,17 +1,28 @@
 package com.harrymt.productivitymapping.database;
 
+import android.app.Notification;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.os.Bundle;
 import android.service.notification.StatusBarNotification;
+import android.util.Log;
+
 import com.harrymt.productivitymapping.coredata.NotificationParts;
 import com.harrymt.productivitymapping.PROJECT_GLOBALS;
 import com.harrymt.productivitymapping.coredata.Session;
 import com.harrymt.productivitymapping.coredata.Zone;
 import com.harrymt.productivitymapping.utility.MapUtil;
+import com.harrymt.productivitymapping.utility.NotificationUtil;
 import com.harrymt.productivitymapping.utility.Util;
 
 import java.util.ArrayList;
@@ -298,13 +309,29 @@ public class DatabaseAdapter
 
         Cursor c_session_notifications = db.query(NOTIFICATION.TABLE, new String[]{
                 NOTIFICATION.KEY.ID,
+                NOTIFICATION.KEY.TITLE,
+                NOTIFICATION.KEY.TEXT,
+                NOTIFICATION.KEY.SUB_TEXT,
+                NOTIFICATION.KEY.CONTENT_INFO,
+                NOTIFICATION.KEY.ICON,
+                NOTIFICATION.KEY.LARGE_ICON,
                 NOTIFICATION.KEY.PACKAGE
-        }, NOTIFICATION.KEY.ID + "=" + session_id + " AND " + NOTIFICATION.KEY.SENT_TO_USER + "=0", null, null, null, null);
+        }, NOTIFICATION.KEY.SESSION_ID + "=" + session_id + " AND " + NOTIFICATION.KEY.SENT_TO_USER + "=0", null, null, null, null);
 
         if(c_session_notifications.moveToFirst()) {
-            int notificationID = c_session_notifications.getInt(c_session_notifications.getColumnIndex(NOTIFICATION.KEY.ID));
-            String package_name = c_session_notifications.getString(c_session_notifications.getColumnIndex(NOTIFICATION.KEY.PACKAGE));
-            notifications.add(new NotificationParts(notificationID, package_name));
+            do {
+                int notificationID = c_session_notifications.getInt(c_session_notifications.getColumnIndex(NOTIFICATION.KEY.ID));
+                String title = c_session_notifications.getString(c_session_notifications.getColumnIndex(NOTIFICATION.KEY.TITLE));
+                String text = c_session_notifications.getString(c_session_notifications.getColumnIndex(NOTIFICATION.KEY.TEXT));
+                String subText = c_session_notifications.getString(c_session_notifications.getColumnIndex(NOTIFICATION.KEY.SUB_TEXT));
+                String contentInfo = c_session_notifications.getString(c_session_notifications.getColumnIndex(NOTIFICATION.KEY.CONTENT_INFO));
+                int iconResourceInt = c_session_notifications.getInt(c_session_notifications.getColumnIndex(NOTIFICATION.KEY.LARGE_ICON));
+                byte[] iconImage = c_session_notifications.getBlob(c_session_notifications.getColumnIndex(NOTIFICATION.KEY.ICON));
+                Bitmap bm = Util.convertBinaryToBitmap(iconImage);
+                String package_name = c_session_notifications.getString(c_session_notifications.getColumnIndex(NOTIFICATION.KEY.PACKAGE));
+
+                notifications.add(new NotificationParts(notificationID, package_name, title, text, subText, contentInfo, bm, iconResourceInt));
+            } while (c_session_notifications.moveToNext());
         }
         c_session_notifications.close();
 
@@ -517,16 +544,30 @@ public class DatabaseAdapter
      */
     public void writeNotification(StatusBarNotification n)
     {
-        // Save the notification based on the current session
-        db.execSQL("INSERT INTO " + NOTIFICATION.TABLE + " ("
-                + NOTIFICATION.KEY.PACKAGE + ","
-                + NOTIFICATION.KEY.SENT_TO_USER + ","
-                + NOTIFICATION.KEY.SESSION_ID
-                + ") "
-                + "VALUES "
-                + "('" + n.getPackageName() + "', "
-                + "0, "
-                + PROJECT_GLOBALS.SESSION_ID + ");");
+
+        Bundle ne = n.getNotification().extras;
+        String nTitle = (ne.getCharSequence(Notification.EXTRA_TITLE) == null) ? "" : ne.getCharSequence(Notification.EXTRA_TITLE) + "";
+        String nText = (ne.getCharSequence(Notification.EXTRA_TEXT) == null) ? "" : ne.getCharSequence(Notification.EXTRA_TEXT) + "";
+        String nSubText = (ne.getCharSequence(Notification.EXTRA_SUB_TEXT) == null) ? "" : ne.getCharSequence(Notification.EXTRA_SUB_TEXT) + "";
+        String nInfoText = (ne.getCharSequence(Notification.EXTRA_INFO_TEXT) == null) ? "" : ne.getCharSequence(Notification.EXTRA_INFO_TEXT) + "";
+
+        // Get the image from the icon
+        Bitmap b = NotificationUtil.getBitmapFromAnotherPackage(context, n.getNotification().icon, n.getPackageName());
+        String iconAsStr = new String(Util.convertBitmapToBinary(b));
+
+        ContentValues values = new ContentValues();
+
+        values.put(NOTIFICATION.KEY.PACKAGE, n.getPackageName());
+        values.put(NOTIFICATION.KEY.TITLE, nTitle);
+        values.put(NOTIFICATION.KEY.TEXT, nText);
+        values.put(NOTIFICATION.KEY.SUB_TEXT, nSubText);
+        values.put(NOTIFICATION.KEY.CONTENT_INFO, nInfoText);
+        values.put(NOTIFICATION.KEY.ICON, iconAsStr);
+        values.put(NOTIFICATION.KEY.LARGE_ICON, n.getNotification().icon);
+        values.put(NOTIFICATION.KEY.SENT_TO_USER, 0);
+        values.put(NOTIFICATION.KEY.SESSION_ID, PROJECT_GLOBALS.SESSION_ID);
+
+        db.insert(NOTIFICATION.TABLE, null, values);
     }
 
     /**

@@ -24,7 +24,7 @@ public class DatabaseSchema {
 
         static final String SQL_CREATE_TABLE =
                 "CREATE TABLE if not exists " + TABLE + " (" +
-                        KEY.ID + " INTEGER PRIMARY KEY autoincrement," +
+                        KEY.ID + " INTEGER PRIMARY KEY autoincrement, " +
                         KEY.LAT + " REAL, " +
                         KEY.LNG + " REAL, " +
                         KEY.RADIUS + " REAL, " +
@@ -48,7 +48,7 @@ public class DatabaseSchema {
 
         static final String SQL_CREATE_TABLE =
                 "CREATE TABLE if not exists " + TABLE + " (" +
-                        KEY.ID + " INTEGER PRIMARY KEY autoincrement," +
+                        KEY.ID + " INTEGER PRIMARY KEY autoincrement, " +
                         KEY.ZONE_ID + " INTEGER, " +
                         KEY.START_TIME + " INTEGER, " +
                         KEY.STOP_TIME + " INTEGER " +
@@ -65,16 +65,26 @@ public class DatabaseSchema {
             static final String SENT_TO_USER = "sentToUser";
             static final String SESSION_ID = "sessionId";
             static final String PACKAGE = "package";
-            // TODO add other notification characteristics
-            // static final String ICON = "icon";
+            static final String TITLE = "title";
+            static final String TEXT = "nText";
+            static final String SUB_TEXT = "subText";
+            static final String CONTENT_INFO = "contentInfo";
+            static final String ICON = "icon";
+            static final String LARGE_ICON = "lIcon";
         }
 
         static final String SQL_CREATE_TABLE =
                 "CREATE TABLE if not exists " + TABLE + " (" +
-                        KEY.ID + " INTEGER PRIMARY KEY autoincrement," +
+                        KEY.ID + " INTEGER PRIMARY KEY autoincrement, " +
                         KEY.SESSION_ID + " INTEGER, " +
                         KEY.SENT_TO_USER + " INTEGER, " +
-                        KEY.PACKAGE + " TEXT " +
+                        KEY.PACKAGE + " TEXT, " +
+                        KEY.TITLE + " TEXT, " +
+                        KEY.TEXT + " TEXT, " +
+                        KEY.SUB_TEXT + " TEXT, " +
+                        KEY.CONTENT_INFO + " TEXT, " +
+                        KEY.ICON + " INTEGER, " +
+                        KEY.LARGE_ICON + " BLOB" +
                         ");";
     }
 }
