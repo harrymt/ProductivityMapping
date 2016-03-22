@@ -44,13 +44,15 @@ public class BlockedApps implements Comparable<BlockedApps> {
      * @return List of apps, popular ones at the front of the list.
      */
     static public ArrayList<BlockedApps> getListOfApps(Context c) {
-        final List<ResolveInfo> pkgAppsList = Util.getListOfAppsOnPhone(c);
+        final List<ResolveInfo> allAppsOnPhone = Util.getListOfAppsOnPhone(c);
+
+        final List<ResolveInfo> apps = Util.filterUnusedSystemApps(allAppsOnPhone);
 
         // Strip the information from the ResolveInfo object putting the popular apps at the top.
         ArrayList<BlockedApps> o = new ArrayList<>();
         boolean popularApp;
         ArrayList<BlockedApps> popularApps = new ArrayList<>();
-        for (ResolveInfo info: pkgAppsList) {
+        for (ResolveInfo info: apps) {
             popularApp = false;
 
             Drawable icon = c.getPackageManager().getApplicationIcon(info.activityInfo.applicationInfo);

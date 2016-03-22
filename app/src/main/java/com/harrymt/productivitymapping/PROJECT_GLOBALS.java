@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.util.Log;
 import com.harrymt.productivitymapping.coredata.Zone;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * List of global project variables and settings that can be easily accessed
@@ -29,6 +31,35 @@ public class PROJECT_GLOBALS {
     public static boolean IS_DEBUG = false;
     public static Zone CURRENT_ZONE;
     public static ArrayList<String> TOP_APPS_BLOCKED = new ArrayList<>();
+
+    // List of system apps we don't want to show up as apps to block notifications from.
+    public static List<String> system_apps = Arrays.asList(
+            "com.android.calculator2",
+            "com.android.settings",
+            "com.android.vending",
+            "com.android.providers.downloads.ui",
+            "com.google.android.apps.books",
+            "com.google.android.apps.docs",
+            "com.google.android.apps.docs.editors.docs",
+            "com.google.android.apps.docs.editors.sheets",
+            "com.google.android.apps.docs.editors.slides",
+            "com.google.android.apps.genie.geniewidget",
+            "com.google.android.apps.magazines",
+            "com.google.android.apps.maps",
+            "com.google.android.apps.photos",
+            "com.google.android.contacts",
+            "com.google.android.deskclock",
+            "com.google.android.dialer",
+            "com.google.android.gms",
+            "com.google.android.GoogleCamera",
+            "com.google.android.googlequicksearchbox",
+            "com.google.android.launcher",
+            "com.google.android.play.games",
+            "com.google.android.street",
+            "com.google.android.videos",
+            "com.google.earth"
+    );
+
 
     /**
      * Get the API key for our API calls.

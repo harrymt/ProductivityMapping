@@ -14,6 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -46,6 +47,31 @@ public class Util {
         final Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
         mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         return c.getPackageManager().queryIntentActivities(mainIntent, 0);
+    }
+
+    /**
+     * Filters out the list of system apps we don't want in the list.
+     *
+     * @param apps List of apps that want to be filtered.
+     * @return A list of apps without any of the fitered apps in them.
+     */
+    public static ArrayList<ResolveInfo> filterUnusedSystemApps(List<ResolveInfo> apps) {
+        List<String> system_apps = PROJECT_GLOBALS.system_apps;
+
+        ArrayList<ResolveInfo> parsed_apps = new ArrayList<>();
+
+        for (ResolveInfo info: apps) {
+            parsed_apps.add(info);
+
+            for(String app : system_apps) {
+                if(app.equals(info.activityInfo.packageName)) {
+                    parsed_apps.remove(info);
+                    break; // break inner for loop.
+                }
+            }
+        }
+
+        return parsed_apps;
     }
 
     /**
