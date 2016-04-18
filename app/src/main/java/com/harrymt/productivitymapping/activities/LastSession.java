@@ -96,7 +96,12 @@ public class LastSession extends Activity {
     private void setZoneDetails() {
         String sessionLength = Util.convertSecondsToFriendlyString(s.stopTime - s.startTime);
         String numberOfNotificationsBlocked = ns.size() + "";
-        String zoneKeywords = (zone != null && zone.keywords.length != 0 ? zone.keywordsAsStr() : null);
+        String zoneKeywords = "";
+        if (zone != null && zone.keywords.length != 0) {
+            for(String word : zone.keywords) { zoneKeywords += word + ", "; }
+        } else {
+            zoneKeywords = null;
+        }
 
         String sessionStr = "Session lasted " + sessionLength + ",";
         String notificationStr = " blocking " + numberOfNotificationsBlocked + " notification(s)";
