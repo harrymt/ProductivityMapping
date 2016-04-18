@@ -53,7 +53,7 @@ public class NotificationListener extends NotificationListenerService {
 
         // If a keyword matches, let it through
         if (notification.containsKeywords(PROJECT_GLOBALS.CURRENT_ZONE.keywords)) {
-            // TODO keep track of # notifications received but not blocked based on keywords
+
             return false;
         }
 

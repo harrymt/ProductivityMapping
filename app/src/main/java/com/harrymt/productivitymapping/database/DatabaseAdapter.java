@@ -3,15 +3,11 @@ package com.harrymt.productivitymapping.database;
 import android.app.Notification;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.service.notification.StatusBarNotification;
@@ -589,5 +585,27 @@ public class DatabaseAdapter
 
         // Set the project state session ID
         PROJECT_GLOBALS.SESSION_ID = getLastSessionId();
+    }
+
+    /**
+     * Check to see if we are still studying or not.
+     *
+     * @return True if still studying, false if not.
+     */
+    public Boolean areWeStillStudying() {
+        int session_id = getLastSessionId();
+
+        Cursor c_session_details = db.query(SESSION.TABLE, new String[]{
+                SESSION.KEY.STOP_TIME
+        }, SESSION.KEY.ID + "=" + session_id, null, null, null, null);
+
+
+        int stop_time = 0;
+        if(c_session_details.moveToFirst()) {
+            stop_time = c_session_details.getInt(c_session_details.getColumnIndex(SESSION.KEY.STOP_TIME));
+        }
+        c_session_details.close();
+
+        return(stop_time == 0);
     }
 }

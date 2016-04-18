@@ -25,7 +25,7 @@ public class StatFragment extends Fragment {
     TextView tvStats;
 
     /**
-     * When fragment is created, setups the stat information and get the stats
+     * When fragment is created, setups the stat information and gets the stats
      * from the server.
      *
      * @param inflater used to inflate the fragment to a layout.
@@ -42,8 +42,6 @@ public class StatFragment extends Fragment {
         tvStats = (TextView) v.findViewById(R.id.tvStats);
         tvStats.setText(getYourStatsString());
 
-        // TODO move this to a poller that does it every 5 seconds? until it gets the stats
-        // cuz if wifi isnt on, on app load. There wont be any stats to show there
         fetchStatsFromServer(v);
 
         return v;

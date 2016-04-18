@@ -7,10 +7,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -18,8 +21,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.harrymt.productivitymapping.PROJECT_GLOBALS;
 import com.harrymt.productivitymapping.utility.MapUtil;
@@ -53,12 +56,13 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback, Googl
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_track, container, false);
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map_track);
-        mapFragment.getMapAsync(this);
+        MapView mapView = (MapView) v.findViewById(R.id.map_track);
+
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(this);
 
         // Remove the map popup that occurs on map click
-        View view = mapFragment.getView();
-        if(view != null) { view.setClickable(false); }
+        mapView.setClickable(false);
 
         buildGoogleApiClient();
 
@@ -66,7 +70,20 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback, Googl
         DatabaseAdapter dbAdapter = new DatabaseAdapter(getContext()); // Prepare the database
         // If there hasn't been a session before, don't enable the button
         v.findViewById(R.id.btnLastSession).setEnabled(dbAdapter.hasASessionEverStartedYet());
+
+
+        if(dbAdapter.areWeStillStudying()) {
+            // Enable study state
+            PROJECT_GLOBALS.STUDYING = true;
+
+            ((TextView) v.findViewById(R.id.tvStudyStateText)).setText(R.string.track_study_state_studying);
+
+            v.findViewById(R.id.btnCreateNewZone).setEnabled(true);
+            v.findViewById(R.id.btnCurrentZone).setEnabled(false);
+            v.findViewById(R.id.btnForceStopStudy).setEnabled(true);
+        }
         dbAdapter.close();
+
 
         return v;
     }
@@ -110,8 +127,16 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback, Googl
         Location loc = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if(loc != null) {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(loc.getLatitude(), loc.getLongitude()), 18.0f));
+
+            DatabaseAdapter dbAdapter = new DatabaseAdapter(getContext()); // Prepare the database
+            Zone zone = dbAdapter.getZoneInLocation(loc);
+            dbAdapter.close();
+
+            // Update current zone, could be null if no zone is found;
+            PROJECT_GLOBALS.CURRENT_ZONE = zone;
+
+
         }
-        mMap.setMyLocationEnabled(true);
     }
 
     /**
@@ -141,6 +166,8 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback, Googl
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        mMap.setMyLocationEnabled(true);
         drawExistingZonesToMap();
     }
 

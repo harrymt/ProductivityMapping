@@ -36,7 +36,7 @@ public class MainActivity extends FragmentActivity {
     // Polls for the users location
     private LocationPoller locationPoller;
 
-    // Access fragments TODO delete this? Make it local in oncreate
+    // Access fragments
     public ActionBarHandler tabFragments;
 
     /**
@@ -60,6 +60,7 @@ public class MainActivity extends FragmentActivity {
         // Cache the most commonly used keywords and packages blocked
         RequestQueue queue = Volley.newRequestQueue(this);
         queue.add(API.makeRequestApps(this, "/apps/3"));
+
     }
 
     /**

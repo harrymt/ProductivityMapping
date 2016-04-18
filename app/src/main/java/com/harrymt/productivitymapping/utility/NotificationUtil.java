@@ -45,8 +45,6 @@ public class NotificationUtil {
     /**
      * Builds a notification from the notification parts object.
      *
-     * TODO add more parts.
-     *
      * @param part NotificationPart object
      * @return The built notification
      */
@@ -57,20 +55,8 @@ public class NotificationUtil {
         notificationBuilder.setSubText(part.subText);
         notificationBuilder.setContentInfo(part.contentInfo);
         notificationBuilder.setLargeIcon(part.largeIcon);
-        // TODO change this to the actual icon. (not possible :( )
         notificationBuilder.setSmallIcon(R.drawable.ic_standard_notification);
         notificationBuilder.setAutoCancel(true);
-
-//        Notification n = new Notification.Builder(context)
-//                .setWhen(sbnNotification.when)
-//                .setContentIntent(sbnNotification.contentIntent)
-//                .setSubText(sbnNotification.extras.getCharSequence(Notification.EXTRA_SUB_TEXT))
-//                .setContent(sbnNotification.contentView)
-//                .setContentInfo(sbnNotification.extras.getCharSequence(Notification.EXTRA_INFO_TEXT))
-//                .setContentTitle(sbn.getNotification().extras.getCharSequence(Notification.EXTRA_TITLE))
-//                .setContentText(sbn.getNotification().extras.getCharSequence(Notification.EXTRA_TEXT))
-//                .setSmallIcon(R.drawable.ic_standard_notification)
-//                .build();
 
         return notificationBuilder.build();
     }
