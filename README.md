@@ -3,7 +3,7 @@
 Android app to improve productivity during study.
 Links with it's server component [Study Mapper (Server)](https://github.com/harrymt/ProductivityMapping-Server)
 
-**Built for the University of Nottingham as a final year project.**
+**Built for the University of Nottingham as a final year BSc Computer Science project.**
 
 In order to build this project, you must place an `environment_variables.xml` in `app/src/main/res/values/environment_variables.xml`.
 This must contain a [Google Maps Android API key](https://developers.google.com/maps/signup).
