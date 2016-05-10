@@ -2,13 +2,17 @@ package com.harrymt.productivitymapping;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.harrymt.productivitymapping.coredata.BlockedApps;
 import com.harrymt.productivitymapping.database.DatabaseAdapter;
+import com.harrymt.productivitymapping.listviews.BlockedAppsArrayAdapter;
+import com.harrymt.productivitymapping.listviews.BlockedAppsArrayAdapterSimple;
 import com.harrymt.productivitymapping.utility.Util;
 
 import org.json.JSONException;
@@ -95,7 +99,46 @@ public class API {
     }
 
     /**
-     * Make an API request to POST zone information.
+     * Make an API request to popular a table with blocked apps.
+     *
+     * Mark the zone as synced after a successful post.
+     * @param c Context of app
+     * @param endpoint Endpoint of api.
+     * @param tv TextView to display the error messages in
+     * @param tbl ListView to display the apps in.
+     * @return A request that handles the response.
+     */
+    public static JsonObjectRequest makeRequestStatTable(final Context c, final String endpoint, final TextView tv, final ListView tbl) {
+        String url = PROJECT_GLOBALS.base_url(c) + endpoint + PROJECT_GLOBALS.apiKey(c);
+
+        return new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                JSONObject response_value;
+                try {
+                    response_value = (JSONObject) response.get("response");
+                    ArrayList<BlockedApps> apps = new ArrayList<>();
+                    for (Iterator<String> packageName = response_value.keys(); packageName.hasNext(); ) {
+                        apps.add(Util.getAppDetails(c, packageName.next()));  // Add the app
+                    }
+
+                    tbl.setAdapter(new BlockedAppsArrayAdapterSimple(c, R.layout.list_apps_row_simple, apps));
+                    tv.setHeight(0);
+
+                } catch (JSONException e) {
+                    Util.logError(e);
+                    Log.e(TAG, "JSON exception with stats: " + e.getMessage());
+                    tv.setText(R.string.stats_api_error);
+                }
+            }
+        }, getVolleyErrorListener(c, volley_error_type.stat, tv));
+
+
+    }
+
+
+    /**
+     * Make an API request to FETCH stats information.
      *
      * Mark the zone as synced after a successful post.
      * @param c Context of app
@@ -103,7 +146,7 @@ public class API {
      * @param tv Textview to display the stats in.
      * @return A request that handles the response.
      */
-    public static JsonObjectRequest makeRequestStat(final Context c, final String endpoint, final TextView tv) {
+    public static JsonObjectRequest makeRequestStatString(final Context c, final String endpoint, final TextView tv) {
         String url = PROJECT_GLOBALS.base_url(c) + endpoint + PROJECT_GLOBALS.apiKey(c);
 
         return new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {

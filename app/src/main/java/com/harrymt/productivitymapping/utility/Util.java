@@ -5,19 +5,18 @@ import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.provider.Settings;
 import android.util.Log;
 
 import com.harrymt.productivitymapping.PROJECT_GLOBALS;
+import com.harrymt.productivitymapping.coredata.BlockedApps;
 
 import java.io.ByteArrayOutputStream;
-import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -27,7 +26,37 @@ public class Util {
     private static final String TAG = PROJECT_GLOBALS.LOG_NAME + "Util";
 
     /**
+     * Gets info about an app on a users phone. If details cannot be found,
+     * e.g. the user doesn't have the app installed, we return null.
+     *
+     * @param packageName Name of app to search for.
+     * @return A blocked apps object, or null if app isn't on users phone.
+     */
+    public static BlockedApps getAppDetails(Context c, String packageName) {
+
+        final List<ResolveInfo> allAppsOnPhone = Util.getListOfAppsOnPhone(c);
+        for (ResolveInfo info: allAppsOnPhone) {
+            if(!info.activityInfo.packageName.equals(packageName)) { continue; } // skip packages that aren't the one we are searching for
+
+            Drawable icon = c.getPackageManager().getApplicationIcon(info.activityInfo.applicationInfo);
+            final String title 	= c.getPackageManager().getApplicationLabel(info.activityInfo.applicationInfo).toString();
+
+            for(String app : PROJECT_GLOBALS.TOP_APPS_BLOCKED) {
+                if(app.equals(info.activityInfo.packageName)) {
+                    // It's a popular app
+                    return new BlockedApps(title, packageName, icon, true);
+                }
+            }
+
+            return new BlockedApps(title, packageName, icon, false);
+        }
+
+        return null; // Doesn't have app on phone
+    }
+
+    /**
      * Check if the context (app) can listen to notifications.
+     *
      * @param c Context of app.
      * @return True if context can listen to it, false if not.
      */
@@ -40,6 +69,7 @@ public class Util {
 
     /**
      * Gets a list of all the apps on a users phone.
+     *
      * @param c Context of app.
      * @return List of information about all the apps on a users phone.
      */
@@ -53,7 +83,7 @@ public class Util {
      * Filters out the list of system apps we don't want in the list.
      *
      * @param apps List of apps that want to be filtered.
-     * @return A list of apps without any of the fitered apps in them.
+     * @return A list of apps without any of the filtered apps in them.
      */
     public static ArrayList<ResolveInfo> filterUnusedSystemApps(List<ResolveInfo> apps) {
         List<String> system_apps = PROJECT_GLOBALS.system_apps;
@@ -176,6 +206,7 @@ public class Util {
 
     /**
      * Utility function to convert a String separated by the unqiue delimited back into a String.
+     *
      * @param str String
      * @return String[]
      */
@@ -187,6 +218,7 @@ public class Util {
 
     /**
      * Utility function to convert a String array to a delimited separated string.
+     *
      * @param array Array to convert.
      * @return String delimited by unique delimiter.
      */
@@ -220,6 +252,7 @@ public class Util {
 
     /**
      * Converts a byte array to a Bitmap object.
+     *
      * @param array Array of bytes.
      * @return Bitmap.
      */

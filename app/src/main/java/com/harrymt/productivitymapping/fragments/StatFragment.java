@@ -5,13 +5,16 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.harrymt.productivitymapping.API;
 import com.harrymt.productivitymapping.PROJECT_GLOBALS;
 import com.harrymt.productivitymapping.R;
+import com.harrymt.productivitymapping.coredata.BlockedApps;
 import com.harrymt.productivitymapping.database.DatabaseAdapter;
+import com.harrymt.productivitymapping.listviews.BlockedAppsArrayAdapter;
 import com.harrymt.productivitymapping.utility.Util;
 
 /**
@@ -20,6 +23,9 @@ import com.harrymt.productivitymapping.utility.Util;
  */
 public class StatFragment extends Fragment {
     private static final String TAG = PROJECT_GLOBALS.LOG_NAME + "StatFragment";
+
+    // List of most blocked apps
+    ListView blockedAppsList;
 
     // Text view to display all the stat information.
     TextView tvStats;
@@ -53,12 +59,13 @@ public class StatFragment extends Fragment {
      * @param v view of fragment that we can display the stats in.
      */
     private void fetchStatsFromServer(View v) {
-        final TextView tvBlockedAppsStats = (TextView) v.findViewById(R.id.tvBlockedAppsStats);
         final TextView tvKeywordsStats = (TextView) v.findViewById(R.id.tvKeywordsStats);
+        final TextView tvBlockedAppsStats = (TextView) v.findViewById(R.id.tvBlockedAppsStats);
 
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        queue.add(API.makeRequestStat(getContext(), "/apps/3", tvBlockedAppsStats));
-        queue.add(API.makeRequestStat(getContext(), "/keywords/3", tvKeywordsStats));
+        blockedAppsList = (ListView) v.findViewById(R.id.lvPopularApps);
+        queue.add(API.makeRequestStatTable(getContext(), "/apps/3", tvBlockedAppsStats, blockedAppsList));
+        queue.add(API.makeRequestStatString(getContext(), "/keywords/3", tvKeywordsStats));
     }
 
     /**
@@ -77,25 +84,32 @@ public class StatFragment extends Fragment {
 
             String popular_keywords_str = "";
             if(most_popular_keyword != null) {
-                popular_keywords_str = "'" + most_popular_keyword.word + "' is your most popular keyword with "
-                        + most_popular_keyword.occurrences + " occurrence(s)";
+                popular_keywords_str = "'" + most_popular_keyword.word + "' is used "
+                        + most_popular_keyword.occurrences + " times";
             }
 
             String popular_app_str = "";
+
             if(most_popular_blocked_app != null) {
-                popular_app_str = "'" + most_popular_blocked_app.word + "' is your most blocked app with "
-                        + most_popular_blocked_app.occurrences + " occurrence(s).";
+
+                BlockedApps app = Util.getAppDetails(this.getContext(), most_popular_blocked_app.word);
+                if(app != null) {
+                    most_popular_blocked_app.word = app.name;
+                }
+
+                popular_app_str = "'" + most_popular_blocked_app.word + "' is your most blocked app, used "
+                        + most_popular_blocked_app.occurrences + " times.";
             }
 
             if(!popular_app_str.equals("") && !popular_keywords_str.equals("")) {
                 popular_app_str = ", and " + popular_app_str;
             }
 
-            statsString = "You have created " +
-                    dbAdapter.getNumberOfZones() + " zones with " +
-                    dbAdapter.getUniqueNumberOfKeywords() + " different keywords and " +
-                    dbAdapter.getUniqueNumberOfBlockingApps() + " unique apps."
-                    + "\n" + popular_keywords_str + popular_app_str;
+            statsString = "Created " +
+                    dbAdapter.getNumberOfZones() + " zones, " +
+                    dbAdapter.getUniqueNumberOfKeywords() + " unique keywords and " +
+                    dbAdapter.getUniqueNumberOfBlockingApps() + " apps. "
+                    + popular_keywords_str + popular_app_str;
 
         } else {
             statsString = "Start a study session to see personal stats.";
@@ -110,5 +124,7 @@ public class StatFragment extends Fragment {
      */
     public void refresh() {
         tvStats.setText(getYourStatsString());
+
+        fetchStatsFromServer(getView());
     }
 }

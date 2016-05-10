@@ -2,46 +2,53 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/fragment_stat_tv_your_stats"
-        android:textAppearance="?android:attr/textAppearanceLarge"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/fragment_stat_tv_your_stats"
+            android:textAppearance="?android:attr/textAppearanceLarge"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvStats"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvStats"
+            android:textAppearance="?android:attr/textAppearanceSmall"/>
 
-    <TextView
-        android:layout_marginTop="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/fragment_stat_tv_others_apps"
-        android:textAppearance="?android:attr/textAppearanceLarge"/>
+        <TextView
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/fragment_stat_tv_others_apps"
+            android:textAppearance="?android:attr/textAppearanceLarge"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/tvBlockedAppsStats"
-            android:textAppearance="?android:attr/textAppearanceMedium"/>
+            android:textAppearance="?android:attr/textAppearanceSmall"/>
 
-    <TextView
-        android:layout_marginTop="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/fragment_stat_tv_others_keywords"
-        android:textAppearance="?android:attr/textAppearanceLarge"/>
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/lvPopularApps"
+                android:layout_gravity="center_horizontal" />
 
         <TextView
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/tvKeywordsStats"
-            android:textAppearance="?android:attr/textAppearanceMedium"/>
+            android:text="@string/fragment_stat_tv_others_keywords"
+            android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvKeywordsStats"
+                android:textAppearance="?android:attr/textAppearanceSmall"/>
+
 
     <Button
         android:layout_marginTop="20dp"
@@ -53,3 +60,4 @@
         android:enabled="true"/>
 
 </LinearLayout>
+
