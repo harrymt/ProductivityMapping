@@ -55,8 +55,23 @@ public class NotificationUtil {
         notificationBuilder.setSubText(part.subText);
         notificationBuilder.setContentInfo(part.contentInfo);
         notificationBuilder.setLargeIcon(part.largeIcon);
+
+        // TODO set the original notification icon
+        // It is not possible to change this to the resource icon of the app,
+        // but it is possible to look up the app using the package name and get the icon.
         notificationBuilder.setSmallIcon(R.drawable.ic_standard_notification);
         notificationBuilder.setAutoCancel(true);
+
+//        Notification n = new Notification.Builder(context)
+//                .setWhen(sbnNotification.when)
+//                .setContentIntent(sbnNotification.contentIntent)
+//                .setSubText(sbnNotification.extras.getCharSequence(Notification.EXTRA_SUB_TEXT))
+//                .setContent(sbnNotification.contentView)
+//                .setContentInfo(sbnNotification.extras.getCharSequence(Notification.EXTRA_INFO_TEXT))
+//                .setContentTitle(sbn.getNotification().extras.getCharSequence(Notification.EXTRA_TITLE))
+//                .setContentText(sbn.getNotification().extras.getCharSequence(Notification.EXTRA_TEXT))
+//                .setSmallIcon(R.drawable.ic_standard_notification)
+//                .build();
 
         return notificationBuilder.build();
     }

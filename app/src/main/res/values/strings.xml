@@ -30,7 +30,7 @@
 
     <string name="fragment_stat_tv_your_stats">Statistics about you</string>
     <string name="fragment_stat_tv_others_apps">Popular blocked apps</string>
-    <string name="fragment_stat_tv_others_keywords">Popular keywords used</string>
+    <string name="fragment_stat_tv_others_keywords">Popular keywords</string>
     <string name="fragment_stat_btn_post_data">POST data</string>
     <string name="fragment_track_tv_start_study">Start study with…</string>
     <string name="fragment_track_btn_create_zone">Create Zone</string>

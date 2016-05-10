@@ -25,7 +25,7 @@ public class ZonePreferenceEditActivity extends Activity {
     // List of apps a user can choose to block.
     ListView blockedAppsList;
 
-    // Adapter that links the infor about each app to block.
+    // Adapter that links the info about each app to block.
     BlockedAppsArrayAdapter adapter;
 
     // Zone information.
