@@ -1,4 +1,6 @@
 # Study Mapper
+[![codebeat badge](https://codebeat.co/badges/1c3a9240-10b0-4f8e-b3a4-742e1bd97224)](https://codebeat.co/projects/github-com-harrymt-productivitymapping-master)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/31dda94a8e80410cb9c2caee02c95257)](https://www.codacy.com/app/harrymt/ProductivityMapping?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=harrymt/ProductivityMapping&amp;utm_campaign=Badge_Grade)
 
 Android app to improve productivity during study.
 Links with it's server component [Study Mapper (Server)](https://github.com/harrymt/ProductivityMapping-Server)
